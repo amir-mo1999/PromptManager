@@ -1,6 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,python,nextjs,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,python,nextjs,node
 
+/data
 ### NextJS ###
 # dependencies
 /node_modules

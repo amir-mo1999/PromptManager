@@ -37,7 +37,10 @@ const handler = NextAuth({
 
         // send credentials to login route, get result and user
         api.login({ username: credentials?.username, password: credentials?.username })
-        const res = await api.login({ username: credentials.username, password: credentials.password })
+        const res = await api.login({
+          username: credentials.username,
+          password: credentials.password,
+        })
         const user = await res.json()
 
         // If no error and we have user data, return it

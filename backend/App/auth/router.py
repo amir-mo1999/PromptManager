@@ -53,7 +53,9 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     token = create_access_token(
         data={"sub": form_data.username}, expires_delta=access_token_expires
     )
-    return JSONResponse(content=token, headers=HEADERS)
+    return JSONResponse(
+        content={**token, **{"email": form_data.username}}, headers=HEADERS
+    )
 
 
 @auth_router.get("/get-current-user")
@@ -71,5 +73,5 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 
     # get user data from fake user database and return it
     user_data = get_user(username)
-    user_data = user_data.dict(exclude={"hashed_password"})
+    user_data = user_data.model_dump(exclude={"hashed_password"})
     return user_data

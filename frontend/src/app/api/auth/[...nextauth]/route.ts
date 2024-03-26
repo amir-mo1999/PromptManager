@@ -43,18 +43,29 @@ const handler = NextAuth({
         if (res.status !== 200) {
           return null
         }
+
         // get user data
         const user = await res.json()
 
         // If no error and we have user data, return it
         if (res.ok && user) {
-          return user
+          console.log(user)
+          return { ...user }
         }
         // Return null if user data could not be retrieved
         return null
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      return { ...token, ...user }
+    },
+    async session({ session, token }) {
+      session.user = token as any
+      return session
+    },
+  },
 })
 
 export { handler as GET, handler as POST }

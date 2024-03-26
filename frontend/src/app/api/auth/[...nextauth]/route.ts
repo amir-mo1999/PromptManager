@@ -20,34 +20,14 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        // You need to provide your own logic here that takes the credentials
-        // submitted and returns either a object representing a user or value
-        // that is false/null if the credentials are invalid.
-        // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
-        // You can also use the `req` object to obtain additional parameters
-        // (i.e., the request IP address)
-        console.log("GRlhor3kh35oßhm5o3pihün5mikhüon54iohün5o")
-        // if credentials are invalid return null
-        if (credentials === undefined) {
-          return null
-        }
-        if (credentials.username === undefined || credentials.password === undefined) {
-          return null
-        }
-
-        // send credentials to login route, get result and user
-        api.login({ username: credentials?.username, password: credentials?.username })
-        const res = await api.login({
-          username: credentials.username,
-          password: credentials.password,
+        fetch("http://backend:4000/auth/login", {
+          method: "POST",
+          redirect: "follow",
         })
-        const user = await res.json()
-
-        // If no error and we have user data, return it
-        if (res.ok && user) {
-          return user
-        }
-        // Return null if user data could not be retrieved
+          .then((response) => response.text())
+          .then((result) => console.log(result))
+          .catch((error) => console.error(error))
+        console.log(process.env.IS_SERVER_FLAG)
         return null
       },
     }),

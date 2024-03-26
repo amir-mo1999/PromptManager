@@ -1,5 +1,6 @@
 "use client"
 import Image from "next/image"
+import { api } from "@/network"
 
 export default function Home() {
   return (
@@ -7,13 +8,7 @@ export default function Home() {
       Hellogewgewge
       <button
         onClick={() => {
-          fetch("http://localhost:4000/auth/", {
-            method: "GET",
-            redirect: "follow",
-          })
-            .then((response) => response.text())
-            .then((result) => console.log(result))
-            .catch((error) => console.error(error))
+          api.login({ username: "admin", password: "" })
         }}
       >
         Test API call

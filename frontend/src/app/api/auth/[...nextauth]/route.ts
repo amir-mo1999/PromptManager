@@ -26,7 +26,7 @@ const handler = NextAuth({
         // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
         // You can also use the `req` object to obtain additional parameters
         // (i.e., the request IP address)
-
+        console.log("GRlhor3kh35oßhm5o3pihün5mikhüon54iohün5o")
         // if credentials are invalid return null
         if (credentials === undefined) {
           return null

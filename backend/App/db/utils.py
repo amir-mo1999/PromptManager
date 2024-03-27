@@ -1,6 +1,7 @@
 from ..models import User
 from pymongo.mongo_client import MongoClient
 import os
+from bson import ObjectId
 
 # set up mongo client
 uri = os.environ.get("MONGO_CON_STRING")
@@ -22,8 +23,6 @@ def get_user(email: str) -> User | bool:
 
     # Check if the user with the given email exists
     user_data = user_collection.find_one({"email": email})
-    del user_data["_id"]
-    print({**user_data})
     if user_data:
         # If the user exists, create a user instance and return it
         user = User(**user_data)

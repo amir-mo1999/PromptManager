@@ -1,10 +1,9 @@
 from typing import Annotated, Any, Callable
-
 from bson import ObjectId
 from pydantic_core import core_schema
 
 
-class ObjectIdAnnotation:
+class _ObjectIdPydanticAnnotation:
     # Based on https://docs.pydantic.dev/latest/usage/types/custom/#handling-third-party-types.
 
     @classmethod
@@ -24,3 +23,6 @@ class ObjectIdAnnotation:
             ],
             serialization=core_schema.to_string_ser_schema(),
         )
+
+
+PydanticObjectId = Annotated[ObjectId, _ObjectIdPydanticAnnotation]

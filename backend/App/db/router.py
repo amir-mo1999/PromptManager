@@ -42,7 +42,6 @@ async def get_user_route(
     email: str = Path(..., description="Email of the user to retrieve")
 ):
     user_data = get_user(email)
-    print(user_data)
 
     if user_data:
         return user_data

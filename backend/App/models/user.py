@@ -1,37 +1,18 @@
-from pydantic import BaseModel, EmailStr, StringConstraints, Field
+from pydantic import BaseModel, EmailStr, StringConstraints, ConfigDict, Field
 from enum import Enum
-from typing import Annotated
-from pydantic_mongo import AbstractRepository, ObjectIdField
+from typing import Annotated, Literal
+from .objectID import PydanticObjectId
 
 
 class UserInput(BaseModel):
-    class Role(str, Enum):
-        developer = "developer"
-        prompt_engineer = "prompt engineer"
-        admin = "admin"
-
     email: EmailStr
     first_name: Annotated[str, StringConstraints(min_length=1)]
     last_name: Annotated[str, StringConstraints(min_length=1)]
+    role: Literal["developer", "prompt engineer", "admin"]
     hashed_password: str
-    role: Role
-
-    class Config:
-        use_enum_values = True
 
 
-class User(BaseModel):
-    class Role(str, Enum):
-        developer = "developer"
-        prompt_engineer = "prompt engineer"
-        admin = "admin"
+class User(UserInput):
+    model_config = ConfigDict(use_enum_values=True)
 
-    _id: ObjectIdField
-    email: EmailStr
-    first_name: Annotated[str, StringConstraints(min_length=1)]
-    last_name: Annotated[str, StringConstraints(min_length=1)]
-    hashed_password: str
-    role: Role
-
-    class Config:
-        use_enum_values = True
+    id: PydanticObjectId = Field(alias="_id")

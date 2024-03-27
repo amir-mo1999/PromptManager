@@ -12,6 +12,7 @@ from jose import JWTError
 
 # import other modules
 from .utils import *
+from ..db import get_user
 
 # define router object
 auth_router = APIRouter(prefix="/auth")
@@ -53,8 +54,13 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     token = create_access_token(
         data={"sub": form_data.username}, expires_delta=access_token_expires
     )
+
     return JSONResponse(
-        content={**token, **{"email": form_data.username}}, headers=HEADERS
+        content={
+            **token,
+            **get_user(form_data.username).model_dump(exclude={"hashed_password"}),
+        },
+        headers=HEADERS,
     )
 
 

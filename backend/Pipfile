@@ -11,6 +11,8 @@ pymongo = "*"
 python-jose = "*"
 passlib = "*"
 requests = "*"
+mongo = "*"
+pydantic-mongo = "*"
 
 [dev-packages]
 

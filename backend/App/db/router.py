@@ -1,4 +1,4 @@
-from ..models import User
+from ..models import User, UserInput
 from fastapi import APIRouter, HTTPException, Path
 from fastapi.responses import PlainTextResponse
 from pymongo.mongo_client import MongoClient
@@ -22,7 +22,7 @@ async def home():
 
 
 @db_router.post("/user")
-async def post_user(user: User):
+async def post_user(user: UserInput):
     # get user collection
     user_collection = db["users"]
 
@@ -42,6 +42,7 @@ async def get_user_route(
     email: str = Path(..., description="Email of the user to retrieve")
 ):
     user_data = get_user(email)
+    print(user_data)
 
     if user_data:
         return user_data

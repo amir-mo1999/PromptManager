@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "4e6bc7a9bccc86d7246ce3b7bce3f250a25f384baca3a890a8266dbe1a2808d5"
+            "sha256": "c51c0dae8651f5d75ae7afc85d982bac29b9aa64bc47f15177b87ea0e6318c15"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -337,6 +337,13 @@
             "markers": "python_version >= '3.7'",
             "version": "==2.1.5"
         },
+        "mongo": {
+            "hashes": [
+                "sha256:4a2bf0448da7bd2b34f69058c8380baed1e2916454814b3d6253ed6cf5a36c57"
+            ],
+            "index": "pypi",
+            "version": "==0.2.0"
+        },
         "orjson": {
             "hashes": [
                 "sha256:001f4eb0ecd8e9ebd295722d0cbedf0748680fb9998d3993abaed2f40587257a",
@@ -402,11 +409,11 @@
         },
         "pyasn1": {
             "hashes": [
-                "sha256:4439847c58d40b1d0a573d07e3856e95333f1976294494c325775aeca506eb58",
-                "sha256:6d391a96e59b23130a5cfa74d6fd7f388dbbe26cc8f1edf39fdddf08d9d6676c"
+                "sha256:3a35ab2c4b5ef98e17dfdec8ab074046fbda76e281c5a706ccd82328cfc8f64c",
+                "sha256:cca4bb0f2df5504f02f6f8a775b6e416ff9b0b3b16f7ee80b5a3153d9b804473"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
-            "version": "==0.5.1"
+            "markers": "python_version >= '3.8'",
+            "version": "==0.6.0"
         },
         "pydantic": {
             "hashes": [
@@ -508,6 +515,15 @@
                 "sha256:e9a93cfb245158462acb76621785219f80ad112303a0a7784d2ada65e6ed6cba"
             ],
             "version": "==2.6.0"
+        },
+        "pydantic-mongo": {
+            "hashes": [
+                "sha256:3eb4db8f2eb5abb1e4af4d005c92a2ca0c386c3c8eff125a9174edfe4ffe6633",
+                "sha256:44cc02484eb87e812064cf85130e87b8e5e0fa660cd7188e46f153b7eaf58617"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.8'",
+            "version": "==2.1.2"
         },
         "pydantic-settings": {
             "hashes": [

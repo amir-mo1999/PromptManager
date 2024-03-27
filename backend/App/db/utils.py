@@ -22,9 +22,10 @@ def get_user(email: str) -> User | bool:
 
     # Check if the user with the given email exists
     user_data = user_collection.find_one({"email": email})
-
+    del user_data["_id"]
+    print({**user_data})
     if user_data:
-        # If the user exists, create a User instance from the retrieved data and return it
+        # If the user exists, create a user instance and return it
         user = User(**user_data)
         return user
     else:

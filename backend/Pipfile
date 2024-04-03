@@ -13,6 +13,7 @@ passlib = "*"
 requests = "*"
 mongo = "*"
 pydantic-mongo = "*"
+pytz = "*"
 
 [dev-packages]
 

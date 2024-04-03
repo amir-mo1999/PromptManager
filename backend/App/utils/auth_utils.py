@@ -6,7 +6,7 @@ from jose import jwt
 import os
 from ..models import User, Token
 from .db_utils import get_user
-
+import pytz
 
 # create encryption object to hash passwords
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -19,6 +19,9 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 # define jwt algorithm
 ALGORITHM = "HS256"
+
+# set timezone
+tz = pytz.timezone("Europe/Berlin")
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -92,14 +95,19 @@ def create_access_token(
     # copy to be encoded data
     to_encode = data.copy()
 
-    # add expiration time to to be encoded data
+    # add iat to encoded data (issued at time)
+    to_encode.update({"iat": datetime.now(tz)})
+
+    # add expiration time to to the encoded data
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(tz) + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+        expire = datetime.now(tz) + timedelta(minutes=60)
     to_encode.update({"exp": expire})
 
     # create jwt token and return it in dictionary representation
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     token = Token(access_token=encoded_jwt, token_type="Bearer")
+
+    payload = decode_token(token.access_token)
     return token

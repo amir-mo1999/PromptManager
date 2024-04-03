@@ -21,7 +21,7 @@ from ..models import User, Token
 auth_router = APIRouter(prefix="/auth")
 
 # some global variables
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 1
 HEADERS = headers = {"content-type": "application/json; charset=utf-8"}
 
 # define oauth2_scheme; to protect an endpoint add this parameter "token: Annotated[str, Depends(oauth2_scheme)]"
@@ -34,7 +34,7 @@ class UserAndToken(BaseModel):
     token: Token
 
 
-@auth_router.post("/login", response_model=UserAndToken)
+@auth_router.post("/login", response_model=Token)
 async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     """
     Endpoint for the login procedure. Takes username and password as form-data input.
@@ -58,14 +58,31 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
         data={"sub": form_data.username}, expires_delta=access_token_expires
     )
 
+    return token
     user_data = get_user(form_data.username)
     return UserAndToken(user=user_data, token=token)
 
 
-@auth_router.get("/get-current-user")
+@auth_router.get("/refresh-token", response_model=Token)
+async def refresh_token(token: Annotated[str, Depends(oauth2_scheme)]):
+
+    try:
+        payload = decode_token(token)
+    except JWTError:
+        raise HTTPException(status_code=400, detail="invalid access token")
+
+    # if user was found get access token and return it
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+
+    token = create_access_token(
+        data={"sub": payload.get("sub")}, expires_delta=access_token_expires
+    )
+    return token
+
+
+@auth_router.get("/get-current-user", response_model=User)
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     """Retrieve user data for user that is associated with the passed auth token."""
-
     # decode the token; return error message if token is invalid
     try:
         payload = decode_token(token)
@@ -77,5 +94,4 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 
     # get user data from fake user database and return it
     user_data = get_user(username)
-    user_data = user_data.model_dump(exclude={"hashed_password"})
     return user_data

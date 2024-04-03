@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 from typing import Union, Any
 from datetime import timedelta
 from passlib.context import CryptContext
@@ -6,7 +5,8 @@ from datetime import datetime
 from jose import jwt
 import os
 from ..models import User, Token
-from ..db import get_user
+from .db_utils import get_user
+
 
 # create encryption object to hash passwords
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -102,4 +102,4 @@ def create_access_token(
     # create jwt token and return it in dictionary representation
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     token = Token(access_token=encoded_jwt, token_type="Bearer")
-    return token.model_dump()
+    return token

@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, Path
 from fastapi.responses import PlainTextResponse
 from pymongo.mongo_client import MongoClient
 import os
-from .utils import get_user
+from ..utils import get_user
 
 # define router object and add routes from routes folder
 db_router = APIRouter(prefix="/db")
@@ -16,11 +16,6 @@ db = client["prompt-broker"]
 
 
 ## User routes
-@db_router.get("/")
-async def home():
-    return "DB routes are running"
-
-
 @db_router.post("/user")
 async def post_user(user: UserInput):
     # get user collection

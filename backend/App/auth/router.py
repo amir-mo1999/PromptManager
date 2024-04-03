@@ -1,6 +1,8 @@
 # import python stuff
 from typing import Annotated
-from datetime import timedelta
+
+# pydantic
+from pydantic import BaseModel
 
 # import fast api stuff
 from fastapi import Depends, HTTPException, status, APIRouter, Depends
@@ -11,8 +13,9 @@ from fastapi.responses import JSONResponse
 from jose import JWTError
 
 # import other modules
-from .utils import *
-from ..db import get_user
+from ..utils.auth_utils import *
+from ..utils import combine_models, get_user
+from ..models import User, Token
 
 # define router object
 auth_router = APIRouter(prefix="/auth")
@@ -25,13 +28,13 @@ HEADERS = headers = {"content-type": "application/json; charset=utf-8"}
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
-# Test route
-@auth_router.get("/")
-async def home():
-    return "Auth routes are running"
+# custom model which contains user and token data
+class UserAndToken(BaseModel):
+    user: User
+    token: Token
 
 
-@auth_router.post("/login")
+@auth_router.post("/login", response_model=UserAndToken)
 async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     """
     Endpoint for the login procedure. Takes username and password as form-data input.
@@ -55,13 +58,8 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
         data={"sub": form_data.username}, expires_delta=access_token_expires
     )
 
-    return JSONResponse(
-        content={
-            **token,
-            **get_user(form_data.username).model_dump(exclude={"hashed_password"}),
-        },
-        headers=HEADERS,
-    )
+    user_data = get_user(form_data.username)
+    return UserAndToken(user=user_data, token=token)
 
 
 @auth_router.get("/get-current-user")

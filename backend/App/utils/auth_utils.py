@@ -108,6 +108,4 @@ def create_access_token(
     # create jwt token and return it in dictionary representation
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     token = Token(access_token=encoded_jwt, token_type="Bearer")
-
-    payload = decode_token(token.access_token)
     return token

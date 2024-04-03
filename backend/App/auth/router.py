@@ -59,6 +59,7 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     )
 
     return token
+    # TODO: check this
     user_data = get_user(form_data.username)
     return UserAndToken(user=user_data, token=token)
 

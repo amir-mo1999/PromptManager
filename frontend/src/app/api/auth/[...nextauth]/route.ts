@@ -58,6 +58,7 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
+    // TODO: check this
     async jwt({ token, user }) {
       return { ...token, ...user }
     },

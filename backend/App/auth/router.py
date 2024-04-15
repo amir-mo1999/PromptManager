@@ -14,20 +14,21 @@ from jose import JWTError
 # import other modules
 from ..utils.auth_utils import *
 from ..utils import get_user
-from ..models import User, Token
+from ..models import User, Token, DecodedToken
 
 # define router object
 auth_router = APIRouter(prefix="/auth")
 
 # some global variables
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
+access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 HEADERS = headers = {"content-type": "application/json; charset=utf-8"}
 
 # define oauth2_scheme; to protect an endpoint add this parameter "token: Annotated[str, Depends(oauth2_scheme)]"
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
-@auth_router.post("/login", response_model=Token)
+@auth_router.post("/login", response_model=DecodedToken)
 async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     """
     Endpoint for the login procedure. Takes username and password as form-data input.
@@ -46,30 +47,29 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
         )
 
     # if user was found get access token and return it
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     token = create_jwt_token(
         data={"sub": form_data.username}, expires_delta=access_token_expires
     )
 
-    return token
+    # return the decoded token
+    decoded_token = decode_token(token.access_token)
+    return decoded_token
 
 
-@auth_router.get("/refresh-token", response_model=Token)
+@auth_router.get("/refresh-token", response_model=DecodedToken)
 async def refresh_token(access_token: Annotated[str, Depends(oauth2_scheme)]):
-    str(uuid.uuid4())
     try:
-        payload = decode_token(access_token)
+        decoded_token = decode_token(access_token)
     except JWTError:
         raise HTTPException(status_code=400, detail="invalid access token")
 
-    # if user was found get access token and return it
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-
+    # if token is valid create a new one
     token = create_jwt_token(
-        data={"sub": payload.get("sub")}, expires_delta=access_token_expires
+        data={"sub": decoded_token.sub}, expires_delta=access_token_expires
     )
-
-    return token
+    # decode the new token and return it
+    decoded_token = decode_token(token.access_token)
+    return decoded_token
 
 
 @auth_router.get("/get-current-user", response_model=User)
@@ -77,12 +77,12 @@ async def get_current_user(access_token: Annotated[str, Depends(oauth2_scheme)])
     """Retrieve user data for user that is associated with the passed auth token."""
     # decode the token; return error message if token is invalid
     try:
-        payload = decode_token(access_token)
+        decoded_token = decode_token(access_token)
     except JWTError:
         raise HTTPException(status_code=400, detail="invalid access token")
 
     # get username from decoded token
-    username = payload.get("sub")
+    username = decoded_token.sub
 
     # get user data from fake user database and return it
     user_data = get_user(username)

@@ -5,7 +5,7 @@ from passlib.context import CryptContext
 from datetime import datetime
 from jose import jwt
 import os
-from ..models import User, Token
+from ..models import User, Token, DecodedToken
 from .db_utils import get_user
 import pytz
 
@@ -50,16 +50,21 @@ def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 
-def decode_token(access_token: str) -> dict[str, Any]:
+def decode_token(access_token: str) -> DecodedToken:
     """Decode a jwt token.
 
     Args:
         token (str): jwt token
 
     Returns:
-        dict[str, Any]: the decoded jwt token.
+        DecodedToken: the decoded jwt token.
     """
-    return jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
+    decoded_token = DecodedToken(
+        access_token=access_token,
+        token_type="Bearer",
+        **jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
+    )
+    return decoded_token
 
 
 def authenticate_user(username: str, password: str) -> User:
@@ -81,7 +86,7 @@ def authenticate_user(username: str, password: str) -> User:
     return user
 
 
-def create_jwt_token(data: dict, expires_delta: Union[timedelta, None] = None) -> dict:
+def create_jwt_token(data: dict, expires_delta: Union[timedelta, None] = None) -> Token:
     """Creates a jwt access token.
 
     Args:
@@ -89,7 +94,7 @@ def create_jwt_token(data: dict, expires_delta: Union[timedelta, None] = None) -
         expires_delta (Union[timedelta, None], optional): Expiration time of the token. Defaults to None.
 
     Returns:
-        dict: A dictionary containing the access token and token type
+        Token: A dictionary containing the access token and token type
     """
     # copy to be encoded data
     to_encode = data.copy()

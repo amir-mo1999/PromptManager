@@ -1,5 +1,6 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
+import jwt from "jsonwebtoken"
 import { api } from "@/network"
 
 const handler = NextAuth({
@@ -34,7 +35,7 @@ const handler = NextAuth({
         if (credentials.username === undefined || credentials.password === undefined) {
           return null
         }
-        // send credentials to login route, get result and user
+        // send credentials to login route and get result
         const res = await api.login({
           username: credentials.username,
           password: credentials.password,
@@ -45,14 +46,14 @@ const handler = NextAuth({
           return null
         }
 
-        // get user data
-        const user = await res.json()
+        // get token data
+        const token = await res.json()
 
-        // If no error and we have user data, return it
-        if (res.ok && user) {
-          return { ...user }
+        // If no error and we have token data, return it
+        if (res.ok && token) {
+          return { ...token }
         }
-        // Return null if user data could not be retrieved
+        // Return null if token data could not be retrieved
         return null
       },
     }),
@@ -60,10 +61,15 @@ const handler = NextAuth({
   callbacks: {
     // TODO: check this
     async jwt({ token, user }) {
-      console.log(token)
-      return { ...token, ...user }
+      // only after a login the user is returned which in this case is not a user but a jwt token
+      if (user !== undefined) {
+        console.log("User passed to jwt callback", user)
+      }
+      return token
     },
     async session({ session, token }) {
+      console.log("session callback called")
+      console.log("Token passed to session callback", token)
       // save token data in session
       session.token = token as any
 

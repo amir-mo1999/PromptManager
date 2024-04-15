@@ -58,4 +58,8 @@ export const api = {
   refreshToken: (accessToken: string) => {
     return getRequest("/auth/refresh-token", undefined, undefined, accessToken)
   },
+
+  getCurrentUser: (accessToken: string) => {
+    return getRequest("/auth/get-current-user", undefined, undefined, accessToken)
+  },
 }

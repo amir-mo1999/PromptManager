@@ -20,7 +20,7 @@ from ..models import User, Token
 auth_router = APIRouter(prefix="/auth")
 
 # some global variables
-ACCESS_TOKEN_EXPIRE_MINUTES = 1
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 HEADERS = headers = {"content-type": "application/json; charset=utf-8"}
 
 # define oauth2_scheme; to protect an endpoint add this parameter "token: Annotated[str, Depends(oauth2_scheme)]"

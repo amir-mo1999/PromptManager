@@ -60,10 +60,15 @@ const handler = NextAuth({
   callbacks: {
     // TODO: check this
     async jwt({ token, user }) {
+      console.log(token)
       return { ...token, ...user }
     },
     async session({ session, token }) {
-      session.access_token = token.access_token as any
+      // save token data in session
+      session.token = token as any
+
+      // retrieve user data and save it in session
+      session.user = await (await api.getCurrentUser(session.token.access_token)).json()
       return session
     },
   },

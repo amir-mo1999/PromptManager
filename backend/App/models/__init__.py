@@ -1,4 +1,3 @@
-from .user import User, UserInput
-from .token import Token
+from .user import User, UserInput, UserWithAccessToken
+from .token import Token, DecodedToken
 from .objectID import ObjectId
-from .decoded_token import DecodedToken

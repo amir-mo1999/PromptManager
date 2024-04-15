@@ -8,24 +8,27 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <button
         onClick={() => {
-          console.log(session?.user)
+          console.log(session)
         }}
       >
-        print session
+        Print Session
       </button>
+
       <button
         onClick={() => {
-          if (session?.token) {
+          if (session?.user.access_token) {
             api
-              .refreshToken(session?.token.access_token)
+              .getCurrentUser(session?.user.access_token)
               .then((res) => {
                 return res.json()
               })
-              .then((data) => console.log(data))
+              .then((user) => console.log(user))
+          } else {
+            console.log("access token not set in session")
           }
         }}
       >
-        refresh token
+        Get current user
       </button>
     </main>
   )

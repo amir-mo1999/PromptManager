@@ -2,6 +2,7 @@ import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import jwt from "jsonwebtoken"
 import { api } from "@/network"
+import DecodedToken from "@/types/decodedToken"
 
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
@@ -47,12 +48,11 @@ const handler = NextAuth({
         }
 
         // get user data
-        const token = await res.json()
-        const user = await (await api.getCurrentUser(token.access_token)).json()
+        const user = await res.json()
 
         // If no error and we have and token data return them both
-        if (res.ok && user && token) {
-          return { userData: user, tokenData: token }
+        if (res.ok && user) {
+          return user
         }
         // Return null if user data could not be retrieved
         return null
@@ -61,19 +61,21 @@ const handler = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user }) {
-      // only after a login the user is returned which in this case is not a user but a jwt token
-      if (user !== undefined) {
-        token = user.tokenData
+      // decode the token coming from the backend
+      if (user) {
+        token.user = user
       }
-      return { ...user.userData, ...user.tokenData }
+      return { ...token, ...user }
     },
     async session({ session, token }) {
-      console.log(token)
-      // save token data in session
-      session.token = token as any
+      // decode the token coming from the backend
+      const decodedToken: DecodedToken = jwt.verify(
+        token.access_token as string,
+        process.env.NEXTAUTH_SECRET as string
+      ) as DecodedToken
 
-      // retrieve user data and save it in session
-      session.user = await (await api.getCurrentUser(session.token.access_token)).json()
+      // create session object and return it
+      session = { ...session, user: token.user, decodedToken: decodedToken }
       return session
     },
   },

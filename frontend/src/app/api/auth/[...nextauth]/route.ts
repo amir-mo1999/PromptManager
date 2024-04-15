@@ -68,6 +68,7 @@ const handler = NextAuth({
       return { ...token, ...user }
     },
     async session({ session, token }) {
+      //TODO: add logic to refresh jwt
       // decode the token coming from the backend
       const decodedToken: DecodedToken = jwt.verify(
         token.access_token as string,
@@ -79,12 +80,9 @@ const handler = NextAuth({
       return session
     },
   },
-  jwt: {
-    maxAge: 60,
-  },
   session: {
     strategy: "jwt",
-    maxAge: 60,
+    maxAge: 60 * 60 * 24 * 30,
   },
 })
 

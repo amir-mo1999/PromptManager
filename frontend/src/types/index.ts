@@ -1,3 +1,3 @@
-import userCredentials from "./userCredentials"
-import user from "./user"
-import token from "./token"
+import userCredentialsType from "./userCredentials"
+import userType from "./user"
+import tokenType from "./token"

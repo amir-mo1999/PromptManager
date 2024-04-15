@@ -1,16 +1,22 @@
 import NextAuth, { DefaultSession } from "next-auth"
 import { DefaultJWT } from "@auth/core/jwt"
-import user from "./user"
-import token from "./token"
+import userType from "./user"
+import tokenType from "./token"
+import { JWT } from "next-auth/jwt"
+
 declare module "next-auth" {
   // Extend session to hold the access_token
   interface Session {
-    token: token
-    user: user
+    token: tokenType
+    user: userType
   }
 
-  // Extend token to hold the access_token before it gets put into session
-  interface JWT {
-    token: token
+  interface User {
+    userData: userType
+    tokenData: tokenType
   }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT extends tokenType {}
 }

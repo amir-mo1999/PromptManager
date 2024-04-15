@@ -1,6 +1,6 @@
 import * as z from "zod"
 
-const user = z.object({
+const User = z.object({
   email: z.string(),
   firstName: z.string(),
   lastName: z.string(),
@@ -8,6 +8,6 @@ const user = z.object({
   _id: z.string(),
 })
 
-type user = z.infer<typeof user>
+type userType = z.infer<typeof User>
 
-export default user
+export default userType

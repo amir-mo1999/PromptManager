@@ -1,5 +1,4 @@
-import { network } from "./utils"
-import userCredentials from "@/types/userCredentials"
+import userCredentialsType from "@/types/userCredentials"
 
 const baseUrlClient = process.env.NEXT_PUBLIC_BASE_API_URL_CLIENT || ""
 const baseUrlServer = process.env.NEXT_PUBLIC_BASE_API_URL_SERVER || ""
@@ -47,7 +46,7 @@ const getRequest = createMethod("GET")
 const patchRequest = createMethod("PATCH")
 
 export const api = {
-  login: (body: userCredentials) => {
+  login: (body: userCredentialsType) => {
     // url encode the body
     const bodyUrlEncoded = new URLSearchParams()
     Object.entries(body).forEach((entry) => bodyUrlEncoded.append(...entry))

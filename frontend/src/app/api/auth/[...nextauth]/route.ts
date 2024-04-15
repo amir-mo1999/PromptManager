@@ -21,7 +21,7 @@ const handler = NextAuth({
         },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         // You need to provide your own logic here that takes the credentials
         // submitted and returns either a object representing a user or value
         // that is false/null if the credentials are invalid.
@@ -46,30 +46,29 @@ const handler = NextAuth({
           return null
         }
 
-        // get token data
+        // get user data
         const token = await res.json()
+        const user = await (await api.getCurrentUser(token.access_token)).json()
 
-        // If no error and we have token data, return it
-        if (res.ok && token) {
-          return { ...token }
+        // If no error and we have and token data return them both
+        if (res.ok && user && token) {
+          return { userData: user, tokenData: token }
         }
-        // Return null if token data could not be retrieved
+        // Return null if user data could not be retrieved
         return null
       },
     }),
   ],
   callbacks: {
-    // TODO: check this
     async jwt({ token, user }) {
       // only after a login the user is returned which in this case is not a user but a jwt token
       if (user !== undefined) {
-        console.log("User passed to jwt callback", user)
+        token = user.tokenData
       }
-      return token
+      return { ...user.userData, ...user.tokenData }
     },
     async session({ session, token }) {
-      console.log("session callback called")
-      console.log("Token passed to session callback", token)
+      console.log(token)
       // save token data in session
       session.token = token as any
 

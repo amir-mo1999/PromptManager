@@ -47,7 +47,7 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
 
     # if user was found get access token and return it
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    token = create_access_token(
+    token = create_jwt_token(
         data={"sub": form_data.username}, expires_delta=access_token_expires
     )
 
@@ -55,28 +55,29 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
 
 
 @auth_router.get("/refresh-token", response_model=Token)
-async def refresh_token(token: Annotated[str, Depends(oauth2_scheme)]):
-
+async def refresh_token(access_token: Annotated[str, Depends(oauth2_scheme)]):
+    str(uuid.uuid4())
     try:
-        payload = decode_token(token)
+        payload = decode_token(access_token)
     except JWTError:
         raise HTTPException(status_code=400, detail="invalid access token")
 
     # if user was found get access token and return it
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 
-    token = create_access_token(
+    token = create_jwt_token(
         data={"sub": payload.get("sub")}, expires_delta=access_token_expires
     )
+
     return token
 
 
 @auth_router.get("/get-current-user", response_model=User)
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+async def get_current_user(access_token: Annotated[str, Depends(oauth2_scheme)]):
     """Retrieve user data for user that is associated with the passed auth token."""
     # decode the token; return error message if token is invalid
     try:
-        payload = decode_token(token)
+        payload = decode_token(access_token)
     except JWTError:
         raise HTTPException(status_code=400, detail="invalid access token")
 

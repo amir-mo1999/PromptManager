@@ -1,4 +1,5 @@
 from typing import Union, Any
+import uuid
 from datetime import timedelta
 from passlib.context import CryptContext
 from datetime import datetime
@@ -49,7 +50,7 @@ def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 
-def decode_token(token: str) -> dict[str, Any]:
+def decode_token(access_token: str) -> dict[str, Any]:
     """Decode a jwt token.
 
     Args:
@@ -58,7 +59,7 @@ def decode_token(token: str) -> dict[str, Any]:
     Returns:
         dict[str, Any]: the decoded jwt token.
     """
-    return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    return jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
 
 
 def authenticate_user(username: str, password: str) -> User:
@@ -80,9 +81,7 @@ def authenticate_user(username: str, password: str) -> User:
     return user
 
 
-def create_access_token(
-    data: dict, expires_delta: Union[timedelta, None] = None
-) -> dict:
+def create_jwt_token(data: dict, expires_delta: Union[timedelta, None] = None) -> dict:
     """Creates a jwt access token.
 
     Args:
@@ -104,6 +103,9 @@ def create_access_token(
     else:
         expire = datetime.now(tz) + timedelta(minutes=60)
     to_encode.update({"exp": expire})
+
+    # add jti to encoded data
+    to_encode.update({"jti": str(uuid.uuid4())})
 
     # create jwt token and return it in dictionary representation
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)

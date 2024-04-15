@@ -7,14 +7,13 @@ from pydantic import BaseModel
 # import fast api stuff
 from fastapi import Depends, HTTPException, status, APIRouter, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi.responses import JSONResponse
 
 # jwt stuff
 from jose import JWTError
 
 # import other modules
 from ..utils.auth_utils import *
-from ..utils import combine_models, get_user
+from ..utils import get_user
 from ..models import User, Token
 
 # define router object
@@ -26,12 +25,6 @@ HEADERS = headers = {"content-type": "application/json; charset=utf-8"}
 
 # define oauth2_scheme; to protect an endpoint add this parameter "token: Annotated[str, Depends(oauth2_scheme)]"
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
-
-
-# custom model which contains user and token data
-class UserAndToken(BaseModel):
-    user: User
-    token: Token
 
 
 @auth_router.post("/login", response_model=Token)
@@ -59,9 +52,6 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     )
 
     return token
-    # TODO: check this
-    user_data = get_user(form_data.username)
-    return UserAndToken(user=user_data, token=token)
 
 
 @auth_router.get("/refresh-token", response_model=Token)

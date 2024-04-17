@@ -61,7 +61,7 @@ const handler = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user }) {
-      // decode the token coming from the backend
+      // after login add user data to token
       if (user) {
         token.user = user
       }

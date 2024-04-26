@@ -1,4 +1,4 @@
-import userCredentialsType from "@/types/userCredentials"
+import { userCredentialsType } from "@/types"
 
 const baseUrlClient = process.env.NEXT_PUBLIC_BASE_API_URL_CLIENT || ""
 const baseUrlServer = process.env.NEXT_PUBLIC_BASE_API_URL_SERVER || ""

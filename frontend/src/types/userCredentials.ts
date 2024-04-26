@@ -7,4 +7,4 @@ const userCredentialsObj = z.object({
 
 type userCredentialsType = z.infer<typeof userCredentialsObj>
 
-export default userCredentialsType
+export type { userCredentialsType }

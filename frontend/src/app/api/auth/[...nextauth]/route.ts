@@ -2,7 +2,7 @@ import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import jwt from "jsonwebtoken"
 import { api } from "@/network"
-import DecodedToken from "@/types/decodedToken"
+import { DecodedToken } from "@/types/decodedToken"
 
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
@@ -78,6 +78,10 @@ const handler = NextAuth({
       // create session object and return it
       session = { ...session, user: token.user, decodedToken: decodedToken }
       return session
+    },
+    // redirect user to base route after login
+    async redirect(params: { url: string; baseUrl: string }) {
+      return process.env.NEXTAUTH_URL as string
     },
   },
   session: {

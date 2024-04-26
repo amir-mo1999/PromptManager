@@ -9,4 +9,4 @@ const DecodedToken = z.object({
 
 type DecodedToken = z.infer<typeof DecodedToken>
 
-export default DecodedToken
+export type { DecodedToken }

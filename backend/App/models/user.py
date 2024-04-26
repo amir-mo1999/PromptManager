@@ -8,7 +8,7 @@ class UserInput(BaseModel):
     email: EmailStr
     first_name: Annotated[str, StringConstraints(min_length=1)]
     last_name: Annotated[str, StringConstraints(min_length=1)]
-    role: Literal["developer", "prompt engineer", "admin"]
+    role: Literal["developer", "prompt_engineer", "admin"]
     hashed_password: Annotated[str, Field(exclude=True)]
 
 

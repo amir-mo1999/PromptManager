@@ -23,7 +23,7 @@ const columns = [
   { id: "title", label: "Title", maxWidth: 75 },
   { id: "description", label: "Description", maxWidth: 200 },
   { id: "functions", label: "Functions", maxWidth: 30 },
-  { id: "createdAt", label: "Created At", maxWidth: 50 },
+  { id: "createdOn", label: "Created on", maxWidth: 40 },
 ]
 
 const rows = [
@@ -32,40 +32,40 @@ const rows = [
     description:
       "Some dumb projecmhdmhdt,kztedkzetkztd,mztdkzudl,udludkuedkzdtkzmdtkzcgmhnmbn mhztkjzsstgewhrehgremkhlrem hkroe hkmreö hjrwke nhjrwekh jrewkhn tjwehn tnjwkh tjwkntjwh tjwrktjwhkwrjt pwjhopt whkot wkho",
     functions: "5",
-    createdAt: "14/04/2024",
+    createdOn: "14/04/2024",
   },
   {
     title: "Project #2",
     description: "Some dumb project",
     functions: "12",
-    createdAt: "17/04/2024",
+    createdOn: "17/04/2024",
   },
   {
     title: "Project #3",
     description: "Some dumb project",
     functions: "18",
-    createdAt: "12/04/2024",
+    createdOn: "12/04/2024",
   },
   {
     title: "Project #4",
     description: "Some dumb project",
     functions: "20",
-    createdAt: "13/04/2024",
+    createdOn: "13/04/2024",
   },
   {
     title: "Project #5",
     description: "Some dumb project",
     functions: "1",
-    createdAt: "24/04/2024",
+    createdOn: "24/04/2024",
   },
   {
     title: "Project #6gewgewgewgewgegewgherwgewgfewqgewgewgewghewgewgewgewgewgsaesegaw",
     description: "Some dumb project",
     functions: "3",
-    createdAt: "1/04/2024",
+    createdOn: "1/04/2024",
   },
-  { title: "Project #7", description: "Some dumb project", functions: "0", createdAt: "2/04/2024" },
-  { title: "Project #8", description: "Some dumb project", functions: "4", createdAt: "5/04/2024" },
+  { title: "Project #7", description: "Some dumb project", functions: "0", createdOn: "2/04/2024" },
+  { title: "Project #8", description: "Some dumb project", functions: "4", createdOn: "5/04/2024" },
 ]
 export default function Home() {
   const { data: session } = useSession()
@@ -79,7 +79,6 @@ export default function Home() {
         sx={{
           height: "80%", // Set height to 50% of the viewport height
           width: "80%", // Set width to 50% of the viewport width
-          border: "1px solid gray",
         }}
         display="flex"
         flexDirection="column"

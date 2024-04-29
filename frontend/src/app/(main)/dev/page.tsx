@@ -1,8 +1,72 @@
 "use client"
 import { useSession } from "next-auth/react"
-import { Box, Typography, Button } from "@mui/material"
+import {
+  Box,
+  Typography,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material"
+
 import { signOut } from "next-auth/react"
 
+function createData(name: string, calories: number, fat: number, carbs: number, protein: number) {
+  return { name, calories, fat, carbs, protein }
+}
+
+const columns = [
+  { id: "title", label: "Title", maxWidth: 75 },
+  { id: "description", label: "Description", maxWidth: 200 },
+  { id: "functions", label: "Functions", maxWidth: 30 },
+  { id: "createdAt", label: "Created At", maxWidth: 50 },
+]
+
+const rows = [
+  {
+    title: "Project #1",
+    description:
+      "Some dumb projecmhdmhdt,kztedkzetkztd,mztdkzudl,udludkuedkzdtkzmdtkzcgmhnmbn mhztkjzsstgewhrehgremkhlrem hkroe hkmreö hjrwke nhjrwekh jrewkhn tjwehn tnjwkh tjwkntjwh tjwrktjwhkwrjt pwjhopt whkot wkho",
+    functions: "5",
+    createdAt: "14/04/2024",
+  },
+  {
+    title: "Project #2",
+    description: "Some dumb project",
+    functions: "12",
+    createdAt: "17/04/2024",
+  },
+  {
+    title: "Project #3",
+    description: "Some dumb project",
+    functions: "18",
+    createdAt: "12/04/2024",
+  },
+  {
+    title: "Project #4",
+    description: "Some dumb project",
+    functions: "20",
+    createdAt: "13/04/2024",
+  },
+  {
+    title: "Project #5",
+    description: "Some dumb project",
+    functions: "1",
+    createdAt: "24/04/2024",
+  },
+  {
+    title: "Project #6gewgewgewgewgegewgherwgewgfewqgewgewgewghewgewgewgewgewgsaesegaw",
+    description: "Some dumb project",
+    functions: "3",
+    createdAt: "1/04/2024",
+  },
+  { title: "Project #7", description: "Some dumb project", functions: "0", createdAt: "2/04/2024" },
+  { title: "Project #8", description: "Some dumb project", functions: "4", createdAt: "5/04/2024" },
+]
 export default function Home() {
   const { data: session } = useSession()
 
@@ -28,21 +92,38 @@ export default function Home() {
             Sign Out
           </Button>
         </Box>
-
-        <Box display="flex">
-          <Typography variant="h5" mr={5}>
-            Title
-          </Typography>
-          <Typography variant="h5" mr={5}>
-            Description
-          </Typography>
-          <Typography variant="h5" mr={5}>
-            Functions
-          </Typography>
-          <Typography variant="h5" mr={5}>
-            Created
-          </Typography>
-        </Box>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell key={column.id} style={{ maxWidth: column.maxWidth }}>
+                    <Typography>{column.label}</Typography>
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row) => (
+                <TableRow key={row.title}>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      style={{ maxWidth: column.maxWidth, overflowWrap: "break-word" }}
+                    >
+                      <Typography>
+                        {
+                          // @ts-ignore
+                          row[column.id]
+                        }
+                      </Typography>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Box>
     )
   }

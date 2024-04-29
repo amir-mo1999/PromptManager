@@ -1,6 +1,5 @@
 "use client"
 import { useSession } from "next-auth/react"
-import { signOut } from "next-auth/react"
 
 export default function Home() {
   const { data: session } = useSession()
@@ -10,7 +9,6 @@ export default function Home() {
   } else if (session?.user.role === "admin") {
     return (
       <main>
-        <button onClick={() => signOut()}>Sign out</button>
         <div>You are an admin, welcome</div>
       </main>
     )

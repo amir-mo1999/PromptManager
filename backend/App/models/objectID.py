@@ -13,6 +13,12 @@ class _ObjectIdPydanticAnnotation:
         _handler: Callable[[Any], core_schema.CoreSchema],
     ) -> core_schema.CoreSchema:
         def validate_from_str(input_value: str) -> ObjectId:
+            if not (
+                len(input_value) == 24
+                and all(c in "0123456789abcdefABCDEF" for c in input_value)
+                or len(input_value) == 12
+            ):
+                raise ValueError("Invalid ObjectId string")
             return ObjectId(input_value)
 
         return core_schema.union_schema(

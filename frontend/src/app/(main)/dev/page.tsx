@@ -104,7 +104,7 @@ export default function Home() {
             </TableHead>
             <TableBody>
               {rows.map((row) => (
-                <TableRow key={row.title}>
+                <TableRow key={row.title} onClick={() => console.log("clicked")} hover={true}>
                   {columns.map((column) => (
                     <TableCell
                       key={column.id}

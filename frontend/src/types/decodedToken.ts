@@ -1,12 +1,12 @@
 import * as z from "zod"
 
-const DecodedToken = z.object({
+const decodedToken = z.object({
   exp: z.number(),
   iat: z.number(),
   jti: z.string(),
   sub: z.string(),
 })
 
-type DecodedToken = z.infer<typeof DecodedToken>
+type decodedToken = z.infer<typeof decodedToken>
 
-export type { DecodedToken }
+export type { decodedToken }

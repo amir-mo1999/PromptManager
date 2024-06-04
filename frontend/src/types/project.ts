@@ -12,6 +12,6 @@ const project = z.object({
   _id: z.string(),
 })
 
-type DecodedToken = z.infer<typeof project>
+type project = z.infer<typeof project>
 
 export type { project }

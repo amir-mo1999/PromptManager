@@ -3,7 +3,7 @@ import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 import { api } from "@/network"
 import Typography from "@mui/material/Typography"
-import { InitialsAvatar } from "@/components"
+import { InitialsAvatar, ProjectBox } from "@/components"
 import { useSession } from "next-auth/react"
 import { useState, useEffect } from "react"
 import { project } from "@/types"
@@ -64,6 +64,7 @@ export default function Home() {
         >
           <Typography variant="h4">Projects</Typography>
           <Button onClick={() => console.log(projects)}>Get all projects</Button>
+          {projects !== undefined ? <ProjectBox project={projects[0]}></ProjectBox> : ""}
         </Box>
         <Box
           sx={{

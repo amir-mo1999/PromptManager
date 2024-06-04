@@ -1,9 +1,31 @@
 "use client"
 import Box from "@mui/material/Box"
+import Button from "@mui/material/Button"
+import { api } from "@/network"
 import Typography from "@mui/material/Typography"
 import { InitialsAvatar } from "@/components"
+import { useSession } from "next-auth/react"
+import { useState, useEffect } from "react"
+import { project } from "@/types"
+
 // when accessing the base route redirect the user based on their role
 export default function Home() {
+  // get current session
+  const { data: session } = useSession()
+
+  // get all projects of the current user
+  const [projects, setProjects] = useState<[project]>()
+
+  useEffect(() => {
+    api
+      .getAllProjects(session?.user.access_token as string)
+      .then((res) => {
+        return res.json()
+      })
+      .then((data) => setProjects(data.project_list))
+  }, [])
+
+  // this is the main page
   return (
     <main className=" bg-[#F2EDDE] px-10">
       <Box
@@ -41,6 +63,7 @@ export default function Home() {
           }}
         >
           <Typography variant="h4">Projects</Typography>
+          <Button onClick={() => console.log(projects)}>Get all projects</Button>
         </Box>
         <Box
           sx={{

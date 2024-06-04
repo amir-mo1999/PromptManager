@@ -27,9 +27,7 @@ HEADERS = headers = {"content-type": "application/json; charset=utf-8"}
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
-@auth_router.post(
-    "/login", response_model=UserWithAccessToken, tags=["Authentication Routes"]
-)
+@auth_router.post("/login", response_model=UserWithAccessToken, tags=["Authentication"])
 async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     """
     Endpoint for the login procedure. Takes username and password as form-data input.
@@ -61,7 +59,7 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
 
 
 @auth_router.get(
-    "/refresh-token", response_model=UserWithAccessToken, tags=["Authentication Routes"]
+    "/refresh-token", response_model=UserWithAccessToken, tags=["Authentication"]
 )
 async def refresh_token(access_token: Annotated[str, Depends(oauth2_scheme)]):
     # try decoding token
@@ -86,9 +84,7 @@ async def refresh_token(access_token: Annotated[str, Depends(oauth2_scheme)]):
     return user_with_access_token
 
 
-@auth_router.get(
-    "/get-current-user", response_model=User, tags=["Authentication Routes"]
-)
+@auth_router.get("/get-current-user", response_model=User, tags=["Authentication"])
 async def get_current_user(access_token: Annotated[str, Depends(oauth2_scheme)]):
     """Retrieve user data for user that is associated with the passed auth token."""
     # decode the token; return error message if token is invalid

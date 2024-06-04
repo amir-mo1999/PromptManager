@@ -2,13 +2,17 @@
 import React from "react"
 import { Avatar } from "@mui/material"
 import { useSession } from "next-auth/react"
+import { SxProps, Theme } from "@mui/system"
 
-const InitialsAvatar: React.FC = () => {
+interface InitialsAvatarProps {
+  sx?: SxProps<Theme>
+}
+
+const InitialsAvatar: React.FC<InitialsAvatarProps> = ({ sx }) => {
   const { data: session } = useSession()
   const last_name = session?.user.last_name === undefined ? "n" : session?.user.last_name
   const first_name = session?.user.first_name === undefined ? "A" : session?.user.first_name
-
-  return <Avatar>{Array.from(first_name)[0] + Array.from(last_name)[0]}</Avatar>
+  return <Avatar sx={sx}>{Array.from(first_name)[0] + Array.from(last_name)[0]}</Avatar>
 }
 
 export { InitialsAvatar }

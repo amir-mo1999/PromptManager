@@ -61,4 +61,8 @@ export const api = {
   getCurrentUser: (accessToken: string) => {
     return getRequest("/auth/get-current-user", undefined, undefined, accessToken)
   },
+
+  getAllProjects: (accessToken: string) => {
+    return getRequest("/auth/get-current-user", undefined, undefined, accessToken)
+  },
 }

@@ -7,7 +7,7 @@ from datetime import datetime
 class ProjectRouteInput(BaseModel):
     title: Annotated[str, StringConstraints(min_length=1)]
     description: Annotated[str, StringConstraints(min_length=1)]
-    developer_id: PydanticObjectId = Field()
+    user_id: PydanticObjectId = Field()
 
 
 class Project(ProjectRouteInput):

@@ -56,18 +56,16 @@ async def post_project(project_input: ProjectRouteInput):
     # get user collection
     user_collection = db["users"]
 
-    # check if developer id exists in user collection
-    if not user_collection.find_one(
-        {"_id": ObjectId(project_input.developer_id), "role": "developer"}
-    ):
+    # check if user id exists in user collection
+    if not user_collection.find_one({"_id": ObjectId(project_input.user_id)}):
         raise HTTPException(
             status_code=400,
-            detail=f"Developer with the id {project_input.developer_id} does not exist",
+            detail=f"User with the id {project_input.user_id} does not exist",
         )
 
-    # check if a project with this title and developer id already exists
+    # check if a project with this title and user id already exists
     if project_collection.find_one(
-        {"title": project_input.title, "developer_id": project_input.developer_id}
+        {"title": project_input.title, "user_id": project_input.user_id}
     ):
         raise HTTPException(
             status_code=409, detail="Project with this title already exists"
@@ -90,3 +88,6 @@ async def post_project(project_input: ProjectRouteInput):
     project_collection.insert_one(dict(project))
 
     return PlainTextResponse(content="Project created", status_code=200)
+
+
+# @db_router.get("/get-all-projects", )

@@ -76,7 +76,7 @@ async def post_project(project_input: ProjectRouteInput):
     # get time stamp
     now = datetime.now()
 
-    # set the number of functons in the project (at creation this is always zero)
+    # set the number of functions in the project (at creation this is always zero)
     number_of_functions = 0
 
     # create the project object

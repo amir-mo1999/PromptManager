@@ -1,10 +1,11 @@
-from ..models import User, UserInput, Project, ProjectInput
+from ..models import User, UserRouteInput, Project, ProjectRouteInput
 from fastapi import APIRouter, HTTPException, Path
 from fastapi.responses import PlainTextResponse
 from pymongo.mongo_client import MongoClient
 import os
 from ..utils import get_user
 from bson import ObjectId
+from datetime import datetime
 
 # define router object and add routes from routes folder
 db_router = APIRouter(prefix="/db")
@@ -18,7 +19,7 @@ db = client["prompt-broker"]
 
 ## User routes
 @db_router.post("/user", tags=["Database Operations"])
-async def post_user(user: UserInput):
+async def post_user(user: UserRouteInput):
     # get user collection
     user_collection = db["users"]
 
@@ -48,33 +49,44 @@ async def get_user_route(
 
 ## User routes
 @db_router.post("/project", tags=["Database Operations"])
-async def post_project(project: ProjectInput):
+async def post_project(project_input: ProjectRouteInput):
     # get project collection
     project_collection = db["projects"]
 
     # get user collection
     user_collection = db["users"]
 
-    # check if id is valid
-
     # check if developer id exists in user collection
     if not user_collection.find_one(
-        {"_id": ObjectId(project.developer_id), "role": "developer"}
+        {"_id": ObjectId(project_input.developer_id), "role": "developer"}
     ):
         raise HTTPException(
             status_code=400,
-            detail=f"Developer with the id {project.developer_id} does not exist",
+            detail=f"Developer with the id {project_input.developer_id} does not exist",
         )
 
     # check if a project with this title and developer id already exists
     if project_collection.find_one(
-        {"title": project.title, "developer_id": project.developer_id}
+        {"title": project_input.title, "developer_id": project_input.developer_id}
     ):
         raise HTTPException(
             status_code=409, detail="Project with this title already exists"
         )
 
-    # create project
+    # get time stamp
+    now = datetime.now()
+
+    # set the number of functons in the project (at creation this is always zero)
+    number_of_functions = 0
+
+    # create the project object
+    project = Project(
+        **dict(project_input),
+        number_of_functions=number_of_functions,
+        creation_time=now,
+    )
+
+    # insert it to the collection
     project_collection.insert_one(dict(project))
 
     return PlainTextResponse(content="Project created", status_code=200)

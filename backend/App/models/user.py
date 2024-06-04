@@ -4,7 +4,7 @@ from typing import Annotated, Literal
 from .objectID import PydanticObjectId
 
 
-class UserInput(BaseModel):
+class UserRouteInput(BaseModel):
     email: EmailStr
     first_name: Annotated[str, StringConstraints(min_length=1)]
     last_name: Annotated[str, StringConstraints(min_length=1)]
@@ -12,7 +12,7 @@ class UserInput(BaseModel):
     hashed_password: Annotated[str, Field(exclude=True)]
 
 
-class User(UserInput):
+class User(UserRouteInput):
     model_config = ConfigDict(use_enum_values=True)
 
     id: PydanticObjectId = Field(alias="_id")

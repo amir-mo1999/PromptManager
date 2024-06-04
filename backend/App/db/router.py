@@ -1,11 +1,25 @@
-from ..models import User, UserRouteInput, Project, ProjectRouteInput
-from fastapi import APIRouter, HTTPException, Path
-from fastapi.responses import PlainTextResponse
-from pymongo.mongo_client import MongoClient
+# import Python stuff
 import os
-from ..utils import get_user
+from typing import Annotated
 from bson import ObjectId
 from datetime import datetime
+
+# import FastAPI stuff
+from fastapi import APIRouter, HTTPException, Path, Depends
+from fastapi.responses import PlainTextResponse
+
+# import mongo client
+from pymongo.mongo_client import MongoClient
+
+# jwt stuff
+from jose import JWTError
+
+# import stuff from other modules
+from ..models import User, UserRouteInput, Project, ProjectRouteInput, ProjectList
+from ..utils import get_user
+from ..auth import oauth2_scheme
+from ..utils.auth_utils import decode_token
+
 
 # define router object and add routes from routes folder
 db_router = APIRouter(prefix="/db")
@@ -56,16 +70,16 @@ async def post_project(project_input: ProjectRouteInput):
     # get user collection
     user_collection = db["users"]
 
-    # check if user id exists in user collection
-    if not user_collection.find_one({"_id": ObjectId(project_input.user_id)}):
+    # check if username (email) exists in user collection
+    if not user_collection.find_one({"email": project_input.username}):
         raise HTTPException(
             status_code=400,
-            detail=f"User with the id {project_input.user_id} does not exist",
+            detail=f"User with the E-Mail {project_input.username} does not exist",
         )
 
     # check if a project with this title and user id already exists
     if project_collection.find_one(
-        {"title": project_input.title, "user_id": project_input.user_id}
+        {"title": project_input.title, "username": project_input.username}
     ):
         raise HTTPException(
             status_code=409, detail="Project with this title already exists"
@@ -90,4 +104,28 @@ async def post_project(project_input: ProjectRouteInput):
     return PlainTextResponse(content="Project created", status_code=200)
 
 
-# @db_router.get("/get-all-projects", )
+@db_router.get("/get-all-projects", tags=["Database Operations"])
+async def get_all_projects(access_token: Annotated[str, Depends(oauth2_scheme)]):
+
+    # try decoding the token
+    try:
+        decoded_token = decode_token(access_token)
+    except JWTError:
+        raise HTTPException(status_code=400, detail="invalid access token")
+
+    # get the username from the token
+    username = decoded_token.sub
+
+    # set the project collection
+    project_collection = db["projects"]
+
+    # retrieve all projects with the username from the token
+    projects = project_collection.find({"username": username})
+
+    # create the project list
+    project_list = []
+    for project in projects:
+        project_list.append(project)
+    project_list = ProjectList(project_list=project_list)
+
+    return project_list

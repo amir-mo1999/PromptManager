@@ -1,4 +1,4 @@
 from .user import User, UserRouteInput, UserWithAccessToken
 from .token import Token, DecodedToken
 from .objectID import ObjectId
-from .project import ProjectWithID, ProjectRouteInput, Project
+from .project import ProjectWithID, ProjectRouteInput, Project, ProjectList

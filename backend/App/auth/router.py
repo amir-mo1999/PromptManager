@@ -1,9 +1,6 @@
 # import python stuff
 from typing import Annotated
 
-# pydantic
-from pydantic import BaseModel
-
 # import fast api stuff
 from fastapi import Depends, HTTPException, status, APIRouter, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -14,7 +11,7 @@ from jose import JWTError
 # import other modules
 from ..utils.auth_utils import *
 from ..utils import get_user
-from ..models import User, Token, UserWithAccessToken
+from ..models import User, UserWithAccessToken
 
 # define router object
 auth_router = APIRouter(prefix="/auth")

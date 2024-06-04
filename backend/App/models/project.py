@@ -1,5 +1,12 @@
-from pydantic import BaseModel, StringConstraints, ConfigDict, Field, NonNegativeInt
-from typing import Annotated, Optional
+from pydantic import (
+    BaseModel,
+    StringConstraints,
+    ConfigDict,
+    Field,
+    NonNegativeInt,
+    EmailStr,
+)
+from typing import Annotated, List
 from .objectID import PydanticObjectId
 from datetime import datetime
 
@@ -7,7 +14,7 @@ from datetime import datetime
 class ProjectRouteInput(BaseModel):
     title: Annotated[str, StringConstraints(min_length=1)]
     description: Annotated[str, StringConstraints(min_length=1)]
-    user_id: PydanticObjectId = Field()
+    username: EmailStr
 
 
 class Project(ProjectRouteInput):
@@ -18,3 +25,7 @@ class Project(ProjectRouteInput):
 
 class ProjectWithID(Project):
     id: PydanticObjectId = Field(alias="_id")
+
+
+class ProjectList(BaseModel):
+    project_list: List[ProjectWithID]

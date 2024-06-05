@@ -15,7 +15,15 @@ from pymongo.mongo_client import MongoClient
 from jose import JWTError
 
 # import stuff from other modules
-from ..models import User, UserRouteInput, Project, ProjectRouteInput, ProjectList
+from ..models import (
+    User,
+    UserRouteInput,
+    Project,
+    ProjectRouteInput,
+    ProjectList,
+    AIFunction,
+    AIFunctionRouteInput,
+)
 from ..utils import get_user
 from ..auth import oauth2_scheme
 from ..utils.auth_utils import decode_token
@@ -61,9 +69,21 @@ async def get_user_route(
         raise HTTPException(status_code=404, detail="User not found")
 
 
-## User routes
+## Project routes
 @db_router.post("/project", tags=["Database Operations"])
-async def post_project(project_input: ProjectRouteInput):
+async def post_project(
+    project_input: ProjectRouteInput,
+    access_token: Annotated[str, Depends(oauth2_scheme)],
+):
+    # try decoding the token
+    try:
+        decoded_token = decode_token(access_token)
+    except JWTError:
+        raise HTTPException(status_code=400, detail="invalid access token")
+
+    # get the username from the token
+    username = decoded_token.sub
+
     # get project collection
     project_collection = db["projects"]
 
@@ -71,15 +91,15 @@ async def post_project(project_input: ProjectRouteInput):
     user_collection = db["users"]
 
     # check if username (email) exists in user collection
-    if not user_collection.find_one({"email": project_input.username}):
+    if not user_collection.find_one({"email": username}):
         raise HTTPException(
             status_code=400,
-            detail=f"User with the E-Mail {project_input.username} does not exist",
+            detail=f"User with the E-Mail {username} does not exist",
         )
 
     # check if a project with this title and user id already exists
     if project_collection.find_one(
-        {"title": project_input.title, "username": project_input.username}
+        {"title": project_input.title, "username": username}
     ):
         raise HTTPException(
             status_code=409, detail="Project with this title already exists"
@@ -96,6 +116,7 @@ async def post_project(project_input: ProjectRouteInput):
         **dict(project_input),
         number_of_functions=number_of_functions,
         creation_time=now,
+        username=username,
     )
 
     # insert it to the collection
@@ -129,3 +150,60 @@ async def get_all_projects(access_token: Annotated[str, Depends(oauth2_scheme)])
     project_list = ProjectList(project_list=project_list)
 
     return project_list
+
+
+## AI Function routes
+@db_router.post("/ai-function", tags=["Database Operations"])
+async def post_ai_function(
+    ai_function_input: AIFunctionRouteInput,
+    access_token: Annotated[str, Depends(oauth2_scheme)],
+):
+    # try decoding the token
+    try:
+        decoded_token = decode_token(access_token)
+    except JWTError:
+        raise HTTPException(status_code=400, detail="invalid access token")
+
+    # get the username from the token
+    username = decoded_token.sub
+
+    # get project collection
+    ai_function_collection = db["ai-functions"]
+
+    # get user collection
+    user_collection = db["users"]
+
+    # check if username (email) exists in user collection
+    if not user_collection.find_one({"email": username}):
+        raise HTTPException(
+            status_code=400,
+            detail=f"User with the E-Mail {username} does not exist",
+        )
+
+    print(ai_function_input)
+    # check if a ai function with this name and user id already exists
+    if ai_function_collection.find_one(
+        {"name": ai_function_input.name, "username": username}
+    ):
+        raise HTTPException(
+            status_code=409, detail="AI Function with this name already exists"
+        )
+
+    # get time stamp
+    now = datetime.now()
+
+    # set the number of prompts written for the ai function (at creation this is always zero)
+    number_of_prompts = 0
+
+    # create the project object
+    ai_function = AIFunction(
+        **dict(ai_function_input),
+        number_of_prompts=number_of_prompts,
+        creation_time=now,
+        username=username,
+    )
+
+    # insert it to the collection
+    ai_function_collection.insert_one(dict(ai_function))
+
+    return PlainTextResponse(content="AI function created", status_code=200)

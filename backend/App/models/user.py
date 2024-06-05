@@ -1,5 +1,4 @@
-from pydantic import BaseModel, EmailStr, StringConstraints, ConfigDict, Field
-from enum import Enum
+from pydantic import BaseModel, EmailStr, StringConstraints, Field
 from typing import Annotated, Literal
 from .objectID import PydanticObjectId
 
@@ -13,8 +12,6 @@ class UserRouteInput(BaseModel):
 
 
 class User(UserRouteInput):
-    model_config = ConfigDict(use_enum_values=True)
-
     id: PydanticObjectId = Field(alias="_id")
 
 

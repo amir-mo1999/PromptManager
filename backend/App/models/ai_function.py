@@ -10,13 +10,13 @@ from .objectID import PydanticObjectId
 from datetime import datetime
 
 
-class ProjectRouteInput(BaseModel):
-    title: Annotated[str, StringConstraints(min_length=1, max_length=30)]
+class AIFunctionRouteInput(BaseModel):
+    name: Annotated[str, StringConstraints(min_length=1, max_length=30)]
     description: Annotated[str, StringConstraints(min_length=1, max_length=1000)]
     username: EmailStr
 
 
-class Project(ProjectRouteInput):
+class AIFunction(AIFunctionRouteInput):
     number_of_functions: NonNegativeInt
     creation_time: datetime
 

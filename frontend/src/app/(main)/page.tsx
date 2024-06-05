@@ -7,9 +7,13 @@ import { MainContentWrapper } from "@/components"
 import { useSession } from "next-auth/react"
 import { useState, useEffect } from "react"
 import { project } from "@/types"
+import { useRouter } from "next/navigation"
 
 // when accessing the base route redirect the user based on their role
 export default function Home() {
+  // set router for redirecting
+  const router = useRouter()
+
   // get current session
   const { data: session } = useSession()
 
@@ -67,7 +71,7 @@ export default function Home() {
         </Box>
       </Box>
       {/* Got it Button */}
-      <Button variant="contained">
+      <Button variant="contained" onClick={() => router.push("/create-ai-function")}>
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <Typography>🚀 Click here 🚀</Typography>
           <Typography>to define your first AI function!</Typography>

@@ -1,4 +1,6 @@
 "use client"
+import { MainContentWrapper } from "@/components"
+
 export default function Home() {
-  return <main>For creating projects</main>
+  return <MainContentWrapper></MainContentWrapper>
 }

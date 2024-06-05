@@ -4,7 +4,7 @@ import React from "react"
 import Box from "@mui/material/Box"
 
 interface ProjectBoxProps {
-  children: React.ReactNode
+  children?: React.ReactNode
 }
 
 const MainContentWrapper: React.FC<ProjectBoxProps> = ({ children }) => {

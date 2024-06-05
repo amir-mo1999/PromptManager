@@ -167,7 +167,7 @@ async def post_ai_function(
     # get the username from the token
     username = decoded_token.sub
 
-    # get project collection
+    # get ai function collection
     ai_function_collection = db["ai-functions"]
 
     # get user collection
@@ -180,7 +180,6 @@ async def post_ai_function(
             detail=f"User with the E-Mail {username} does not exist",
         )
 
-    print(ai_function_input)
     # check if a ai function with this name and user id already exists
     if ai_function_collection.find_one(
         {"name": ai_function_input.name, "username": username}

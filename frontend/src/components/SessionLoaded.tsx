@@ -15,7 +15,7 @@ const SessionLoaded: React.FC<SessionLoadedProps> = ({ children }) => {
     return <Box>Loading...</Box>
   }
 
-  return <Box sx={{ height: "100vh" }}>{children}</Box>
+  return <Box>{children}</Box>
 }
 
 export { SessionLoaded }

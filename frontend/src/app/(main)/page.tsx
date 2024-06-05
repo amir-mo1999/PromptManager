@@ -3,7 +3,7 @@ import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 import { api } from "@/network"
 import Typography from "@mui/material/Typography"
-import { InitialsAvatar } from "@/components"
+import { MainContentWrapper } from "@/components"
 import { useSession } from "next-auth/react"
 import { useState, useEffect } from "react"
 import { project } from "@/types"
@@ -30,39 +30,9 @@ export default function Home() {
     return <main>You have no projects yet!</main>
   }
   // this is the main page
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        backgroundColor: "#F3F2F7",
-        paddingX: "4rem",
-        paddingY: "1rem",
-        height: "100vh",
-        width: "100vw",
-        position: "fixed",
-        overflowY: "auto",
-      }}
-    >
-      {/* Top Bar */}
-      <Box
-        sx={{
-          display: "flex",
-          width: "100%",
-          justifyContent: "space-between",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <Typography variant="h4">My Logo</Typography>
-        </Box>
-        <InitialsAvatar sx={{ height: 50, width: 50 }}></InitialsAvatar>
-      </Box>
+    <MainContentWrapper>
       <Typography variant="h4" align="center" sx={{ paddingBottom: "4rem", paddingTop: "5rem" }}>
         Welcome to App-Name!
       </Typography>
@@ -103,6 +73,6 @@ export default function Home() {
           <Typography>to create your first project</Typography>
         </Box>
       </Button>
-    </Box>
+    </MainContentWrapper>
   )
 }

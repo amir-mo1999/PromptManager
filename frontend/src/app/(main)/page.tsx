@@ -70,7 +70,7 @@ export default function Home() {
       <Button variant="contained">
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <Typography>🚀 Click here 🚀</Typography>
-          <Typography>to create your first project</Typography>
+          <Typography>to define your first AI function!</Typography>
         </Box>
       </Button>
     </MainContentWrapper>

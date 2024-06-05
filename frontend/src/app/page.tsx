@@ -27,7 +27,16 @@ export default function Home() {
 
   // this is the main page
   return (
-    <main className=" bg-[#F2EDDE] px-10">
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "#F3F2F7",
+        paddingX: "4rem",
+        height: "100vh",
+      }}
+    >
+      {/* Top Bar */}
       <Box
         sx={{
           display: "flex",
@@ -45,50 +54,8 @@ export default function Home() {
         </Box>
         <InitialsAvatar sx={{ height: 50, width: 50 }}></InitialsAvatar>
       </Box>
-      <Box
-        sx={{
-          display: "flex",
-          height: "100%",
-          justifyContent: "space-between",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            border: 2,
-            width: "30%",
-            height: "80%",
-          }}
-        >
-          <Typography variant="h4">Projects</Typography>
-          <Button onClick={() => console.log(projects)}>Get all projects</Button>
-          {projects !== undefined ? <ProjectBox project={projects[0]}></ProjectBox> : ""}
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            border: 2,
-            width: "30%",
-            height: "80%",
-          }}
-        >
-          <Typography variant="h4">AI Functions</Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            border: 2,
-            width: "30%",
-            height: "80%",
-          }}
-        ></Box>
-      </Box>
-    </main>
+      {/* Wrapper Box for main content */}
+      <Box sx={{ borderColor: "black", borderWidth: "1px", flex: 1 }}>Hello</Box>
+    </Box>
   )
 }

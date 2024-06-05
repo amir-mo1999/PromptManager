@@ -1,6 +1,7 @@
 "use client"
 import React from "react"
 import { useSession } from "next-auth/react"
+import Box from "@mui/material/Box"
 interface SessionLoadedProps {
   children: React.ReactNode
 }
@@ -11,10 +12,10 @@ const SessionLoaded: React.FC<SessionLoadedProps> = ({ children }) => {
 
   // return Loading screen if session did not load in yet
   if (session?.user.role === undefined) {
-    return <main>Loading...</main>
+    return <Box>Loading...</Box>
   }
 
-  return <main>{children}</main>
+  return <Box sx={{ height: "100vh" }}>{children}</Box>
 }
 
 export { SessionLoaded }

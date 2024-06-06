@@ -1,67 +1,108 @@
 "use client"
 import { MainContentWrapper } from "@/components"
-import { Typography, Box, TextField, Button } from "@mui/material"
-import { useState } from "react"
-interface FormData {
+import { Typography, Box, TextField, Button, Select, MenuItem, Container } from "@mui/material"
+import { useState, ChangeEvent } from "react"
+import { set } from "zod"
+
+interface inputVariable {
   name: string
-  description: string
-  password: string
+  type: string
 }
+
 export default function Home() {
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    description: "",
-    password: "",
-  })
+  // this contains a list of the input variables of the ai function
+  const [inputVariables, setInputVariables] = useState<inputVariable[]>([
+    { name: "", type: "string" },
+  ])
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
+  // function for adding another input variable
+  function addInputVariable() {
+    setInputVariables([...inputVariables, { name: "", type: "string" }])
   }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Handle form submission logic here
-    console.log("Form submitted:", formData)
+  function removeInputVariable(indx: number) {
+    setInputVariables(inputVariables.filter((item, i) => i !== indx))
+  }
+  function changeInputVariableName(
+    event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    indx: number
+  ) {
+    const a = inputVariables
+    a[indx].name = event.target.value
+    setInputVariables(a)
   }
 
   return (
     <MainContentWrapper>
+      {/* Wrapper Box for the form */}
       <Box
         component="form"
-        onSubmit={handleSubmit}
         sx={{
           display: "flex",
-          flexDirection: "column",
+          flexDirection: "row",
           gap: 2,
           marginTop: 4,
+          height: "80%",
+          width: "80%",
         }}
       >
-        <Typography variant="h4" component="h1" gutterBottom>
-          Define a new AI function
-        </Typography>
-        <TextField label="Name" value={formData.name} onChange={handleChange} required />
-        <TextField
-          label="Description"
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          required
-        />
-        <TextField
-          label="Password"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <Button variant="contained" color="primary" type="submit">
-          Submit
-        </Button>
+        {/* Wrapper Box for inputting the Metadata*/}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+            width: "30%",
+          }}
+        >
+          <Typography>Give the Function a name</Typography>
+          <TextField id="outlined-basic" label="name" variant="outlined" required={true} />
+          <Typography>Describe what this Function does</Typography>
+          <TextField
+            id="outlined-basic"
+            label="description"
+            variant="outlined"
+            required={true}
+            multiline={true}
+            minRows={5}
+            sx={{ flex: 1 }}
+          />
+        </Box>
+        {/* Wrapper Box for defining the input variables*/}
+        <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
+          <Typography>Define the input variables of your function</Typography>
+
+          {inputVariables.map((variable, indx) => (
+            <Box sx={{ display: "flex", flexDirection: "column", width: "full" }} key={indx}>
+              <Typography>Variable {(indx + 1).toString()}</Typography>
+              <Box sx={{ display: "flex", flexDirection: "row", width: "full" }}>
+                <TextField
+                  id="outlined-basic"
+                  label="variable name"
+                  variant="outlined"
+                  required={true}
+                  onChange={(event) => changeInputVariableName(event, indx)}
+                />
+                <TextField defaultValue={"string"} select={true} sx={{ flex: "1" }} required={true}>
+                  <MenuItem value="int">int</MenuItem>
+                  <MenuItem value="string">string</MenuItem>
+                  <MenuItem value="float">float</MenuItem>
+                </TextField>
+                {indx === 0 ? (
+                  ""
+                ) : (
+                  <Button variant="contained" onClick={() => removeInputVariable(indx)}>
+                    -
+                  </Button>
+                )}
+              </Box>
+            </Box>
+          ))}
+          <Button variant="contained" sx={{ alignSelf: "center" }} onClick={addInputVariable}>
+            Add variable
+          </Button>
+        </Box>
+        {/* Wrapper Box for uploading the example dataset*/}
+        <Box sx={{ width: "30%" }}>Example dataset</Box>
       </Box>
     </MainContentWrapper>
   )

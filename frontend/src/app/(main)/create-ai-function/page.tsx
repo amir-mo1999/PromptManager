@@ -1,8 +1,7 @@
 "use client"
 import { MainContentWrapper } from "@/components"
-import { Typography, Box, TextField, Button, Select, MenuItem, Container } from "@mui/material"
-import { useState, ChangeEvent } from "react"
-import { set } from "zod"
+import { Typography, Box, TextField, Button, MenuItem } from "@mui/material"
+import { useState } from "react"
 
 interface inputVariable {
   name: string
@@ -20,15 +19,15 @@ export default function Home() {
     setInputVariables([...inputVariables, { name: "", type: "string" }])
   }
   function removeInputVariable(indx: number) {
-    setInputVariables(inputVariables.filter((item, i) => i !== indx))
-  }
-  function changeInputVariableName(
-    event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-    indx: number
-  ) {
-    const a = inputVariables
-    a[indx].name = event.target.value
+    const a = inputVariables.filter((item, i) => i !== indx)
     setInputVariables(a)
+  }
+
+  function changeInputVariableName(name: string, indx: number) {
+    const newFields = inputVariables.map((variable, i) =>
+      i === indx ? { ...variable, name: name } : variable
+    )
+    setInputVariables(newFields)
   }
 
   return (
@@ -80,7 +79,10 @@ export default function Home() {
                   label="variable name"
                   variant="outlined"
                   required={true}
-                  onChange={(event) => changeInputVariableName(event, indx)}
+                  value={variable.name}
+                  onChange={(event) => {
+                    changeInputVariableName(event.target.value, indx)
+                  }}
                 />
                 <TextField defaultValue={"string"} select={true} sx={{ flex: "1" }} required={true}>
                   <MenuItem value="int">int</MenuItem>

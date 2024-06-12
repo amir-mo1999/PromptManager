@@ -1,6 +1,6 @@
 "use client"
 import { MainContentWrapper } from "@/components"
-import { Typography, Box, TextField, Button, MenuItem, Paper } from "@mui/material"
+import { Typography, Box, TextField, Button, MenuItem } from "@mui/material"
 import { useState, useEffect } from "react"
 import { MuiFileInput } from "mui-file-input"
 
@@ -10,6 +10,15 @@ interface inputVariable {
 }
 
 export default function Home() {
+  // function name state
+  const [functionName, setFunctionName] = useState<string>("")
+
+  // description state
+  const [description, setDescription] = useState<string>("")
+
+  // output type state
+  const [outputType, setOutputType] = useState<string>("string")
+
   // this contains a list of the input variables of the ai function
   const [inputVariables, setInputVariables] = useState<inputVariable[]>([
     { name: "", type: "string" },
@@ -86,7 +95,13 @@ export default function Home() {
           }}
         >
           <Typography>Give the Function a name</Typography>
-          <TextField id="outlined-basic" label="name" variant="outlined" required={true} />
+          <TextField
+            id="outlined-basic"
+            label="name"
+            variant="outlined"
+            required={true}
+            onChange={(e) => setFunctionName(e.target.value)}
+          />
           <Typography>Describe what this Function does</Typography>
           <TextField
             id="outlined-basic"
@@ -95,9 +110,16 @@ export default function Home() {
             required={true}
             multiline={true}
             minRows={5}
+            onChange={(e) => setDescription(e.target.value)}
           />
           <Typography>Define the output type</Typography>
-          <TextField defaultValue={"string"} select={true} sx={{ flex: "1" }} required={true}>
+          <TextField
+            defaultValue={"string"}
+            select={true}
+            sx={{ flex: "1" }}
+            required={true}
+            onChange={(e) => setOutputType(e.target.value)}
+          >
             <MenuItem value="int">int</MenuItem>
             <MenuItem value="string">string</MenuItem>
             <MenuItem value="float">float</MenuItem>
@@ -150,6 +172,18 @@ export default function Home() {
             onChange={handleFileUploadChange}
           />
         </Box>
+        <Button
+          onClick={() => {
+            console.log("\n\n\n")
+            console.log("Function Name:", functionName)
+            console.log("Description:", description)
+            console.log("Output Type:", outputType)
+            console.log("Input Variables:", inputVariables)
+            console.log("Dataset:", dataset)
+          }}
+        >
+          print values
+        </Button>
       </Box>
     </MainContentWrapper>
   )

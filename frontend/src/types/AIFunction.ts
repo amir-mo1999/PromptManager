@@ -1,29 +1,15 @@
 import { z } from "zod"
 import inputVariable from "./inputVariable"
-import { DatasetLinkedOutlined } from "@mui/icons-material"
 
 // Define the schema using zod
-const AIFunction = z.object({
+const AIFunctionInput = z.object({
   name: z.string(),
   description: z.string(),
   outputType: z.union([z.literal("string"), z.literal("int"), z.literal("float")]),
   inputVariables: z.array(inputVariable),
-  dataset: z.record(
-    z.string(),
-    z.array(z.union([z.literal("string"), z.literal("int"), z.literal("float")]))
-  ),
+  dataset: z.record(z.string(), z.array(z.union([z.string(), z.number()]))),
 })
 
-type AIFunction = z.infer<typeof AIFunction>
+type AIFunctionInput = z.infer<typeof AIFunctionInput>
 
-export type { AIFunction }
-
-const a: AIFunction = {
-  name: "A",
-  description: "A",
-  outputType: "string",
-  inputVariables: [
-    { name: "gewgew", varType: "string" },
-    { name: "gewgew", varType: "int" },
-  ],
-}
+export type { AIFunctionInput }

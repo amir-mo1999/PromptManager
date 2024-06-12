@@ -2,6 +2,10 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,python,nextjs,node
 
 /data
+test-json-large.json
+test-json.json
+
+
 ### NextJS ###
 # dependencies
 /node_modules

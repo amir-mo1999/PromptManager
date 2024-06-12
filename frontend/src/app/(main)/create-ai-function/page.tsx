@@ -1,7 +1,8 @@
 "use client"
 import { MainContentWrapper } from "@/components"
-import { Typography, Box, TextField, Button, MenuItem } from "@mui/material"
-import { useState } from "react"
+import { Typography, Box, TextField, Button, MenuItem, Paper } from "@mui/material"
+import { useState, useEffect } from "react"
+import { MuiFileInput } from "mui-file-input"
 
 interface inputVariable {
   name: string
@@ -14,20 +15,51 @@ export default function Home() {
     { name: "", type: "string" },
   ])
 
+  // variables for the dataset upload
+  const [datasetFile, setDatasetFile] = useState<File | null>(null)
+  const [dataset, setDataset] = useState<Object>()
+  const [datasetSize, setDatasetSize] = useState<number>(0)
+  const [datasetAboveMax, setDatasetAboveMax] = useState<boolean>(false)
+  const datasetMaxSize = 20000000
+
+  // when dataset size changes, check if it exceed max size and set the state to true if yes
+  useEffect(() => {
+    if (datasetSize > datasetMaxSize) {
+      setDatasetAboveMax(true)
+      console.log(datasetAboveMax)
+    }
+  }, [datasetSize])
+
   // function for adding another input variable
   function addInputVariable() {
     setInputVariables([...inputVariables, { name: "", type: "string" }])
   }
+
+  // function for removing an input variable
   function removeInputVariable(indx: number) {
     const a = inputVariables.filter((item, i) => i !== indx)
     setInputVariables(a)
   }
 
+  // function for changing input variable name
   function changeInputVariableName(name: string, indx: number) {
     const newFields = inputVariables.map((variable, i) =>
       i === indx ? { ...variable, name: name } : variable
     )
     setInputVariables(newFields)
+  }
+
+  // function for handling the file upload of the dataset
+  const handleFileUploadChange = (file: File | null) => {
+    // set the dataset file
+    setDatasetFile(file)
+
+    // read the file and set the dataset
+    const reader = new FileReader()
+    file?.text().then((content) => setDataset(JSON.parse(content)))
+
+    // set the dataset size
+    setDatasetSize(file?.size === undefined ? 0 : file?.size)
   }
 
   return (
@@ -63,8 +95,13 @@ export default function Home() {
             required={true}
             multiline={true}
             minRows={5}
-            sx={{ flex: 1 }}
           />
+          <Typography>Define the output type</Typography>
+          <TextField defaultValue={"string"} select={true} sx={{ flex: "1" }} required={true}>
+            <MenuItem value="int">int</MenuItem>
+            <MenuItem value="string">string</MenuItem>
+            <MenuItem value="float">float</MenuItem>
+          </TextField>
         </Box>
         {/* Wrapper Box for defining the input variables*/}
         <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
@@ -104,7 +141,15 @@ export default function Home() {
           </Button>
         </Box>
         {/* Wrapper Box for uploading the example dataset*/}
-        <Box sx={{ width: "30%" }}>Example dataset</Box>
+        <Box sx={{ width: "30%" }}>
+          <Typography>Upload a .json file containing the example dataset</Typography>
+          <Typography>Max size: 20mb</Typography>
+          <MuiFileInput
+            inputProps={{ accept: ".json" }}
+            value={datasetFile}
+            onChange={handleFileUploadChange}
+          />
+        </Box>
       </Box>
     </MainContentWrapper>
   )

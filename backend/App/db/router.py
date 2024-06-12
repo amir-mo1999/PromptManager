@@ -194,7 +194,7 @@ async def post_ai_function(
     # set the number of prompts written for the ai function (at creation this is always zero)
     number_of_prompts = 0
 
-    # create the project object
+    # create the ai function object
     ai_function = AIFunction(
         **dict(ai_function_input),
         number_of_prompts=number_of_prompts,
@@ -203,6 +203,6 @@ async def post_ai_function(
     )
 
     # insert it to the collection
-    ai_function_collection.insert_one(dict(ai_function))
+    ai_function_collection.insert_one(ai_function.model_dump())
 
     return PlainTextResponse(content="AI function created", status_code=200)

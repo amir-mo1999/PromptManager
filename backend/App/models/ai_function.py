@@ -9,16 +9,20 @@ from pydantic import (
 from typing import Annotated, List, Dict, Union, Literal
 from .objectID import PydanticObjectId
 from datetime import datetime
+from .input_variable import InputVariable
 
 
 class AIFunctionRouteInput(BaseModel):
     name: Annotated[str, StringConstraints(min_length=1, max_length=30)]
     description: Annotated[str, StringConstraints(min_length=1, max_length=1000)]
     # TODO: Replace with more sophisticated types. Make sure to define these in a separate file and import them here
-    input_variables: Dict[str, Literal["str", "int", "float"]] = Field(
+    input_variables: List[InputVariable] = Field(
         ...,
-        example={"text": "str", "number_of_sentences": "int"},
-        description="A mapping of input variable names and their types. The AI function takes these variables as inputs.",
+        example=[
+            {"var_name": "text", "var_type": "string"},
+            {"var_name": "number_of_sentences", "var_type": "int"},
+        ],
+        description="A list of input variables. Each input variable has a name and a type",
     )
     output_type: Literal["str", "int", "float"]
     # example dataset must include the input variables as keys and the output key;
@@ -48,7 +52,10 @@ class AIFunctionRouteInput(BaseModel):
     @model_validator(mode="after")
     def validate_fields(self):
         # assert that the input variable names are present in the example dataset
-        input_variable_names = self.input_variables.keys()
+        input_variable_names = []
+        for input_variable in self.input_variables:
+            input_variable_names.append(input_variable.var_name)
+
         for input_variable_name in input_variable_names:
             if input_variable_name not in self.example_dataset.keys():
                 raise AssertionError(

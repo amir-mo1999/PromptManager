@@ -9,6 +9,10 @@ interface inputVariable {
   type: string
 }
 
+// TODO: Add validation for the form fields
+// TODO: send ai function to backend
+// TODO: add button to send the form
+
 export default function Home() {
   // function name state
   const [functionName, setFunctionName] = useState<string>("")

@@ -65,4 +65,6 @@ export const api = {
   getAllProjects: (accessToken: string) => {
     return getRequest("/db/get-all-projects", undefined, undefined, accessToken)
   },
+
+  // TODO: Add function for the post ai function endpoint
 }

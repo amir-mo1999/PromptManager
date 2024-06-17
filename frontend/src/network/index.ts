@@ -1,4 +1,5 @@
 import { userCredentialsType } from "@/types"
+import { AIFunctionInput } from "@/types"
 
 const baseUrlClient = process.env.NEXT_PUBLIC_BASE_API_URL_CLIENT || ""
 const baseUrlServer = process.env.NEXT_PUBLIC_BASE_API_URL_SERVER || ""
@@ -7,7 +8,7 @@ const createMethod =
   (method: string) =>
   async <T, B = any>(
     route: string,
-    body?: FormData | URLSearchParams,
+    body?: FormData | URLSearchParams | any,
     contentType?: string,
     accessToken?: string
   ) => {
@@ -66,5 +67,7 @@ export const api = {
     return getRequest("/db/get-all-projects", undefined, undefined, accessToken)
   },
 
-  // TODO: Add function for the post ai function endpoint
+  postAIFunction: (accessToken: string, body: AIFunctionInput) => {
+    return postRequest("/db/ai-function", body, "application/json", accessToken)
+  },
 }

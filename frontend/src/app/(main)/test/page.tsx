@@ -64,22 +64,23 @@ function validateInputVariableName(inputVariableName: string): boolean {
 }
 
 export default function Home() {
+  // current active step
   const [activeStep, setActiveStep] = useState<number>(0)
 
-  // function name state
+  // state for function name
   const [functionName, setFunctionName] = useState<string>("")
   const [functionNameHelpertext, setFunctionNameHelpertext] = useState<string>("")
   const [functionNameError, setFunctionNameError] = useState<boolean>(false)
 
-  // description state
+  // state for description
   const [description, setDescription] = useState<string>("")
   const [descriptionHelpertext, setDescriptionHelpertext] = useState<string>("")
   const [descriptionError, setDescriptionError] = useState<boolean>(false)
 
-  // output type state
+  // state for output type
   const [outputType, setOutputType] = useState<string>("string")
 
-  // this contains a list of the input variables of the ai function
+  // state for input variables
   const [inputVariables, setInputVariables] = useState<inputVariableType[]>([
     { name: "", type: "string" },
   ])
@@ -90,28 +91,32 @@ export default function Home() {
     Array(maxInputVariables).fill([false]).flat()
   )
 
-  // variables for the dataset upload
+  // state variables for dataset
   const [datasetFile, setDatasetFile] = useState<File | null>(null)
-  const [dataset, setDataset] = useState<Object>()
+  const [dataset, setDataset] = useState<{ [key: string]: number[] | string[] }>()
   const [datasetSize, setDatasetSize] = useState<number>(0)
   const [datasetAboveMax, setDatasetAboveMax] = useState<boolean>(false)
   const datasetMaxSize = 20000000
   const [datasetError, setDatasetError] = useState<boolean>(false)
   const [datasetHelperText, setDatasetHelperText] = useState<string>("")
 
+  // handles forward step
   function handleStep() {
     setActiveStep(activeStep === 2 ? 2 : activeStep + 1)
-    //setCanStep(false)
   }
+
+  // handles back step
   function handleBackStep() {
     setActiveStep(activeStep === 0 ? 0 : activeStep - 1)
     setCanStep(true)
   }
 
+  // state for checking if user can step or not based on field entries
   const [canStep, setCanStep] = useState<boolean>(false)
 
+  // checks if user can step based on field entries
   function checkCanStep(): boolean {
-    // for first step
+    // for first step: if function name or description is empty or if there are erros
     if (activeStep === 0) {
       if (functionName === "" || description === "") {
         return false
@@ -120,7 +125,7 @@ export default function Home() {
         return false
       }
       return true
-      // for step 2
+      // for step 2: if input variable names are not set
     } else if (activeStep === 1) {
       let aux = true
       inputVariables.forEach((inputVariable) => {
@@ -129,7 +134,7 @@ export default function Home() {
         }
       })
       return aux
-      // for step 3
+      // for step 3: if dataset is not uploaded or invalid
     } else {
       if (dataset === undefined || !validateDataset()) {
         return false
@@ -138,6 +143,7 @@ export default function Home() {
     }
   }
 
+  // check if user can step; updates whenever a field entry is updated
   useEffect(
     () => setCanStep(checkCanStep()),
     [
@@ -154,13 +160,16 @@ export default function Home() {
     ]
   )
 
-  function validateDataset() {
+  // validates the dataset
+  function validateDataset(): boolean {
+    // if dataset not uploaded; in this case do not give an error yet because the user might not have uploaded it yet
     if (dataset === undefined) {
       return false
     }
 
     // helper text in case there are errors
     let helperText = "Please review the following errors:\n"
+
     // if dataset is valid
     let valid = true
 
@@ -195,8 +204,37 @@ export default function Home() {
         "- The dataset must have the same amount of keys as there are input variables\n"
     }
 
+    // check if the output key is present in the dataset
+    if (!("output" in Object.keys(dataset))) {
+      valid = false
+      helperText =
+        helperText +
+        "- The dataset must contain the key for the outputs of the ai function: output\n"
+    }
+
+    // check that the elements of the dataset are arrays
+    Object.keys(dataset).forEach((key) => {
+      if (!Array.isArray(dataset[key])) {
+        valid = false
+        helperText = helperText + "- The data points for each key must be contained in arrays\n"
+      }
+    })
+
+    // check that all input variables have the same amount of data entries
+    // get length of first for the first key
+    const l = dataset[Object.keys(dataset)[0]].length
+    // iterate over the dataset and check if length matches the length of the first element
+    Object.keys(dataset).forEach((key) => {
+      if (dataset[key].length !== l) {
+        valid = false
+        helperText = helperText + "- The data points for each key must have the same length\n"
+      }
+    })
+
+    // set helper text and error based on if dataset is valid
     if (!valid) {
       setDatasetHelperText(helperText)
+      setDatasetError(true)
     } else {
       setDatasetError(false)
       setDatasetHelperText("")

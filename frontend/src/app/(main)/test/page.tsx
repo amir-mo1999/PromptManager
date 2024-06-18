@@ -109,6 +109,7 @@ export default function Home() {
   function handleBackStep() {
     setActiveStep(activeStep === 0 ? 0 : activeStep - 1)
     setCanStep(true)
+    setDataset({})
   }
 
   // state for checking if user can step or not based on field entries
@@ -162,6 +163,8 @@ export default function Home() {
 
   // validates the dataset
   function validateDataset(): boolean {
+    console.log("Validating dataset")
+    console.log("Dataset:", dataset)
     // if dataset not uploaded; in this case do not give an error yet because the user might not have uploaded it yet
     if (dataset === undefined) {
       return false
@@ -173,7 +176,15 @@ export default function Home() {
     // if dataset is valid
     let valid = true
 
-    // check if all input variables are present in dataset
+    // Validation 1: check that the elements of the dataset are arrays
+    Object.keys(dataset).forEach((key) => {
+      if (!Array.isArray(dataset[key])) {
+        valid = false
+        helperText = helperText + "- The values for each key must be contained in arrays\n"
+      }
+    })
+
+    // Validation 2: check if all input variables are present in dataset
     const missingInputVariableNames: Array<string> = []
     inputVariables.forEach((inputVariable) => {
       if (!(inputVariable.name in dataset)) {
@@ -195,32 +206,30 @@ export default function Home() {
         )}\n`
     }
 
-    // check if dataset has the same amount of keys as there are input variables
-    if (Object.keys(dataset).length !== inputVariables.length) {
+    // Validation 3: check if dataset has the same amount of keys as there are input variables plus one for the output key
+    if (Object.keys(dataset).length - 1 !== inputVariables.length) {
       valid = false
       setDatasetError(true)
       helperText =
         helperText +
-        "- The dataset must have the same amount of keys as there are input variables\n"
+        "- The dataset must not contain additional keys other than the variable names and the output key\n"
     }
 
-    // check if the output key is present in the dataset
-    if (!("output" in Object.keys(dataset))) {
+    // Validation 4: check if the output key is present in the dataset
+    if (!dataset.hasOwnProperty("output")) {
       valid = false
       helperText =
         helperText +
         "- The dataset must contain the key for the outputs of the ai function: output\n"
     }
 
-    // check that the elements of the dataset are arrays
-    Object.keys(dataset).forEach((key) => {
-      if (!Array.isArray(dataset[key])) {
-        valid = false
-        helperText = helperText + "- The data points for each key must be contained in arrays\n"
-      }
-    })
+    // if the one of previous validations fails skip the validations coming after
+    if (!valid) {
+      setIsDatasetValid(valid, helperText)
+      return valid
+    }
 
-    // check that all input variables have the same amount of data entries
+    // Validation 5: check that all elements of the dataset have the same amount of entries
     // get length of first for the first key
     const l = dataset[Object.keys(dataset)[0]].length
     // iterate over the dataset and check if length matches the length of the first element
@@ -231,7 +240,61 @@ export default function Home() {
       }
     })
 
-    // set helper text and error based on if dataset is valid
+    // Validation 6: check if the types of the input variables match the ones inputted in the input variable step
+    inputVariables.forEach((inputVariable) => {
+      console.log("Input Variable:", inputVariable)
+      // loop over values in dataset for current input variable
+      for (const value of dataset[inputVariable.name]) {
+        // check if types of values match the ones of the input variable
+        console.log(
+          "Value:",
+          value,
+          "Type:",
+          typeof value,
+          "Is string:",
+          typeof value === "string",
+          "Is Integer",
+          Number.isInteger(value),
+          "Is float:",
+          typeof value === "number"
+        )
+        // for int
+        if (inputVariable.type === "int") {
+          if (!Number.isInteger(value)) {
+            valid = false
+            helperText =
+              helperText +
+              `- The values for the input variable ${inputVariable.name} must be of type ${inputVariable.type}\n`
+            break
+          }
+          // for float
+        } else if (inputVariable.type === "float") {
+          if (typeof value === "number") {
+            valid = false
+            helperText =
+              helperText +
+              `- The values for the input variable ${inputVariable.name} must be of type ${inputVariable.type}\n`
+            break
+          }
+          // for string
+        } else if (inputVariable.type === "string") {
+          console.log("Checking if all values are strings")
+          if (!(typeof value === "string")) {
+            valid = false
+            helperText =
+              helperText +
+              `- The values for the input variable ${inputVariable.name} must be of type ${inputVariable.type}\n`
+            break
+          }
+        }
+      }
+    })
+
+    setIsDatasetValid(valid, helperText)
+    return valid
+  }
+
+  function setIsDatasetValid(valid: boolean, helperText: string) {
     if (!valid) {
       setDatasetHelperText(helperText)
       setDatasetError(true)
@@ -239,14 +302,12 @@ export default function Home() {
       setDatasetError(false)
       setDatasetHelperText("")
     }
-    return valid
   }
 
   // when dataset size changes, check if it exceed max size and set the state to true if yes
   useEffect(() => {
     if (datasetSize > datasetMaxSize) {
       setDatasetAboveMax(true)
-      console.log(datasetAboveMax)
     }
   }, [datasetSize])
 
@@ -265,6 +326,13 @@ export default function Home() {
   function changeInputVariableName(name: string, indx: number) {
     const newFields = inputVariables.map((variable, i) =>
       i === indx ? { ...variable, name: name } : variable
+    )
+    setInputVariables(newFields)
+  }
+
+  function changeInputVariableType(type: "string" | "float" | "int", indx: number) {
+    const newFields = inputVariables.map((variable, i) =>
+      i === indx ? { ...variable, type: type } : variable
     )
     setInputVariables(newFields)
   }
@@ -404,7 +472,14 @@ export default function Home() {
                   }
                 }}
               />
-              <TextField defaultValue={"string"} select={true} required={true}>
+              <TextField
+                defaultValue={"string"}
+                select={true}
+                required={true}
+                onChange={(e) =>
+                  changeInputVariableType(e.target.value as "string" | "float" | "int", indx)
+                }
+              >
                 <MenuItem value="int">int</MenuItem>
                 <MenuItem value="string">string</MenuItem>
                 <MenuItem value="float">float</MenuItem>

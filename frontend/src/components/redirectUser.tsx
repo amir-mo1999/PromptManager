@@ -11,7 +11,7 @@ interface Props {
 const RedirectUser = () => {
   // set session
   const { data: session } = useSession()
-  console.log("redirecting")
+
   // show loading screen if user role is undefined
   if (session?.user.role === undefined) {
     return <main>Loading...</main>

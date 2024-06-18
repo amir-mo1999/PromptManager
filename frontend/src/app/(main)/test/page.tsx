@@ -109,7 +109,17 @@ export default function Home() {
   function handleBackStep() {
     setActiveStep(activeStep === 0 ? 0 : activeStep - 1)
     setCanStep(true)
-    setDataset({})
+
+    // when stepping back completely reset the third step for uploading the dataset to avoid errors
+    setIsDatasetValid(true, "")
+    resetDataset()
+  }
+
+  function resetDataset() {
+    setDataset(undefined)
+    setDatasetFile(null)
+    setDatasetSize(0)
+    setDatasetAboveMax(false)
   }
 
   // state for checking if user can step or not based on field entries
@@ -117,7 +127,7 @@ export default function Home() {
 
   // checks if user can step based on field entries
   function checkCanStep(): boolean {
-    // for first step: if function name or description is empty or if there are erros
+    // for first step: if function name or description is empty or if there are errors
     if (activeStep === 0) {
       if (functionName === "" || description === "") {
         return false
@@ -163,8 +173,6 @@ export default function Home() {
 
   // validates the dataset
   function validateDataset(): boolean {
-    console.log("Validating dataset")
-    console.log("Dataset:", dataset)
     // if dataset not uploaded; in this case do not give an error yet because the user might not have uploaded it yet
     if (dataset === undefined) {
       return false
@@ -242,22 +250,10 @@ export default function Home() {
 
     // Validation 6: check if the types of the input variables match the ones inputted in the input variable step
     inputVariables.forEach((inputVariable) => {
-      console.log("Input Variable:", inputVariable)
       // loop over values in dataset for current input variable
       for (const value of dataset[inputVariable.name]) {
         // check if types of values match the ones of the input variable
-        console.log(
-          "Value:",
-          value,
-          "Type:",
-          typeof value,
-          "Is string:",
-          typeof value === "string",
-          "Is Integer",
-          Number.isInteger(value),
-          "Is float:",
-          typeof value === "number"
-        )
+
         // for int
         if (inputVariable.type === "int") {
           if (!Number.isInteger(value)) {
@@ -269,7 +265,7 @@ export default function Home() {
           }
           // for float
         } else if (inputVariable.type === "float") {
-          if (typeof value === "number") {
+          if (!(typeof value === "number")) {
             valid = false
             helperText =
               helperText +
@@ -278,7 +274,6 @@ export default function Home() {
           }
           // for string
         } else if (inputVariable.type === "string") {
-          console.log("Checking if all values are strings")
           if (!(typeof value === "string")) {
             valid = false
             helperText =

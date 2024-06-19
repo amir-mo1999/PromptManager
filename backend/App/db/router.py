@@ -5,8 +5,9 @@ from bson import ObjectId
 from datetime import datetime
 
 # import FastAPI stuff
-from fastapi import APIRouter, HTTPException, Path, Depends
-from fastapi.responses import PlainTextResponse
+from fastapi import APIRouter, HTTPException, Path, Depends, File, UploadFile
+from fastapi.responses import PlainTextResponse, JSONResponse
+from pydantic import BaseModel
 
 # import mongo client
 from pymongo.mongo_client import MongoClient
@@ -206,3 +207,32 @@ async def post_ai_function(
     ai_function_collection.insert_one(ai_function.model_dump())
 
     return PlainTextResponse(content="AI function created", status_code=200)
+
+
+## endpoint for uploading a file
+@db_router.post("/upload-file", tags=["Database Operations"])
+async def upload_file(file: UploadFile = File(...)):
+    # get the collection for saving the files
+    collection = db["example-data-files"]
+
+    try:
+        # Read the file content
+        file_content = await file.read()
+
+        # Create a document with the file content and metadata
+        document = {
+            "filename": file.filename,
+            "content_type": file.content_type,
+            "content": file_content,
+        }
+
+        # Insert the document into the collection
+        result = collection.insert_one(document)
+
+        # Return the object ID of the inserted document
+        return JSONResponse(
+            content={"object_id": str(result.inserted_id)}, status_code=201
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

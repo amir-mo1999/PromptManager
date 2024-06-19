@@ -5,7 +5,7 @@ import Box from "@mui/material/Box"
 interface SessionLoadedProps {
   children: React.ReactNode
 }
-
+// TODO: fix this so it actually reloads when the session is loaded
 // component that allows us to access the session provider
 const SessionLoaded: React.FC<SessionLoadedProps> = ({ children }) => {
   const { data: session } = useSession()

@@ -532,7 +532,7 @@ export default function Home() {
           }}
           error={datasetError}
           helperText={
-            <FormHelperText>
+            <FormHelperText component={"span"}>
               {datasetHelperText.split("\n").map((line, index) => (
                 <span key={index}>
                   {line}

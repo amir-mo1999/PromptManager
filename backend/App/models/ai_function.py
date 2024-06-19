@@ -68,7 +68,7 @@ class AIFunctionRouteInput(BaseModel):
 
     @model_validator(mode="after")
     def validate_fields(self):
-        # assert that the input variable names are present in the example dataset
+        ## assert that the input variable names are present in the example dataset
         input_variable_names = []
         for input_variable in self.input_variables:
             input_variable_names.append(input_variable.name)
@@ -79,35 +79,27 @@ class AIFunctionRouteInput(BaseModel):
                     f"The input variable {input_variable_name} is not present in the example dataset."
                 )
 
-        # assert that the output key is present in the example dataset
+        ## assert that the output key is present in the example dataset
         if "output" not in self.example_dataset.keys():
             raise AssertionError(
                 f"The 'output' key is not provided in the example dataset."
             )
 
-        # assert that the example dataset does not contain additional keys other than 'output' or input variable names
+        ## assert that the example dataset does not contain additional keys other than 'output' or input variable names
         if len(self.example_dataset.keys()) != (len(input_variable_names) + 1):
             raise AssertionError(
                 f"The example dataset contains additional keys other than 'output' or input variable names."
             )
 
-        # # assert that the example dataset contains at least 5 data points
-        # example_dataset_values = list(self.example_dataset.values())
-        # l = len(example_dataset_values[0])
-        # if l < 5:
-        #     raise AssertionError(
-        #         f"The example dataset does not contain at least 5 data points."
-        #     )
+        ## assert that the example dataset value lists are all the same length
+        example_dataset_values = list(self.example_dataset.values())
+        for value in example_dataset_values[1:]:
+            if len(value) != l:
+                raise AssertionError(
+                    f"The example dataset value lists are not all the same length."
+                )
 
-        # # assert that the example dataset value lists are all the same length
-        # for value in example_dataset_values[1:]:
-        #     if len(value) != l:
-        #         raise AssertionError(
-        #             f"The example dataset value lists are not all the same length."
-        #         )
-
-        # assert that for file based input variables the file object key is present in the database
-
+        ## assert that for file based input variables the file object key is present in the database
         # set up mongo client
         uri = os.environ.get("MONGO_CON_STRING")
         client = MongoClient(uri)

@@ -1,6 +1,6 @@
 "use client"
 import * as React from "react"
-import { MainContentWrapper } from "@/components"
+import { ContentStepper, MainContentWrapper } from "@/components"
 import Stepper from "@mui/material/Stepper"
 import Step from "@mui/material/Step"
 import { useState, useEffect } from "react"
@@ -17,7 +17,6 @@ import { api } from "@/network"
 import { useSession } from "next-auth/react"
 
 // global variables
-const steps = ["Set Name and Description", "Define Input Variable", "Upload a Validation Dataset"]
 const maxInputVariables = 5
 const datasetMaxSize = 20000000
 
@@ -121,13 +120,6 @@ export default function Home() {
   function handleBackStep() {
     setActiveStep(activeStep === 0 ? 0 : activeStep - 1)
     setCanStep(true)
-  }
-
-  function resetDataset() {
-    setDataset(undefined)
-    setDatasetFile(null)
-    setDatasetSize(0)
-    setDatasetAboveMax(false)
   }
 
   // state for checking if user can step or not based on field entries
@@ -392,15 +384,10 @@ export default function Home() {
 
   return (
     <MainContentWrapper>
-      <Stepper sx={{ width: "100%" }} nonLinear activeStep={activeStep}>
-        {steps.map((label, index) => (
-          <Step key={label}>
-            <StepButton color="inherit" disabled={true}>
-              {label}
-            </StepButton>
-          </Step>
-        ))}
-      </Stepper>
+      <ContentStepper
+        activeStep={activeStep}
+        steps={["Set Name and Description", "Define Input Variable", "Upload a Validation Dataset"]}
+      />
       {/* Step one content*/}
       <Box
         sx={{

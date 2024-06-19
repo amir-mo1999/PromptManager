@@ -215,6 +215,9 @@ async def upload_file(file: UploadFile = File(...)):
     # get the collection for saving the files
     collection = db["example-data-files"]
 
+    # get the file extension
+    file_extension = file.filename.split(".")[-1]
+
     try:
         # Read the file content
         file_content = await file.read()

@@ -13,9 +13,13 @@ from .input_variable import InputVariable
 
 
 class AIFunctionRouteInput(BaseModel):
+    # name of the ai function
     name: Annotated[str, StringConstraints(min_length=1, max_length=30)]
+
+    # description of the ai function
     description: Annotated[str, StringConstraints(min_length=1, max_length=1000)]
-    # TODO: Replace with more sophisticated types. Make sure to define these in a separate file and import them here
+
+    # list of input variables
     input_variables: List[InputVariable] = Field(
         ...,
         example=[
@@ -24,10 +28,14 @@ class AIFunctionRouteInput(BaseModel):
         ],
         description="A list of input variables. Each input variable has a name and a type",
     )
-    output_type: Literal["string", "int", "float"]
-    # example dataset must include the input variables as keys and the output key;
-    # all keys must have lists as elements with the same amount of items
-    example_dataset: Dict[str, Union[List[int], List[str], List[float]]] = Field(
+
+    # output type; same type options as for input variables
+    output_type: Literal["numeric", "string", "audio_file", "image_file"]
+
+    # the example dataset works differently depending on what type of input data is used
+    # for file inputs such as audio files or image files the object id of this file is saved in the dataset not the content of the file itself
+    # for numeric or string inputs the actual value of the input is saved
+    example_dataset: Dict[str, Union[List[Union[int, float]], List[str]]] = Field(
         ...,
         example={
             "text": [
@@ -46,7 +54,6 @@ class AIFunctionRouteInput(BaseModel):
                 "This is the summarized text in three sentences.",
             ],
         },
-        description="A dataset of example inputs and outputs on which prompts for this AI function can be evaluated on. Must contain at least 5 data points.",
     )
 
     @model_validator(mode="after")

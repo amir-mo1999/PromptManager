@@ -22,6 +22,9 @@ const maxInputVariables = 5
 const datasetMaxSize = 20000000
 
 //TODO: add validation for the function name so there is no doubles
+//TODO: clean up code
+//TODO: redirect user after submit
+//TODO: increase max length of function name
 function validateFunctionName(functionName: string): boolean {
   let valid = true
 

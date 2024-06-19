@@ -103,16 +103,15 @@ export default function Home() {
   // handles forward step
   function handleStep() {
     setActiveStep(activeStep === 2 ? 2 : activeStep + 1)
+    if (activeStep === 1) {
+      validateDataset()
+    }
   }
 
   // handles back step
   function handleBackStep() {
     setActiveStep(activeStep === 0 ? 0 : activeStep - 1)
     setCanStep(true)
-
-    // when stepping back completely reset the third step for uploading the dataset to avoid errors
-    setIsDatasetValid(true, "")
-    resetDataset()
   }
 
   function resetDataset() {
@@ -194,12 +193,15 @@ export default function Home() {
     // if the previous validations fails skip the validations coming after
     if (!valid) {
       setIsDatasetValid(valid, helperText)
-      console.log("we are returning")
       return valid
     }
 
+    // some helper variables
+    const dataSetKeys = Object.keys(dataset)
+    const dataSetElements = Object.values(dataset)
+
     // Validation 1: check that the elements of the dataset are arrays
-    for (const key in Object.keys(dataset)) {
+    for (const key in dataset) {
       if (!Array.isArray(dataset[key])) {
         valid = false
         helperText = helperText + "- The values for each key must be contained in arrays\n"
@@ -256,12 +258,13 @@ export default function Home() {
     // get length of first for the first key
     const l = dataset[Object.keys(dataset)[0]].length
     // iterate over the dataset and check if length matches the length of the first element
-    Object.keys(dataset).forEach((key) => {
+    for (const key in dataset) {
       if (dataset[key].length !== l) {
         valid = false
         helperText = helperText + "- The data points for each key must have the same length\n"
+        break
       }
-    })
+    }
 
     // Validation 6: check if the types of the input variables match the ones inputted in the input variable step
     inputVariables.forEach((inputVariable) => {

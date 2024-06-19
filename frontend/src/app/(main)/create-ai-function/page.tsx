@@ -17,6 +17,7 @@ import Box from "@mui/material/Box"
 // global variables
 const steps = ["Set Name and Description", "Define Input Variable", "Upload a Validation Dataset"]
 const maxInputVariables = 5
+const datasetMaxSize = 20000000
 
 function validateFunctionName(functionName: string): boolean {
   let valid = true
@@ -96,7 +97,6 @@ export default function Home() {
   const [dataset, setDataset] = useState<{ [key: string]: number[] | string[] }>()
   const [datasetSize, setDatasetSize] = useState<number>(0)
   const [datasetAboveMax, setDatasetAboveMax] = useState<boolean>(false)
-  const datasetMaxSize = 20000000
   const [datasetError, setDatasetError] = useState<boolean>(false)
   const [datasetHelperText, setDatasetHelperText] = useState<string>("")
 
@@ -184,13 +184,28 @@ export default function Home() {
     // if dataset is valid
     let valid = true
 
+    // Validation 0: check if the dataset is above max size
+    if (datasetAboveMax) {
+      helperText =
+        helperText + `- The file exceeds the maximum size of ${datasetMaxSize / 1000000}mb`
+      valid = false
+    }
+
+    // if the previous validations fails skip the validations coming after
+    if (!valid) {
+      setIsDatasetValid(valid, helperText)
+      console.log("we are returning")
+      return valid
+    }
+
     // Validation 1: check that the elements of the dataset are arrays
-    Object.keys(dataset).forEach((key) => {
+    for (const key in Object.keys(dataset)) {
       if (!Array.isArray(dataset[key])) {
         valid = false
         helperText = helperText + "- The values for each key must be contained in arrays\n"
+        break
       }
-    })
+    }
 
     // Validation 2: check if all input variables are present in dataset
     const missingInputVariableNames: Array<string> = []
@@ -303,6 +318,7 @@ export default function Home() {
   useEffect(() => {
     if (datasetSize > datasetMaxSize) {
       setDatasetAboveMax(true)
+      validateDataset()
     }
   }, [datasetSize])
 

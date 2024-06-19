@@ -322,6 +322,9 @@ export default function Home() {
     if (datasetSize > datasetMaxSize) {
       setDatasetAboveMax(true)
       validateDataset()
+    } else {
+      setDatasetAboveMax(false)
+      validateDataset()
     }
   }, [datasetSize])
 

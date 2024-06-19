@@ -19,12 +19,12 @@ class AIFunctionRouteInput(BaseModel):
     input_variables: List[InputVariable] = Field(
         ...,
         example=[
-            {"var_name": "text", "var_type": "string"},
-            {"var_name": "number_of_sentences", "var_type": "int"},
+            {"name": "text", "dtype": "string"},
+            {"name": "number_of_sentences", "dtype": "int"},
         ],
         description="A list of input variables. Each input variable has a name and a type",
     )
-    output_type: Literal["str", "int", "float"]
+    output_type: Literal["string", "int", "float"]
     # example dataset must include the input variables as keys and the output key;
     # all keys must have lists as elements with the same amount of items
     example_dataset: Dict[str, Union[List[int], List[str], List[float]]] = Field(
@@ -54,7 +54,7 @@ class AIFunctionRouteInput(BaseModel):
         # assert that the input variable names are present in the example dataset
         input_variable_names = []
         for input_variable in self.input_variables:
-            input_variable_names.append(input_variable.var_name)
+            input_variable_names.append(input_variable.name)
 
         for input_variable_name in input_variable_names:
             if input_variable_name not in self.example_dataset.keys():

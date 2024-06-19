@@ -21,6 +21,7 @@ const steps = ["Set Name and Description", "Define Input Variable", "Upload a Va
 const maxInputVariables = 5
 const datasetMaxSize = 20000000
 
+//TODO: add validation for the function name so there is no doubles
 function validateFunctionName(functionName: string): boolean {
   let valid = true
 
@@ -88,7 +89,7 @@ export default function Home() {
 
   // state for input variables
   const [inputVariables, setInputVariables] = useState<inputVariableType[]>([
-    { name: "", type: "string" },
+    { name: "", dtype: "string" },
   ])
   const [inputVariablesHelpertext, setInputVariablesHelpertext] = useState<Array<string>>(
     Array(maxInputVariables).fill([""]).flat()
@@ -278,30 +279,30 @@ export default function Home() {
         // check if types of values match the ones of the input variable
 
         // for int
-        if (inputVariable.type === "int") {
+        if (inputVariable.dtype === "int") {
           if (!Number.isInteger(value)) {
             valid = false
             helperText =
               helperText +
-              `- The values for the input variable ${inputVariable.name} must be of type ${inputVariable.type}\n`
+              `- The values for the input variable ${inputVariable.name} must be of type ${inputVariable.dtype}\n`
             break
           }
           // for float
-        } else if (inputVariable.type === "float") {
+        } else if (inputVariable.dtype === "float") {
           if (!(typeof value === "number")) {
             valid = false
             helperText =
               helperText +
-              `- The values for the input variable ${inputVariable.name} must be of type ${inputVariable.type}\n`
+              `- The values for the input variable ${inputVariable.name} must be of type ${inputVariable.dtype}\n`
             break
           }
           // for string
-        } else if (inputVariable.type === "string") {
+        } else if (inputVariable.dtype === "string") {
           if (!(typeof value === "string")) {
             valid = false
             helperText =
               helperText +
-              `- The values for the input variable ${inputVariable.name} must be of type ${inputVariable.type}\n`
+              `- The values for the input variable ${inputVariable.name} must be of type ${inputVariable.dtype}\n`
             break
           }
         }
@@ -335,7 +336,7 @@ export default function Home() {
 
   // function for adding another input variable
   function addInputVariable() {
-    setInputVariables([...inputVariables, { name: "", type: "string" }])
+    setInputVariables([...inputVariables, { name: "", dtype: "string" }])
   }
 
   // function for removing an input variable
@@ -354,7 +355,7 @@ export default function Home() {
 
   function changeInputVariableType(type: "string" | "float" | "int", indx: number) {
     const newFields = inputVariables.map((variable, i) =>
-      i === indx ? { ...variable, type: type } : variable
+      i === indx ? { ...variable, dtype: type } : variable
     )
     setInputVariables(newFields)
   }
@@ -382,7 +383,6 @@ export default function Home() {
       output_type: outputType,
       example_dataset: dataset,
     }
-
     // send the request
     api.postAIFunction(session?.user.access_token as string, body)
   }

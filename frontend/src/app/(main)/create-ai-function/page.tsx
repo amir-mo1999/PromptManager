@@ -13,6 +13,8 @@ import { MuiFileInput } from "mui-file-input"
 import FormHelperText from "@mui/material/FormHelperText"
 import { inputVariableType } from "@/types"
 import Box from "@mui/material/Box"
+import { api } from "@/network"
+import { useSession } from "next-auth/react"
 
 // global variables
 const steps = ["Set Name and Description", "Define Input Variable", "Upload a Validation Dataset"]
@@ -65,6 +67,9 @@ function validateInputVariableName(inputVariableName: string): boolean {
 }
 
 export default function Home() {
+  // get current session
+  const { data: session } = useSession()
+
   // current active step
   const [activeStep, setActiveStep] = useState<number>(0)
 
@@ -368,6 +373,20 @@ export default function Home() {
     setDatasetSize(file?.size === undefined ? 0 : file?.size)
   }
 
+  function handleSubmit() {
+    // assemble the request body
+    const body = {
+      name: functionName,
+      description: description,
+      input_variables: inputVariables,
+      output_type: outputType,
+      example_dataset: dataset,
+    }
+
+    // send the request
+    api.postAIFunction(session?.user.access_token as string, body)
+  }
+
   return (
     <MainContentWrapper>
       <Stepper sx={{ width: "100%" }} nonLinear activeStep={activeStep}>
@@ -420,6 +439,7 @@ export default function Home() {
           inputProps={{ maxLength: 1000 }}
           helperText={descriptionHelpertext}
           error={descriptionError}
+          maxRows={10}
           onBlur={(e) => {
             if (!validateDescription(description)) {
               setDescriptionError(true)
@@ -551,7 +571,11 @@ export default function Home() {
         >
           Back
         </Button>
-        <Button variant="contained" onClick={handleStep} disabled={!canStep}>
+        <Button
+          variant="contained"
+          onClick={activeStep == 2 ? handleSubmit : handleStep}
+          disabled={!canStep}
+        >
           {activeStep === 2 ? "Create AI Function" : "Next"}
         </Button>
       </Box>

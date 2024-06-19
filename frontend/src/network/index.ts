@@ -67,7 +67,7 @@ export const api = {
     return getRequest("/db/get-all-projects", undefined, undefined, accessToken)
   },
 
-  postAIFunction: (accessToken: string, body: AIFunctionInput) => {
+  postAIFunction: (accessToken: string, body: Object) => {
     return postRequest("/db/ai-function", body, "application/json", accessToken)
   },
 }

@@ -11,20 +11,30 @@ from .objectID import PydanticObjectId
 from datetime import datetime
 from .input_variable import InputVariable
 
+# import mongo client
+from pymongo.mongo_client import MongoClient
+
+import os
+from bson import ObjectId
+
 
 class AIFunctionRouteInput(BaseModel):
     # name of the ai function
-    name: Annotated[str, StringConstraints(min_length=1, max_length=30)]
+    name: Annotated[str, StringConstraints(min_length=1, max_length=30)] = Field(
+        ..., example="Summarize Texts"
+    )
 
     # description of the ai function
-    description: Annotated[str, StringConstraints(min_length=1, max_length=1000)]
+    description: Annotated[str, StringConstraints(min_length=1, max_length=1000)] = (
+        Field(..., example="Summarizes english texts to a given number of sentences.")
+    )
 
     # list of input variables
     input_variables: List[InputVariable] = Field(
         ...,
         example=[
-            {"name": "text", "dtype": "string"},
-            {"name": "number_of_sentences", "dtype": "int"},
+            {"name": "text", "var_type": "string"},
+            {"name": "number_of_sentences", "var_type": "numeric"},
         ],
         description="A list of input variables. Each input variable has a name and a type",
     )
@@ -81,22 +91,49 @@ class AIFunctionRouteInput(BaseModel):
                 f"The example dataset contains additional keys other than 'output' or input variable names."
             )
 
-        # assert that the example dataset contains at least 5 data points
-        example_dataset_values = list(self.example_dataset.values())
-        l = len(example_dataset_values[0])
-        if l < 5:
-            raise AssertionError(
-                f"The example dataset does not contain at least 5 data points."
-            )
+        # # assert that the example dataset contains at least 5 data points
+        # example_dataset_values = list(self.example_dataset.values())
+        # l = len(example_dataset_values[0])
+        # if l < 5:
+        #     raise AssertionError(
+        #         f"The example dataset does not contain at least 5 data points."
+        #     )
 
-        # assert that the example dataset value lists are all the same length
-        for value in example_dataset_values[1:]:
-            if len(value) != l:
-                raise AssertionError(
-                    f"The example dataset value lists are not all the same length."
-                )
+        # # assert that the example dataset value lists are all the same length
+        # for value in example_dataset_values[1:]:
+        #     if len(value) != l:
+        #         raise AssertionError(
+        #             f"The example dataset value lists are not all the same length."
+        #         )
 
-        # TODO: add validator to assert that the input types and the types of the example dataset match
+        # assert that for file based input variables the file object key is present in the database
+
+        # set up mongo client
+        uri = os.environ.get("MONGO_CON_STRING")
+        client = MongoClient(uri)
+        db = client["prompt-broker"]
+        file_collection = db["example-data-files"]
+
+        # loop over the input variables
+        for input_variable in self.input_variables:
+            # check if we are dealing with a file based input variable
+            if (
+                input_variable.var_type == "audio_file"
+                or input_variable.var_type == "image_file"
+            ):
+                # loop over the values for this input variable in the dataset
+                for obj_id in self.example_dataset[input_variable.name]:
+                    # assert that the object id is an actual object id
+                    if not ObjectId.is_valid(obj_id):
+                        raise AssertionError(f"{obj_id} is not a valid object id")
+
+                    # try finding the value which is the object id for the file in the dataset and return an error if its not there
+                    file_doc = file_collection.find({"_id": ObjectId(obj_id)})
+                    if len(list(file_doc)) == 0:
+                        raise AssertionError(
+                            f"No file with the object id {obj_id} was found."
+                        )
+
         return self
 
 

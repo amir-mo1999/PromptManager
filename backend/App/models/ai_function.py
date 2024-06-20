@@ -30,7 +30,7 @@ from bson import ObjectId
 
 class AIFunctionRouteInput(BaseModel):
     # name of the ai function
-    name: Annotated[str, StringConstraints(min_length=1, max_length=30)] = Field(
+    name: Annotated[str, StringConstraints(min_length=1, max_length=40)] = Field(
         ..., example="Summarize Texts"
     )
 

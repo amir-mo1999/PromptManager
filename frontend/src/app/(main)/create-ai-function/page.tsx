@@ -21,9 +21,8 @@ const inputOutputTypeValues = ["string", "numeric", "audio_file", "image_file"]
 const inputOutputTypeAliases = ["Text", "Number", "Audio file", "Image file"]
 
 //TODO: add validation for the function name so there is no doubles
-//TODO: clean up code
 //TODO: redirect user after submit
-//TODO: increase max length of function name
+//TODO: change form so that users can add constraints to output and to the input variables
 
 export default function Home() {
   // get current session

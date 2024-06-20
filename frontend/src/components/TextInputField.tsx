@@ -35,7 +35,13 @@ const TextInputField: React.FC<TextInputFieldProps> = ({
       label={label}
       variant="outlined"
       required={true}
-      onChange={(e) => valueSetter(e.target.value)}
+      onChange={(e) => {
+        valueSetter(e.target.value)
+        if (e.target.value !== "") {
+          setIsError(false)
+          setHelperText("")
+        }
+      }}
       inputProps={inputProps}
       helperText={helperText}
       multiline={multiline ? multiline : false}
@@ -43,7 +49,7 @@ const TextInputField: React.FC<TextInputFieldProps> = ({
       maxRows={maxRows ? maxRows : undefined}
       error={isError}
       onBlur={(e) => {
-        if (e.target.value === undefined) {
+        if (e.target.value === "") {
           setIsError(true)
           setHelperText("Please enter a function name")
         } else {

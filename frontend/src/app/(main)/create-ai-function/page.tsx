@@ -1,6 +1,6 @@
 "use client"
 import * as React from "react"
-import { ContentStepper, MainContentWrapper } from "@/components"
+import { ContentStepper, MainContentWrapper, TextInputField } from "@/components"
 import { useState, useEffect } from "react"
 import Typography from "@mui/material/Typography"
 import TextField from "@mui/material/TextField"
@@ -107,7 +107,7 @@ export default function Home() {
 
   // handles forward step
   function handleStep() {
-    setActiveStep(activeStep === 2 ? 2 : activeStep + 1)
+    setActiveStep(activeStep === 3 ? 3 : activeStep + 1)
     if (activeStep === 1) {
       validateDataset()
     }
@@ -115,6 +115,7 @@ export default function Home() {
 
   // handles back step
   function handleBackStep() {
+    console.log("checking can step")
     setActiveStep(activeStep === 0 ? 0 : activeStep - 1)
     setCanStep(true)
   }
@@ -142,7 +143,10 @@ export default function Home() {
         }
       })
       return aux
-      // for step 3: if dataset is not uploaded or invalid
+      // for step 4: if dataset is not uploaded or invalid
+    } else if (activeStep === 2) {
+      //TODO: update this after setting the output constraints and stuff
+      return true
     } else {
       if (dataset === undefined || !validateDataset()) {
         return false
@@ -161,6 +165,7 @@ export default function Home() {
       descriptionError,
       inputVariables,
       inputVariablesError,
+      outputType,
       dataset,
       datasetFile,
       datasetError,
@@ -383,7 +388,12 @@ export default function Home() {
     <MainContentWrapper>
       <ContentStepper
         activeStep={activeStep}
-        steps={["Set Name and Description", "Define Input Variable", "Upload a Validation Dataset"]}
+        steps={[
+          "Set Name and Description",
+          "Define output type and constraints",
+          "Define Input Variable",
+          "Upload a Validation Dataset",
+        ]}
       />
       {/* Step one content*/}
       <Box
@@ -394,60 +404,28 @@ export default function Home() {
           width: "30%",
         }}
       >
+        {/* AI function name*/}
         <Typography>Give the Function a name</Typography>
-        <TextField
-          id="outlined-basic"
+        <TextInputField
+          valueSetter={setFunctionName}
+          isError={functionNameError}
+          setIsError={setFunctionNameError}
           label="name"
-          variant="outlined"
-          required={true}
-          onChange={(e) => setFunctionName(e.target.value)}
-          inputProps={{ maxLength: 20 }}
-          helperText={functionNameHelpertext}
-          error={functionNameError}
-          onBlur={(e) => {
-            if (!validateFunctionName(functionName)) {
-              setFunctionNameError(true)
-              setFunctionNameHelpertext("Please enter a function name")
-            } else {
-              setFunctionNameError(false)
-              setFunctionNameHelpertext("")
-            }
-          }}
-        />
+          inputProps={{ maxLength: 40 }}
+        ></TextInputField>
+
+        {/* AI function description*/}
         <Typography>Describe what this Function does</Typography>
-        <TextField
-          id="outlined-basic"
+        <TextInputField
+          valueSetter={setDescription}
+          isError={descriptionError}
+          setIsError={setDescriptionError}
           label="description"
-          variant="outlined"
-          required={true}
+          inputProps={{ maxLength: 1000 }}
           multiline={true}
           minRows={5}
-          onChange={(e) => setDescription(e.target.value)}
-          inputProps={{ maxLength: 1000 }}
-          helperText={descriptionHelpertext}
-          error={descriptionError}
           maxRows={10}
-          onBlur={(e) => {
-            if (!validateDescription(description)) {
-              setDescriptionError(true)
-              setDescriptionHelpertext("Please enter a description")
-            } else {
-              setDescriptionError(false)
-              setDescriptionHelpertext("")
-            }
-          }}
-        />
-        <Typography>Define the output type</Typography>
-        <TextField
-          defaultValue={"string"}
-          select={true}
-          required={true}
-          onChange={(e) => setOutputType(e.target.value)}
-        >
-          <MenuItem value="int">int</MenuItem>
-          <MenuItem value="string">string</MenuItem>
-          <MenuItem value="float">float</MenuItem>
-        </TextField>
+        ></TextInputField>
       </Box>
       {/* Step Two content*/}
       <Box
@@ -528,7 +506,29 @@ export default function Home() {
         </Button>
       </Box>
       {/* Step Three content*/}
-      <Box sx={{ width: "30%", display: activeStep === 2 ? "normal" : "none", height: "80%" }}>
+      <Box
+        sx={{
+          display: activeStep === 2 ? "flex" : "none",
+          flexDirection: "column",
+          height: "80%",
+          width: "30%",
+        }}
+      >
+        {/* AI function output type*/}
+        <Typography>Define the output type</Typography>
+        <TextField
+          defaultValue={"string"}
+          select={true}
+          required={true}
+          onChange={(e) => setOutputType(e.target.value)}
+        >
+          <MenuItem value="int">int</MenuItem>
+          <MenuItem value="string">string</MenuItem>
+          <MenuItem value="float">float</MenuItem>
+        </TextField>
+      </Box>
+      {/* Step Four content*/}
+      <Box sx={{ width: "30%", display: activeStep === 3 ? "normal" : "none", height: "80%" }}>
         <Typography>Upload a .json file containing the example dataset</Typography>
         <Typography>Max size: 20mb</Typography>
         <MuiFileInput
@@ -560,10 +560,10 @@ export default function Home() {
         </Button>
         <Button
           variant="contained"
-          onClick={activeStep == 2 ? handleSubmit : handleStep}
+          onClick={activeStep == 3 ? handleSubmit : handleStep}
           disabled={!canStep}
         >
-          {activeStep === 2 ? "Create AI Function" : "Next"}
+          {activeStep === 3 ? "Create AI Function" : "Next"}
         </Button>
       </Box>
     </MainContentWrapper>

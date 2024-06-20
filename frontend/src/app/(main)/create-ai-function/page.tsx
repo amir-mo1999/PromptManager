@@ -21,50 +21,6 @@ const datasetMaxSize = 20000000
 //TODO: clean up code
 //TODO: redirect user after submit
 //TODO: increase max length of function name
-function validateFunctionName(functionName: string): boolean {
-  let valid = true
-
-  // length must be at least one character long
-  if (functionName.length < 1) {
-    valid = false
-  }
-
-  // max 20 characters long
-  if (functionName.length > 20) {
-    valid = false
-  }
-  return valid
-}
-
-function validateDescription(description: string): boolean {
-  let valid = true
-
-  // length must be at least one character long
-  if (description.length < 1) {
-    valid = false
-  }
-
-  // max 20 characters long
-  if (description.length > 1000) {
-    valid = false
-  }
-  return valid
-}
-
-function validateInputVariableName(inputVariableName: string): boolean {
-  let valid = true
-
-  // length must be at least one character long
-  if (inputVariableName.length < 1) {
-    valid = false
-  }
-
-  // max 20 characters long
-  if (inputVariableName.length > 20) {
-    valid = false
-  }
-  return valid
-}
 
 export default function Home() {
   // get current session
@@ -75,12 +31,10 @@ export default function Home() {
 
   // state for function name
   const [functionName, setFunctionName] = useState<string>("")
-  const [functionNameHelpertext, setFunctionNameHelpertext] = useState<string>("")
   const [functionNameError, setFunctionNameError] = useState<boolean>(false)
 
   // state for description
   const [description, setDescription] = useState<string>("")
-  const [descriptionHelpertext, setDescriptionHelpertext] = useState<string>("")
   const [descriptionError, setDescriptionError] = useState<boolean>(false)
 
   // state for output type
@@ -437,7 +391,6 @@ export default function Home() {
         }}
       >
         <Typography>Define the input variables of your function</Typography>
-
         {inputVariables.map((variable, indx) => (
           <Box sx={{ display: "flex", flexDirection: "column", width: "full" }} key={indx}>
             <Typography>Variable {(indx + 1).toString()}</Typography>
@@ -448,20 +401,32 @@ export default function Home() {
                 variant="outlined"
                 required={true}
                 value={variable.name}
-                inputProps={{ maxLength: 20 }}
-                onChange={(event) => {
-                  changeInputVariableName(event.target.value, indx)
+                inputProps={{ maxLength: 40 }}
+                onChange={(e) => {
+                  {
+                    changeInputVariableName(e.target.value, indx)
+                    if (e.target.value !== "") {
+                      const err = inputVariablesError
+                      err[indx] = false
+                      setInputVariablesError([...err])
+
+                      const helper = inputVariablesHelpertext
+                      helper[indx] = ""
+                      setInputVariablesHelpertext([...helper])
+                    }
+                  }
                 }}
                 error={inputVariablesError[indx]}
                 helperText={inputVariablesHelpertext[indx]}
-                onBlur={() => {
-                  if (!validateInputVariableName(inputVariables[indx].name)) {
+                onBlur={(e) => {
+                  // set error if field was blurred and is still empty
+                  if (e.target.value === "") {
                     const err = inputVariablesError
                     err[indx] = true
                     setInputVariablesError([...err])
 
                     const helper = inputVariablesHelpertext
-                    helper[indx] = "Please enter a variable name"
+                    helper[indx] = "This field is required"
                     setInputVariablesHelpertext([...helper])
                   } else {
                     const err = inputVariablesError

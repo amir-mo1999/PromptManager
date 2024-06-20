@@ -51,7 +51,7 @@ const TextInputField: React.FC<TextInputFieldProps> = ({
       onBlur={(e) => {
         if (e.target.value === "") {
           setIsError(true)
-          setHelperText("Please enter a function name")
+          setHelperText("This field is required")
         } else {
           setIsError(false)
           setHelperText("")

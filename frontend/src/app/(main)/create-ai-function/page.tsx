@@ -1,6 +1,7 @@
 "use client"
 import * as React from "react"
 import { ContentStepper, MainContentWrapper, TextInputField } from "@/components"
+import { AIFunctionInput } from "@/types"
 import { useState, useEffect } from "react"
 import Typography from "@mui/material/Typography"
 import TextField from "@mui/material/TextField"
@@ -15,7 +16,9 @@ import { useSession } from "next-auth/react"
 
 // global variables
 const maxInputVariables = 5
-const datasetMaxSize = 20000000
+const maxDatasetEntries = 10
+const inputOutputTypeValues = ["string", "numeric", "audio_file", "image_file"]
+const inputOutputTypeAliases = ["Text", "Number", "Audio file", "Image file"]
 
 //TODO: add validation for the function name so there is no doubles
 //TODO: clean up code
@@ -42,7 +45,7 @@ export default function Home() {
 
   // state for input variables
   const [inputVariables, setInputVariables] = useState<inputVariableType[]>([
-    { name: "", dtype: "string" },
+    { name: "", var_type: "string" },
   ])
   const [inputVariablesHelpertext, setInputVariablesHelpertext] = useState<Array<string>>(
     Array(maxInputVariables).fill([""]).flat()
@@ -50,21 +53,39 @@ export default function Home() {
   const [inputVariablesError, setInputVariablesError] = useState<Array<boolean>>(
     Array(maxInputVariables).fill([false]).flat()
   )
+  // function for adding another input variable
+  function addInputVariable() {
+    setInputVariables([...inputVariables, { name: "", var_type: "string" }])
+  }
 
-  // state variables for dataset
-  const [datasetFile, setDatasetFile] = useState<File | null>(null)
-  const [dataset, setDataset] = useState<{ [key: string]: number[] | string[] }>()
-  const [datasetSize, setDatasetSize] = useState<number>(0)
-  const [datasetAboveMax, setDatasetAboveMax] = useState<boolean>(false)
-  const [datasetError, setDatasetError] = useState<boolean>(false)
-  const [datasetHelperText, setDatasetHelperText] = useState<string>("")
+  // function for removing an input variable
+  function removeInputVariable(indx: number) {
+    const a = inputVariables.filter((item, i) => i !== indx)
+    setInputVariables(a)
+  }
+
+  // function for changing input variable name
+  function changeInputVariableName(name: string, indx: number) {
+    const newFields = inputVariables.map((variable, i) =>
+      i === indx ? { ...variable, name: name } : variable
+    )
+    setInputVariables(newFields)
+  }
+
+  function changeInputVariableType(type: "string" | "float" | "int", indx: number) {
+    const newFields = inputVariables.map((variable, i) =>
+      i === indx ? { ...variable, var_type: type } : variable
+    )
+    setInputVariables(newFields)
+  }
+
+  // set dataset state
+  const [dataset, setDataset] = useState<Record<string, (string | number)[]>>()
+  const [nOfDatapoints, setnOfDatapoints] = useState<number>(1)
 
   // handles forward step
   function handleStep() {
     setActiveStep(activeStep === 3 ? 3 : activeStep + 1)
-    if (activeStep === 1) {
-      validateDataset()
-    }
   }
 
   // handles back step
@@ -102,10 +123,7 @@ export default function Home() {
       //TODO: update this after setting the output constraints and stuff
       return true
     } else {
-      if (dataset === undefined || !validateDataset()) {
-        return false
-      }
-      return true
+      return false
     }
   }
 
@@ -120,210 +138,23 @@ export default function Home() {
       inputVariables,
       inputVariablesError,
       outputType,
-      dataset,
-      datasetFile,
-      datasetError,
       activeStep,
     ]
   )
 
-  // validates the dataset
-  function validateDataset(): boolean {
-    // if dataset not uploaded; in this case do not give an error yet because the user might not have uploaded it yet
-    if (dataset === undefined) {
-      return false
-    }
-
-    // helper text in case there are errors
-    let helperText = "Please review the following errors:\n"
-
-    // if dataset is valid
-    let valid = true
-
-    // Validation 0: check if the dataset is above max size
-    if (datasetAboveMax) {
-      helperText =
-        helperText + `- The file exceeds the maximum size of ${datasetMaxSize / 1000000}mb`
-      valid = false
-    }
-
-    // if the previous validations fails skip the validations coming after
-    if (!valid) {
-      setIsDatasetValid(valid, helperText)
-      return valid
-    }
-
-    // some helper variables
-    const dataSetKeys = Object.keys(dataset)
-    const dataSetElements = Object.values(dataset)
-
-    // Validation 1: check that the elements of the dataset are arrays
-    for (const key in dataset) {
-      if (!Array.isArray(dataset[key])) {
-        valid = false
-        helperText = helperText + "- The values for each key must be contained in arrays\n"
-        break
-      }
-    }
-
-    // Validation 2: check if all input variables are present in dataset
-    const missingInputVariableNames: Array<string> = []
-    inputVariables.forEach((inputVariable) => {
-      if (!(inputVariable.name in dataset)) {
-        valid = false
-
-        // set the dataset error
-        setDatasetError(true)
-
-        // append to missing variable names
-        missingInputVariableNames.push(inputVariable.name)
-      }
-    })
-    // add helper text if there are input variables missing
-    if (missingInputVariableNames.length > 0) {
-      helperText =
-        helperText +
-        `- The following input variables are not present as keys in the dataset: ${missingInputVariableNames.join(
-          ", "
-        )}\n`
-    }
-
-    // Validation 3: check if dataset has the same amount of keys as there are input variables plus one for the output key
-    if (Object.keys(dataset).length - 1 !== inputVariables.length) {
-      valid = false
-      setDatasetError(true)
-      helperText =
-        helperText +
-        "- The dataset must not contain additional keys other than the variable names and the output key\n"
-    }
-
-    // Validation 4: check if the output key is present in the dataset
-    if (!dataset.hasOwnProperty("output")) {
-      valid = false
-      helperText =
-        helperText +
-        "- The dataset must contain the key for the outputs of the ai function: output\n"
-    }
-
-    // if the one of previous validations fails skip the validations coming after
-    if (!valid) {
-      setIsDatasetValid(valid, helperText)
-      return valid
-    }
-
-    // Validation 5: check that all elements of the dataset have the same amount of entries
-    // get length of first for the first key
-    const l = dataset[Object.keys(dataset)[0]].length
-    // iterate over the dataset and check if length matches the length of the first element
-    for (const key in dataset) {
-      if (dataset[key].length !== l) {
-        valid = false
-        helperText = helperText + "- The data points for each key must have the same length\n"
-        break
-      }
-    }
-
-    // Validation 6: check if the types of the input variables match the ones inputted in the input variable step
-    inputVariables.forEach((inputVariable) => {
-      // loop over values in dataset for current input variable
-      for (const value of dataset[inputVariable.name]) {
-        // check if types of values match the ones of the input variable
-
-        // for int
-        if (inputVariable.dtype === "int") {
-          if (!Number.isInteger(value)) {
-            valid = false
-            helperText =
-              helperText +
-              `- The values for the input variable ${inputVariable.name} must be of type ${inputVariable.dtype}\n`
-            break
-          }
-          // for float
-        } else if (inputVariable.dtype === "float") {
-          if (!(typeof value === "number")) {
-            valid = false
-            helperText =
-              helperText +
-              `- The values for the input variable ${inputVariable.name} must be of type ${inputVariable.dtype}\n`
-            break
-          }
-          // for string
-        } else if (inputVariable.dtype === "string") {
-          if (!(typeof value === "string")) {
-            valid = false
-            helperText =
-              helperText +
-              `- The values for the input variable ${inputVariable.name} must be of type ${inputVariable.dtype}\n`
-            break
-          }
-        }
-      }
-    })
-
-    setIsDatasetValid(valid, helperText)
-    return valid
-  }
-
-  function setIsDatasetValid(valid: boolean, helperText: string) {
-    if (!valid) {
-      setDatasetHelperText(helperText)
-      setDatasetError(true)
-    } else {
-      setDatasetError(false)
-      setDatasetHelperText("")
-    }
-  }
-
-  // when dataset size changes, check if it exceed max size and set the state to true if yes
-  useEffect(() => {
-    if (datasetSize > datasetMaxSize) {
-      setDatasetAboveMax(true)
-      validateDataset()
-    } else {
-      setDatasetAboveMax(false)
-      validateDataset()
-    }
-  }, [datasetSize])
-
-  // function for adding another input variable
-  function addInputVariable() {
-    setInputVariables([...inputVariables, { name: "", dtype: "string" }])
-  }
-
-  // function for removing an input variable
-  function removeInputVariable(indx: number) {
-    const a = inputVariables.filter((item, i) => i !== indx)
-    setInputVariables(a)
-  }
-
-  // function for changing input variable name
-  function changeInputVariableName(name: string, indx: number) {
-    const newFields = inputVariables.map((variable, i) =>
-      i === indx ? { ...variable, name: name } : variable
-    )
-    setInputVariables(newFields)
-  }
-
-  function changeInputVariableType(type: "string" | "float" | "int", indx: number) {
-    const newFields = inputVariables.map((variable, i) =>
-      i === indx ? { ...variable, dtype: type } : variable
-    )
-    setInputVariables(newFields)
-  }
-
   // function for handling the file upload of the dataset
-  const handleFileUploadChange = (file: File | null) => {
-    // set the dataset file
-    setDatasetFile(file)
+  // const handleFileUploadChange = (file: File | null) => {
+  //   // set the dataset file
+  //   setDatasetFile(file)
 
-    // read the file and set the dataset
-    const reader = new FileReader()
-    file?.text().then((content) => {
-      setDataset(JSON.parse(content))
-    })
-    // set the dataset size
-    setDatasetSize(file?.size === undefined ? 0 : file?.size)
-  }
+  //   // read the file and set the dataset
+  //   const reader = new FileReader()
+  //   file?.text().then((content) => {
+  //     setDataset(JSON.parse(content))
+  //   })
+  //   // set the dataset size
+  //   setDatasetSize(file?.size === undefined ? 0 : file?.size)
+  // }
 
   function handleSubmit() {
     // assemble the request body
@@ -332,7 +163,7 @@ export default function Home() {
       description: description,
       input_variables: inputVariables,
       output_type: outputType,
-      example_dataset: dataset,
+      //example_dataset: dataset,
     }
     // send the request
     api.postAIFunction(session?.user.access_token as string, body)
@@ -447,9 +278,11 @@ export default function Home() {
                   changeInputVariableType(e.target.value as "string" | "float" | "int", indx)
                 }
               >
-                <MenuItem value="int">int</MenuItem>
-                <MenuItem value="string">string</MenuItem>
-                <MenuItem value="float">float</MenuItem>
+                {inputOutputTypeValues.map((value, indx) => (
+                  <MenuItem key={indx} value={value}>
+                    {inputOutputTypeAliases[indx]}
+                  </MenuItem>
+                ))}
               </TextField>
               {indx === 0 ? (
                 ""
@@ -487,35 +320,50 @@ export default function Home() {
           required={true}
           onChange={(e) => setOutputType(e.target.value)}
         >
-          <MenuItem value="int">int</MenuItem>
-          <MenuItem value="string">string</MenuItem>
-          <MenuItem value="float">float</MenuItem>
+          {inputOutputTypeValues.map((value, indx) => (
+            <MenuItem key={indx} value={value}>
+              {inputOutputTypeAliases[indx]}
+            </MenuItem>
+          ))}
         </TextField>
       </Box>
       {/* Step Four content*/}
-      <Box sx={{ width: "30%", display: activeStep === 3 ? "normal" : "none", height: "80%" }}>
-        <Typography>Upload a .json file containing the example dataset</Typography>
-        <Typography>Max size: 20mb</Typography>
-        <MuiFileInput
-          inputProps={{ accept: ".json" }}
-          value={datasetFile}
-          onChange={(file) => {
-            handleFileUploadChange(file)
-          }}
-          error={datasetError}
-          helperText={
-            <FormHelperText component={"span"}>
-              {datasetHelperText.split("\n").map((line, index) => (
-                <span key={index}>
-                  {line}
-                  <br />
-                </span>
-              ))}
-            </FormHelperText>
-          }
-        />
+      <Box
+        sx={{
+          flexDirection: "column",
+          width: "80%",
+          display: activeStep === 3 ? "flex" : "none",
+          height: "80%",
+        }}
+      >
+        <Typography align="center">Define the validation dataset</Typography>
+        <Box sx={{ display: "flex", flexDirection: "row", width: "100%" }}>
+          {/* One Box for each input variable*/}
+          {inputVariables.map((inputVariable, indx) => (
+            <Box
+              key={indx}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: `${100 / inputVariables.length}%`,
+              }}
+            >
+              <Typography align="center">{inputVariable.name}</Typography>
+            </Box>
+          ))}
+        </Box>
+        <Button variant="contained">Add Data Point</Button>
       </Box>
-      <Box sx={{ display: "flex", flexDirection: "row" }}>
+
+      {/* Bottom buttons*/}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          width: "30%",
+        }}
+      >
         <Button
           variant="contained"
           onClick={handleBackStep}

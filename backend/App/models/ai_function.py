@@ -10,6 +10,16 @@ from typing import Annotated, List, Dict, Union, Literal
 from .objectID import PydanticObjectId
 from datetime import datetime
 from .input_variable import InputVariable
+from .input_and_output_constraints import (
+    StringInputConstraints,
+    StringOutputConstraints,
+    NumericInputConstraints,
+    NumericOutputConstraints,
+    AudioFileInputConstraints,
+    AudioFileOutputConstraints,
+    ImageFileInputConstraints,
+    ImageFileOutputConstraints,
+)
 
 # import mongo client
 from pymongo.mongo_client import MongoClient
@@ -40,8 +50,16 @@ class AIFunctionRouteInput(BaseModel):
     )
 
     # output type; same type options as for input variables
-    output_type: Literal["numeric", "string", "audio_file", "image_file"]
+    output_type: Literal["numeric", "string", "audio_file", "image_file"] = Field(
+        ..., example="string"
+    )
 
+    output_constraints: Union[
+        NumericOutputConstraints,
+        StringOutputConstraints,
+        AudioFileOutputConstraints,
+        ImageFileOutputConstraints,
+    ] = Field(..., example=StringOutputConstraints(type="string", max_char_length=500))
     # the example dataset works differently depending on what type of input data is used
     # for file inputs such as audio files or image files the object id of this file is saved in the dataset not the content of the file itself
     # for numeric or string inputs the actual value of the input is saved
@@ -93,10 +111,35 @@ class AIFunctionRouteInput(BaseModel):
 
         ## assert that the example dataset value lists are all the same length
         example_dataset_values = list(self.example_dataset.values())
+        l = len(example_dataset_values[0])
         for value in example_dataset_values[1:]:
             if len(value) != l:
                 raise AssertionError(
                     f"The example dataset value lists are not all the same length."
+                )
+
+        ## assert that the output constraint match the output type
+        if self.output_type == "numeric":
+            if not isinstance(self.output_constraints, NumericOutputConstraints):
+                raise AssertionError(
+                    f"The output constraints are not of type NumericOutputConstraints."
+                )
+        elif self.output_type == "string":
+            print(type(self.output_constraints))
+            print(self.output_constraints)
+            if not isinstance(self.output_constraints, StringOutputConstraints):
+                raise AssertionError(
+                    f"The output constraints are not of type StringOutputConstraints."
+                )
+        elif self.output_type == "audio_file":
+            if not isinstance(self.output_constraints, AudioFileOutputConstraints):
+                raise AssertionError(
+                    f"The output constraints are not of type AudioFileOutputConstraints."
+                )
+        elif self.output_type == "image_file":
+            if not isinstance(self.output_constraints, ImageFileOutputConstraints):
+                raise AssertionError(
+                    f"The output constraints are not of type ImageFileOutputConstraints."
                 )
 
         ## assert that for file based input variables the file object key is present in the database

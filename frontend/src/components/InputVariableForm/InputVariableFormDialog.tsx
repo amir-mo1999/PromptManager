@@ -27,8 +27,10 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
   indx,
 }) => {
   const [open, setOpen] = useState<boolean>(false)
-  const [name, setName] = useState("")
-  const [type, setType] = useState<inputVariableType["var_type"]>("string")
+  const [name, setName] = useState(showButton ? "" : inputVariables[indx].name)
+  const [type, setType] = useState<inputVariableType["var_type"]>(
+    showButton ? "string" : inputVariables[indx].var_type
+  )
   const [nameError, setNameError] = useState<boolean>(false)
   const [nameHelperText, setNameHelperText] = useState<string>("")
 
@@ -61,6 +63,8 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
     }
     setInputVariables([...a])
     setOpen(false)
+    setName("")
+    setType("string")
   }
 
   function resetForm() {

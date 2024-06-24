@@ -1,11 +1,6 @@
 "use client"
 import * as React from "react"
-import {
-  ContentStepper,
-  MainContentWrapper,
-  TextInputField,
-  InputVariableFormDialog,
-} from "@/components"
+import { ContentStepper, MainContentWrapper, TextInputField, InputVariableForm } from "@/components"
 import { AIFunctionInput } from "@/types"
 import { useState, useEffect } from "react"
 import Typography from "@mui/material/Typography"
@@ -189,95 +184,10 @@ export default function Home() {
         }}
       >
         <Typography align="center">Define the input variables of your function</Typography>
-        {inputVariables.map((_, indx) => {
-          return (
-            <InputVariableFormDialog
-              showButton={false}
-              inputVariables={inputVariables}
-              setInputVariables={setInputVariables}
-              indx={indx}
-              key={indx}
-            ></InputVariableFormDialog>
-          )
-        })}
-        <InputVariableFormDialog
+        <InputVariableForm
           inputVariables={inputVariables}
-          showButton={true}
           setInputVariables={setInputVariables}
-          indx={inputVariables.length + 1}
-        ></InputVariableFormDialog>
-        {/* {inputVariables.map((variable, indx) => (
-          <Box sx={{ display: "flex", flexDirection: "column", width: "full" }} key={indx}>
-            <Typography>Variable {(indx + 1).toString()}</Typography>
-            <Box sx={{ display: "flex", flexDirection: "row", width: "full" }}>
-              <TextField
-                id="outlined-basic"
-                label="variable name"
-                variant="outlined"
-                required={true}
-                value={variable.name}
-                inputProps={{ maxLength: 40 }}
-                onChange={(e) => {
-                  {
-                    changeInputVariableName(e.target.value, indx)
-                    if (e.target.value !== "") {
-                      const err = inputVariablesError
-                      err[indx] = false
-                      setInputVariablesError([...err])
-
-                      const helper = inputVariablesHelpertext
-                      helper[indx] = ""
-                      setInputVariablesHelpertext([...helper])
-                    }
-                  }
-                }}
-                error={inputVariablesError[indx]}
-                helperText={inputVariablesHelpertext[indx]}
-                onBlur={(e) => {
-                  // set error if field was blurred and is still empty
-                  if (e.target.value === "") {
-                    const err = inputVariablesError
-                    err[indx] = true
-                    setInputVariablesError([...err])
-
-                    const helper = inputVariablesHelpertext
-                    helper[indx] = "This field is required"
-                    setInputVariablesHelpertext([...helper])
-                  } else {
-                    const err = inputVariablesError
-                    err[indx] = false
-                    setInputVariablesError([...err])
-
-                    const helper = inputVariablesHelpertext
-                    helper[indx] = ""
-                    setInputVariablesHelpertext([...helper])
-                  }
-                }}
-              />
-              <TextField
-                defaultValue={"string"}
-                select={true}
-                required={true}
-                onChange={(e) =>
-                  changeInputVariableType(e.target.value as "string" | "float" | "int", indx)
-                }
-              >
-                {inputOutputTypeValues.map((value, indx) => (
-                  <MenuItem key={indx} value={value}>
-                    {inputOutputTypeAliases[indx]}
-                  </MenuItem>
-                ))}
-              </TextField>
-              {indx === 0 ? (
-                ""
-              ) : (
-                <Button variant="contained" onClick={() => removeInputVariable(indx)}>
-                  -
-                </Button>
-              )}
-            </Box>
-          </Box>
-        ))} */}
+        ></InputVariableForm>
       </Box>
       {/* Step Three content*/}
       <Box

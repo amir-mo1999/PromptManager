@@ -1,6 +1,11 @@
 "use client"
 import * as React from "react"
-import { ContentStepper, MainContentWrapper, TextInputField } from "@/components"
+import {
+  ContentStepper,
+  MainContentWrapper,
+  TextInputField,
+  InputVariableFormDialog,
+} from "@/components"
 import { AIFunctionInput } from "@/types"
 import { useState, useEffect } from "react"
 import Typography from "@mui/material/Typography"
@@ -13,12 +18,11 @@ import { inputVariableType } from "@/types"
 import Box from "@mui/material/Box"
 import { api } from "@/network"
 import { useSession } from "next-auth/react"
+import { inputOutputTypes } from "@/app/utils"
 
 // global variables
 const maxInputVariables = 5
 const maxDatasetEntries = 10
-const inputOutputTypeValues = ["string", "numeric", "audio_file", "image_file"]
-const inputOutputTypeAliases = ["Text", "Number", "Audio file", "Image file"]
 
 //TODO: add validation for the function name so there is no doubles
 //TODO: redirect user after submit
@@ -43,15 +47,14 @@ export default function Home() {
   const [outputType, setOutputType] = useState<string>("string")
 
   // state for input variables
-  const [inputVariables, setInputVariables] = useState<inputVariableType[]>([
-    { name: "", var_type: "string" },
-  ])
+  const [inputVariables, setInputVariables] = useState<inputVariableType[]>([])
   const [inputVariablesHelpertext, setInputVariablesHelpertext] = useState<Array<string>>(
     Array(maxInputVariables).fill([""]).flat()
   )
   const [inputVariablesError, setInputVariablesError] = useState<Array<boolean>>(
     Array(maxInputVariables).fill([false]).flat()
   )
+
   // function for adding another input variable
   function addInputVariable() {
     setInputVariables([...inputVariables, { name: "", var_type: "string" }])
@@ -71,12 +74,12 @@ export default function Home() {
     setInputVariables(newFields)
   }
 
-  function changeInputVariableType(type: "string" | "float" | "int", indx: number) {
-    const newFields = inputVariables.map((variable, i) =>
-      i === indx ? { ...variable, var_type: type } : variable
-    )
-    setInputVariables(newFields)
-  }
+  // function changeInputVariableType(type: "string" | "float" | "int", indx: number) {
+  //   const newFields = inputVariables.map((variable, i) =>
+  //     i === indx ? { ...variable, var_type: type } : variable
+  //   )
+  //   setInputVariables(newFields)
+  // }
 
   // set dataset state
   const [dataset, setDataset] = useState<Record<string, (string | number)[]>>()
@@ -135,7 +138,7 @@ export default function Home() {
       functionNameError,
       descriptionError,
       inputVariables,
-      inputVariablesError,
+      // inputVariablesError,
       outputType,
       activeStep,
     ]
@@ -189,7 +192,7 @@ export default function Home() {
         }}
       >
         {/* AI function name*/}
-        <Typography>Give the Function a name</Typography>
+        <Typography align="center">Give the Function a name</Typography>
         <TextInputField
           valueSetter={setFunctionName}
           isError={functionNameError}
@@ -220,8 +223,25 @@ export default function Home() {
           height: "80%",
         }}
       >
-        <Typography>Define the input variables of your function</Typography>
-        {inputVariables.map((variable, indx) => (
+        <Typography align="center">Define the input variables of your function</Typography>
+        {inputVariables.map((_, indx) => {
+          return (
+            <InputVariableFormDialog
+              showButton={false}
+              inputVariables={inputVariables}
+              setInputVariables={setInputVariables}
+              indx={indx}
+              key={indx}
+            ></InputVariableFormDialog>
+          )
+        })}
+        <InputVariableFormDialog
+          inputVariables={inputVariables}
+          showButton={true}
+          setInputVariables={setInputVariables}
+          indx={inputVariables.length + 1}
+        ></InputVariableFormDialog>
+        {/* {inputVariables.map((variable, indx) => (
           <Box sx={{ display: "flex", flexDirection: "column", width: "full" }} key={indx}>
             <Typography>Variable {(indx + 1).toString()}</Typography>
             <Box sx={{ display: "flex", flexDirection: "row", width: "full" }}>
@@ -292,15 +312,7 @@ export default function Home() {
               )}
             </Box>
           </Box>
-        ))}
-        <Button
-          disabled={inputVariables.length === 5 ? true : false}
-          variant="contained"
-          sx={{ alignSelf: "center" }}
-          onClick={addInputVariable}
-        >
-          Add variable
-        </Button>
+        ))} */}
       </Box>
       {/* Step Three content*/}
       <Box
@@ -312,18 +324,25 @@ export default function Home() {
         }}
       >
         {/* AI function output type*/}
-        <Typography>Define the output type</Typography>
+        <Typography align="center">Define the output type</Typography>
         <TextField
           defaultValue={"string"}
           select={true}
           required={true}
           onChange={(e) => setOutputType(e.target.value)}
         >
-          {inputOutputTypeValues.map((value, indx) => (
-            <MenuItem key={indx} value={value}>
-              {inputOutputTypeAliases[indx]}
-            </MenuItem>
-          ))}
+          {Object.keys(inputOutputTypes).map((key, indx) => {
+            // @ts-ignore
+            const alias = inputOutputTypes[key]
+            return (
+              <MenuItem key={indx} value={key}>
+                {
+                  // @ts-ignore
+                  inputOutputTypes[key]
+                }
+              </MenuItem>
+            )
+          })}
         </TextField>
       </Box>
       {/* Step Four content*/}
@@ -351,7 +370,9 @@ export default function Home() {
             </Box>
           ))}
         </Box>
-        <Button variant="contained">Add Data Point</Button>
+        <Button variant="contained" sx={{ alignSelf: "center" }}>
+          Add Data Point
+        </Button>
       </Box>
 
       {/* Bottom buttons*/}

@@ -48,38 +48,6 @@ export default function Home() {
 
   // state for input variables
   const [inputVariables, setInputVariables] = useState<inputVariableType[]>([])
-  const [inputVariablesHelpertext, setInputVariablesHelpertext] = useState<Array<string>>(
-    Array(maxInputVariables).fill([""]).flat()
-  )
-  const [inputVariablesError, setInputVariablesError] = useState<Array<boolean>>(
-    Array(maxInputVariables).fill([false]).flat()
-  )
-
-  // function for adding another input variable
-  function addInputVariable() {
-    setInputVariables([...inputVariables, { name: "", var_type: "string" }])
-  }
-
-  // function for removing an input variable
-  function removeInputVariable(indx: number) {
-    const a = inputVariables.filter((item, i) => i !== indx)
-    setInputVariables(a)
-  }
-
-  // function for changing input variable name
-  function changeInputVariableName(name: string, indx: number) {
-    const newFields = inputVariables.map((variable, i) =>
-      i === indx ? { ...variable, name: name } : variable
-    )
-    setInputVariables(newFields)
-  }
-
-  // function changeInputVariableType(type: "string" | "float" | "int", indx: number) {
-  //   const newFields = inputVariables.map((variable, i) =>
-  //     i === indx ? { ...variable, var_type: type } : variable
-  //   )
-  //   setInputVariables(newFields)
-  // }
 
   // set dataset state
   const [dataset, setDataset] = useState<Record<string, (string | number)[]>>()
@@ -92,7 +60,6 @@ export default function Home() {
 
   // handles back step
   function handleBackStep() {
-    console.log("checking can step")
     setActiveStep(activeStep === 0 ? 0 : activeStep - 1)
     setCanStep(true)
   }
@@ -102,7 +69,7 @@ export default function Home() {
 
   // checks if user can step based on field entries
   function checkCanStep(): boolean {
-    // for first step: if function name or description is empty or if there are errors
+    // for step 1: if function name or description is empty or if there are errors
     if (activeStep === 0) {
       if (functionName === "" || description === "") {
         return false
@@ -111,15 +78,12 @@ export default function Home() {
         return false
       }
       return true
-      // for step 2: if input variable names are not set
+      // for step 2: if no input variable is set
     } else if (activeStep === 1) {
-      let aux = true
-      inputVariables.forEach((inputVariable) => {
-        if (inputVariable.name === "") {
-          aux = false
-        }
-      })
-      return aux
+      if (inputVariables.length === 0) {
+        return false
+      }
+      return true
       // for step 4: if dataset is not uploaded or invalid
     } else if (activeStep === 2) {
       //TODO: update this after setting the output constraints and stuff

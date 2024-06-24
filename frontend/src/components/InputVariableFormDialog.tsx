@@ -97,6 +97,11 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
     setType(e.target.value as inputVariableType["var_type"])
   }
 
+  function onDeleteVariable(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    const a = inputVariables.filter((item, i) => i !== indx)
+    setInputVariables([...a])
+  }
+
   return (
     <React.Fragment>
       {showButton ? (
@@ -104,11 +109,21 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
           Add Input Variable
         </Button>
       ) : (
-        <Paper sx={{ backgroundColor: "#F3F2F7" }} onClick={onClickOpen}>
-          <Box>
+        <Paper
+          sx={{
+            backgroundColor: "#F3F2F7",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Box onClick={onClickOpen}>
             <Typography>Variable 1 {inputVariables[indx].name}</Typography>
             <Typography>Input Type {inputOutputTypes[inputVariables[indx].var_type]}</Typography>
           </Box>
+          <Button variant="contained" onClick={onDeleteVariable}>
+            -
+          </Button>
         </Paper>
       )}
 

@@ -84,13 +84,14 @@ export default function Home() {
         return false
       }
       return true
-      // for step 4: if dataset is not uploaded or invalid
+      // for step 3: if dataset is not uploaded or invalid
     } else if (activeStep === 2) {
+      return true
+    } else if (activeStep === 3) {
       //TODO: update this after setting the output constraints and stuff
       return true
-    } else {
-      return false
     }
+    return false
   }
 
   // check if user can step; updates whenever a field entry is updated

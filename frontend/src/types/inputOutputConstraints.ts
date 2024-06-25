@@ -2,19 +2,19 @@
 import { z } from "zod"
 
 const StringInputConstraintsObj = z.object({
-  type: z.literal("string"),
+  type: z.literal("string").default("string"),
   max_char_length: z.number().default(-1),
   min_char_length: z.number().default(0),
 })
 
 const NumericInputConstraintsObj = z.object({
-  type: z.literal("numeric"),
+  type: z.literal("numeric").default("numeric"),
   max_value: z.union([z.number(), z.literal(Infinity)]).default(Infinity),
   min_value: z.union([z.number(), z.literal(-Infinity)]).default(-Infinity),
 })
 
 const AudioFileInputConstraintsObj = z.object({
-  type: z.literal("audio_file"),
+  type: z.literal("audio_file").default("audio_file"),
   max_file_size: z.union([z.number(), z.literal(Infinity)]).default(Infinity),
   min_file_size: z.number().default(0),
   min_length: z.number().default(0),
@@ -22,7 +22,7 @@ const AudioFileInputConstraintsObj = z.object({
 })
 
 const ImageFileInputConstraintsObj = z.object({
-  type: z.literal("image_file"),
+  type: z.literal("image_file").default("image_file"),
   max_file_size: z.union([z.number(), z.literal(Infinity)]).default(Infinity),
   min_file_size: z.number().default(0),
   min_width: z.number().default(0),

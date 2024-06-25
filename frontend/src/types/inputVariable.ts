@@ -1,4 +1,10 @@
 import { z } from "zod"
+import {
+  StringInputConstraintsObj,
+  NumericInputConstraintsObj,
+  AudioFileInputConstraintsObj,
+  ImageFileInputConstraintsObj,
+} from "./inputOutputConstraints"
 
 // Define the schema using zod
 const inputVariable = z.object({
@@ -8,6 +14,12 @@ const inputVariable = z.object({
     z.literal("numeric"),
     z.literal("audio_file"),
     z.literal("image_file"),
+  ]),
+  constraints: z.union([
+    StringInputConstraintsObj,
+    NumericInputConstraintsObj,
+    AudioFileInputConstraintsObj,
+    ImageFileInputConstraintsObj,
   ]),
 })
 

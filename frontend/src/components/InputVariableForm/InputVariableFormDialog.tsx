@@ -10,8 +10,9 @@ import Box from "@mui/material/Box"
 import DialogTitle from "@mui/material/DialogTitle"
 import { useState, useEffect, Dispatch, SetStateAction } from "react"
 import { inputVariableType, inputVariable } from "@/types"
-import { Typography } from "@mui/material"
+import Typography from "@mui/material/Typography"
 import { inputOutputTypes } from "@/app/utils"
+import { InputVariableConstraintsForm } from "./InputVariableConstraintsForm"
 
 interface InputVariableFormDialogProps {
   setInputVariables: Dispatch<SetStateAction<Array<inputVariableType>>>
@@ -202,6 +203,10 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
             </Box>
 
             {/* Field for the input variable constraints */}
+            <InputVariableConstraintsForm
+              constraintType={type}
+              setConstraints={setConstraints}
+            ></InputVariableConstraintsForm>
           </Box>
         </DialogContent>
         <DialogActions>

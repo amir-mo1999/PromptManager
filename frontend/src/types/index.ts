@@ -16,9 +16,9 @@ export type {
 
 export {
   StringInputConstraintsObj,
+  NumericInputConstraintsObj,
   ImageFileInputConstraintsObj,
   AudioFileInputConstraintsObj,
-  NumericInputConstraintsObj,
 } from "./inputOutputConstraints"
 
 export { inputVariable } from "./inputVariable"

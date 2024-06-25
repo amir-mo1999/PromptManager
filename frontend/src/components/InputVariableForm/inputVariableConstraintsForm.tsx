@@ -1,9 +1,9 @@
 import React, { useState, Dispatch, SetStateAction } from "react"
 import {
   StringInputConstraintsObj,
+  NumericInputConstraintsObj,
   ImageFileInputConstraintsObj,
   AudioFileInputConstraintsObj,
-  NumericInputConstraintsObj,
 } from "@/types"
 import { inputOutputTypes } from "@/app/utils"
 import Typography from "@mui/material/Typography"
@@ -29,10 +29,10 @@ const InputVariableConstraintsForm: React.FC<inputVariableConstraintsFormProps> 
       constraints = NumericInputConstraintsObj.parse({})
       break
     case inputTypes[2]:
-      constraints = AudioFileInputConstraintsObj.parse({})
+      constraints = ImageFileInputConstraintsObj.parse({})
       break
     case inputTypes[3]:
-      constraints = ImageFileInputConstraintsObj.parse({})
+      constraints = AudioFileInputConstraintsObj.parse({})
       break
     default:
       throw new Error(`Constraint Type ${constraintType} is invalid`)

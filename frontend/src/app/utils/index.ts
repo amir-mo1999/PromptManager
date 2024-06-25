@@ -4,6 +4,6 @@
 export const inputOutputTypes = {
   string: "Text",
   numeric: "Number",
-  audio_file: "Audio file",
   image_file: "Image file",
+  audio_file: "Audio file",
 }

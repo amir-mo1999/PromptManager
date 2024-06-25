@@ -13,3 +13,4 @@ export type {
   AudioFileOutputConstraints,
   ImageFileOutputConstraints,
 } from "./inputOutputConstraints"
+export { inputVariable } from "./inputVariable"

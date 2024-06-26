@@ -3,32 +3,31 @@ import { z } from "zod"
 
 const StringInputConstraintsObj = z.object({
   type: z.literal("string").default("string"),
-  max_char_length: z.number().default(-1),
+  max_char_length: z.number().default(1000),
   min_char_length: z.number().default(0),
 })
 
 const NumericInputConstraintsObj = z.object({
   type: z.literal("numeric").default("numeric"),
-  max_value: z.union([z.number(), z.literal(Infinity)]).default(Infinity),
-  min_value: z.union([z.number(), z.literal(-Infinity)]).default(-Infinity),
-})
-
-const AudioFileInputConstraintsObj = z.object({
-  type: z.literal("audio_file").default("audio_file"),
-  max_file_size: z.union([z.number(), z.literal(Infinity)]).default(Infinity),
-  min_file_size: z.number().default(0),
-  min_length: z.number().default(0),
-  max_length: z.union([z.number(), z.literal(Infinity)]).default(Infinity),
+  accept_float: z.boolean().default(false),
+  max_value: z.number().default(1000),
+  min_value: z.number().default(0),
 })
 
 const ImageFileInputConstraintsObj = z.object({
   type: z.literal("image_file").default("image_file"),
-  max_file_size: z.union([z.number(), z.literal(Infinity)]).default(Infinity),
-  min_file_size: z.number().default(0),
+  max_file_size: z.number().default(2),
   min_width: z.number().default(0),
-  max_width: z.union([z.number(), z.literal(Infinity)]).default(Infinity),
+  max_width: z.number().default(1920),
   min_height: z.number().default(0),
-  max_height: z.union([z.number(), z.literal(Infinity)]).default(Infinity),
+  max_height: z.number().default(1080),
+})
+
+const AudioFileInputConstraintsObj = z.object({
+  type: z.literal("audio_file").default("audio_file"),
+  max_file_size: z.number().default(2),
+  min_length: z.number().default(0),
+  max_length: z.number().default(300),
 })
 
 // export the input objects

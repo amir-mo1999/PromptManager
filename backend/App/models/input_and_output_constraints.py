@@ -10,26 +10,25 @@ class StringInputConstraints(BaseModel):
 
 class NumericInputConstraints(BaseModel):
     type: Literal["numeric"]
-    max_value: Union[int, float] = float("inf")
-    min_value: Union[int, float] = -float("inf")
-
-
-class AudioFileInputConstraints(BaseModel):
-    type: Literal["audio_file"]
-    max_file_size: float = float("inf")
-    min_file_size: float = 0
-    min_length: float = 0
-    max_length: float = float("inf")
+    accept_float: bool = False
+    max_value: Union[int, float] = 1000
+    min_value: Union[int, float] = 0
 
 
 class ImageFileInputConstraints(BaseModel):
     type: Literal["image_file"]
-    max_file_size: float = float("inf")
-    min_file_size: float = 0
+    max_file_size: float = 2
     min_width: float = 0
-    max_width: float = float("inf")
+    max_width: float = 1920
     min_height: float = 0
-    max_height: float = float("inf")
+    max_height: float = 1080
+
+
+class AudioFileInputConstraints(BaseModel):
+    type: Literal["audio_file"]
+    max_file_size: float = 2
+    min_length: float = 0
+    max_length: float = 300
 
 
 class StringOutputConstraints(StringInputConstraints):
@@ -40,9 +39,9 @@ class NumericOutputConstraints(NumericInputConstraints):
     type: Literal["numeric"]
 
 
-class AudioFileOutputConstraints(AudioFileInputConstraints):
-    type: Literal["audio_file"]
-
-
 class ImageFileOutputConstraints(ImageFileInputConstraints):
     type: Literal["image_file"]
+
+
+class AudioFileOutputConstraints(AudioFileInputConstraints):
+    type: Literal["audio_file"]

@@ -2,7 +2,8 @@ import TextField from "@mui/material/TextField"
 import { Dispatch, SetStateAction } from "react"
 import { SxProps } from "@mui/material"
 import { TextFieldVariants } from "@mui/material/TextField"
-interface IntegerInputProps {
+
+interface FloatInputProps {
   value: number
   setValue: Dispatch<SetStateAction<number>>
   minValue?: number
@@ -11,7 +12,7 @@ interface IntegerInputProps {
   sx?: SxProps
 }
 
-const IntegerInput: React.FC<IntegerInputProps> = ({
+const FloatInput: React.FC<FloatInputProps> = ({
   value,
   setValue,
   minValue,
@@ -24,7 +25,7 @@ const IntegerInput: React.FC<IntegerInputProps> = ({
     if (val === "") {
       setValue(minValue === undefined ? 0 : minValue)
     } else {
-      setValue(parseInt(val, 10))
+      setValue(parseFloat(val))
     }
   }
 
@@ -36,9 +37,9 @@ const IntegerInput: React.FC<IntegerInputProps> = ({
       value={value.toString()}
       onChange={onChange}
       sx={sx}
-      inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+      inputProps={{ inputMode: "numeric" }}
     />
   )
 }
 
-export { IntegerInput }
+export { FloatInput }

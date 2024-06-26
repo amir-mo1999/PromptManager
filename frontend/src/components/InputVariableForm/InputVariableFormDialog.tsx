@@ -37,13 +37,7 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
   const [constraints, setConstraints] = useState({})
   const [disableCreateButton, setDisableCreateButton] = useState<boolean>(false)
 
-  // when the type of the variable changes update the constraints state
-  function updateConstraints() {
-    setConstraints({ type: type })
-  }
-  useEffect(updateConstraints, [type])
-
-  // hecks if the create button the dialog should be disabled or not
+  // checks if the create button the dialog should be disabled or not
   function checkDisableCreateButton() {
     const f = () => {
       if (nameError === true || name === "") {
@@ -127,6 +121,8 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
     const a = inputVariables.filter((item, i) => i !== indx)
     setInputVariables([...a])
   }
+
+  useEffect(() => console.log(constraints), [constraints])
 
   return (
     <React.Fragment>

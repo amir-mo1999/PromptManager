@@ -7,6 +7,7 @@ import {
 } from "@/types"
 import { inputOutputTypes } from "@/app/utils"
 import TextField from "@mui/material/TextField"
+import { IntegerInput } from "../Input/IntegerInput"
 import Typography from "@mui/material/Typography"
 
 interface inputVariableConstraintsFormProps {
@@ -19,6 +20,10 @@ const InputVariableConstraintsForm: React.FC<inputVariableConstraintsFormProps> 
 }) => {
   // variable for constraints object
   let constraints = {}
+
+  // for string constraints
+  const [maxCharLength, setMaxCharLength] = useState<number>(1000)
+  const [minCharLength, setMinCharLength] = useState<number>(0)
 
   // initialize constraints object with the default constraints object for the respective constraints type
   const inputTypes = Object.keys(inputOutputTypes)
@@ -39,7 +44,21 @@ const InputVariableConstraintsForm: React.FC<inputVariableConstraintsFormProps> 
       throw new Error(`Constraint Type ${constraintType} is invalid`)
   }
 
-  return ""
+  return (
+    <>
+      <IntegerInput
+        value={maxCharLength}
+        setValue={setMaxCharLength}
+        label="max. character length"
+        minValue={1}
+      ></IntegerInput>
+      <IntegerInput
+        value={minCharLength}
+        setValue={setMinCharLength}
+        label="min. character length"
+      ></IntegerInput>
+    </>
+  )
 }
 
 export { InputVariableConstraintsForm }

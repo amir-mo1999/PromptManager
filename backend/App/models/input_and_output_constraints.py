@@ -4,7 +4,7 @@ from typing import Union, Literal
 
 class StringInputConstraints(BaseModel):
     type: Literal["string"]
-    max_char_length: int = -1
+    max_char_length: int = 1000
     min_char_length: int = 0
 
 

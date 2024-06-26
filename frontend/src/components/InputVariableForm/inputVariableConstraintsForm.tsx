@@ -6,6 +6,7 @@ import {
   AudioFileInputConstraintsObj,
 } from "@/types"
 import { inputOutputTypes } from "@/app/utils"
+import TextField from "@mui/material/TextField"
 import Typography from "@mui/material/Typography"
 
 interface inputVariableConstraintsFormProps {
@@ -38,7 +39,7 @@ const InputVariableConstraintsForm: React.FC<inputVariableConstraintsFormProps> 
       throw new Error(`Constraint Type ${constraintType} is invalid`)
   }
 
-  return <Typography>{constraintType}</Typography>
+  return ""
 }
 
 export { InputVariableConstraintsForm }

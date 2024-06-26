@@ -203,6 +203,13 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
             </Box>
 
             {/* Field for the input variable constraints */}
+            <TextField
+              type="number"
+              label="maximum character count"
+              variant="standard"
+              required={false}
+              inputProps={{ step: "1" }}
+            />
             <InputVariableConstraintsForm
               constraintType={type}
               setConstraints={setConstraints}

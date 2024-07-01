@@ -122,8 +122,6 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
     setInputVariables([...a])
   }
 
-  useEffect(() => console.log(constraints), [constraints])
-
   return (
     <React.Fragment>
       {showButton ? (

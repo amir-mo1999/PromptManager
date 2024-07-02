@@ -13,6 +13,7 @@ import { inputVariableType, inputVariable } from "@/types"
 import Typography from "@mui/material/Typography"
 import { inputOutputTypes } from "@/app/utils"
 import { InputVariableConstraintsForm } from "./InputVariableConstraintsForm"
+import { InputVariableBox } from "./InputVariableBox"
 
 interface InputVariableFormDialogProps {
   setInputVariables: Dispatch<SetStateAction<Array<inputVariableType>>>
@@ -79,6 +80,8 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
 
   // resets the form by resetting the nameError and the helperText
   function resetForm() {
+    setName("")
+    setType("string")
     setNameError(false)
     setNameHelperText("")
   }
@@ -129,22 +132,11 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
           Add Input Variable
         </Button>
       ) : (
-        <Paper
-          sx={{
-            backgroundColor: "#F3F2F7",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <Box onClick={onClickOpen}>
-            <Typography>Variable 1 {inputVariables[indx].name}</Typography>
-            <Typography>Input Type {inputOutputTypes[inputVariables[indx].var_type]}</Typography>
-          </Box>
-          <Button variant="contained" onClick={onDeleteVariable}>
-            -
-          </Button>
-        </Paper>
+        <InputVariableBox
+          inputVariable={inputVariables[indx]}
+          onClickEdit={onClickOpen}
+          onClickDelete={onDeleteVariable}
+        ></InputVariableBox>
       )}
 
       <Dialog open={open} onClose={onClickClose}>

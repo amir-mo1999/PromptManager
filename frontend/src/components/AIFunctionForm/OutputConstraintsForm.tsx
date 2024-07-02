@@ -7,9 +7,7 @@ import {
   OutputConstraints,
 } from "@/types"
 import { inputOutputTypes } from "@/app/utils"
-import TextField from "@mui/material/TextField"
 import { NumberInput } from "@/components"
-import Typography from "@mui/material/Typography"
 import Box from "@mui/material/Box"
 import Checkbox from "@mui/material/Checkbox"
 import FormControlLabel from "@mui/material/FormControlLabel"
@@ -89,7 +87,7 @@ const OutputConstraintsForm: React.FC<OutputConstraintsFormProps> = ({
       default:
         throw new Error(`Constraint Type ${constraintType} is invalid`)
     }
-    setConstraints(constraints)
+    setConstraints({ ...constraints })
   }
   useEffect(updateConstraints, [])
   useEffect(updateConstraints, [

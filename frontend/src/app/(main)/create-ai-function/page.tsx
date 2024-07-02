@@ -201,6 +201,7 @@ export default function Home() {
         sx={{
           display: activeStep === 2 ? "flex" : "none",
           flexDirection: "column",
+          gap: "10px",
           height: "80%",
           width: "30%",
         }}
@@ -209,7 +210,6 @@ export default function Home() {
         <Typography align="center">Define the output type</Typography>
         <TextField
           defaultValue={"string"}
-          sx={{ paddingBottom: "10px" }}
           select={true}
           required={true}
           onChange={(e) => setOutputType(e.target.value)}
@@ -227,6 +227,7 @@ export default function Home() {
             )
           })}
         </TextField>
+        <Typography align="center">Define the output constraints</Typography>
         <OutputConstraintsForm
           constraintType={outputType}
           setConstraints={setOutputConstraints}

@@ -34,8 +34,6 @@ const DatasetFormDialog: React.FC<DatasetFormDialogProps> = ({
   const [disableCreateButton, setDisableCreateButton] = useState<boolean>(false)
   const [record, setRecord] = useState<Record<string, string | number>>({})
 
-  useEffect(() => console.log("Record: ", record), [record])
-
   // event handler when dialog is opened
   function onClickOpen() {
     setOpen(true)

@@ -107,7 +107,6 @@ export default function Home() {
       activeStep,
     ]
   )
-  useEffect(() => console.log("Dataset", dataset), [dataset])
   function handleSubmit() {
     // assemble the request body
     const body = {

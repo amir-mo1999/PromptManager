@@ -15,14 +15,12 @@ import FormControlLabel from "@mui/material/FormControlLabel"
 interface inputVariableConstraintsFormProps {
   constraints: InputConstraints
   constraintType: string
-  inputVariable: inputVariableType
   setConstraints: Dispatch<SetStateAction<InputConstraints>>
 }
 
 const InputVariableConstraintsForm: React.FC<inputVariableConstraintsFormProps> = ({
   constraints,
   constraintType,
-  inputVariable,
   setConstraints,
 }) => {
   //let constraints: InputConstraints = StringInputConstraintsObj.parse({})

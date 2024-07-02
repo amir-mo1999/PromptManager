@@ -40,13 +40,13 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
   )
   const [constraints, setConstraints] = useState<InputConstraints>(initInputConstraints(type))
 
+  // reset the form when the dialog is opened and we are adding a new variable
   function resetForm() {
     setName(addingNewVariable ? "" : inputVariables[indx].name)
     setType(addingNewVariable ? "string" : inputVariables[indx].var_type)
     setConstraints(
       addingNewVariable ? initInputConstraints("string") : inputVariables[indx].constraints
     )
-
     setNameError(false)
   }
   useEffect(resetForm, [open])
@@ -132,7 +132,6 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
             {/* Field for the input variable constraints */}
             <InputVariableConstraintsForm
               constraintType={type}
-              inputVariable={inputVariables[indx]}
               constraints={constraints}
               setConstraints={setConstraints}
             ></InputVariableConstraintsForm>

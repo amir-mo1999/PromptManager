@@ -1,6 +1,6 @@
 import { InputVariableFormDialog } from "./InputVariableFormDialog"
-import { inputVariableType, inputVariableObj } from "@/types"
-import { useState, useEffect, Dispatch, SetStateAction } from "react"
+import { inputVariableType } from "@/types"
+import { useState, Dispatch, SetStateAction } from "react"
 import { InputVariableBox } from "./InputVariableBox"
 
 import Button from "@mui/material/Button"

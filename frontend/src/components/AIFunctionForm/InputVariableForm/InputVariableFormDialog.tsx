@@ -4,46 +4,57 @@ import TextField from "@mui/material/TextField"
 import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
-import Paper from "@mui/material/Paper"
 import MenuItem from "@mui/material/MenuItem"
 import Box from "@mui/material/Box"
 import DialogTitle from "@mui/material/DialogTitle"
 import { useState, useEffect, Dispatch, SetStateAction } from "react"
-import {
-  inputVariableType,
-  inputVariable,
-  InputConstraints,
-  StringInputConstraintsObj,
-} from "@/types"
+import { inputVariableType, InputConstraints } from "@/types"
 import Typography from "@mui/material/Typography"
-import { inputOutputTypes, inputConstraintsAliases } from "@/app/utils"
+import { inputOutputTypes, initInputConstraints } from "@/app/utils"
 import { InputVariableConstraintsForm } from "./InputVariableConstraintsForm"
-import { InputVariableBox } from "./InputVariableBox"
 import { TextInputField } from "@/components/Input"
 
 interface InputVariableFormDialogProps {
-  setInputVariables: Dispatch<SetStateAction<Array<inputVariableType>>>
-  indx: number
-  showButton: boolean
+  open: boolean
   inputVariables: Array<inputVariableType>
+  setNewInputVariable: Dispatch<SetStateAction<inputVariableType | undefined>>
+  onClickClose: (reason: string) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+  onClickCreate: () => void
+  indx: number
 }
 
 const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
+  open,
   inputVariables,
-  setInputVariables,
-  showButton,
+  setNewInputVariable,
+  onClickCreate,
+  onClickClose,
   indx,
 }) => {
-  const [open, setOpen] = useState<boolean>(false)
-  const [name, setName] = useState(showButton ? "" : inputVariables[indx].name)
+  // check if we are adding a new variable or editing an existing one
+  const addingNewVariable = indx >= inputVariables.length
+  // variables for name, type and constraints of new input variable
+  const [name, setName] = useState<string>(addingNewVariable ? "" : inputVariables[indx].name)
   const [type, setType] = useState<inputVariableType["var_type"]>(
-    showButton ? "string" : inputVariables[indx].var_type
+    addingNewVariable ? "string" : inputVariables[indx].var_type
   )
+  const [constraints, setConstraints] = useState<InputConstraints>(initInputConstraints(type))
+
+  function resetForm() {
+    setName(addingNewVariable ? "" : inputVariables[indx].name)
+    setType(addingNewVariable ? "string" : inputVariables[indx].var_type)
+    setConstraints(
+      addingNewVariable ? initInputConstraints("string") : inputVariables[indx].constraints
+    )
+
+    setNameError(false)
+  }
+  useEffect(resetForm, [open])
+
+  // error variable for name field
   const [nameError, setNameError] = useState<boolean>(false)
-  const [nameHelperText, setNameHelperText] = useState<string>("")
-  const [constraints, setConstraints] = useState<InputConstraints>(
-    StringInputConstraintsObj.parse({})
-  )
+
+  // variable for checking if the create button should be disabled
   const [disableCreateButton, setDisableCreateButton] = useState<boolean>(true)
 
   // checks if the create button the dialog should be disabled or not
@@ -59,97 +70,19 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
   useEffect(checkDisableCreateButton, [])
   useEffect(checkDisableCreateButton, [name, nameError])
 
-  // event handler when dialog is opened
-  function onClickOpen() {
-    setOpen(true)
-    checkDisableCreateButton()
+  // update the new input variable whenever a field changes
+  function onChange() {
+    setNewInputVariable({ name: name, var_type: type, constraints: constraints })
   }
-
-  function onClickAddVariable() {
-    setName("")
-    setType("string")
-    checkDisableCreateButton()
-    setOpen(true)
-  }
-
-  // event handler create button is clicked in dialog
-  function onClickCreate() {
-    const auxArray = inputVariables
-    if (indx >= inputVariables.length) {
-      const auxElement = inputVariable.parse({
-        name: name,
-        var_type: type,
-        constraints: constraints,
-      })
-      auxArray.push(auxElement)
-    } else {
-      auxArray[indx].name = name
-      auxArray[indx].var_type = type
-      auxArray[indx].constraints = constraints
-    }
-    setInputVariables([...auxArray])
-    setOpen(false)
-  }
-
-  // resets the form by resetting the nameError and the helperText
-  function resetForm() {
-    setNameError(false)
-    setNameHelperText("")
-  }
-
-  // event handler for when dialog is closed
-  function onClickClose(reason: string) {
-    const f = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      if (reason !== "backdropClick") {
-        setOpen(false)
-        resetForm()
-      }
-    }
-    return f
-  }
-
-  // event handler when input for name field changes
-  function onNameChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    setName(e.target.value)
-    if (e.target.value !== "") {
-      setNameError(false)
-      setNameHelperText("")
-    }
-  }
-
-  // event handler for when user blurs away from input field
-  function onNameBlur(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) {
-    if (e.target.value === "") {
-      setNameError(true)
-      setNameHelperText("This field is required")
-    }
-  }
+  useEffect(onChange, [name, type, constraints])
 
   // event handler the input for the input variable type changes
   function onTypeChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setType(e.target.value as inputVariableType["var_type"])
   }
 
-  // event handler when delete input variable button is clicked
-  function onDeleteVariable(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-    const a = inputVariables.filter((item, i) => i !== indx)
-    setInputVariables([...a])
-  }
-
   return (
     <React.Fragment>
-      {showButton ? (
-        <Button variant="contained" sx={{ alignSelf: "center" }} onClick={onClickAddVariable}>
-          Add Input Variable
-        </Button>
-      ) : (
-        <InputVariableBox
-          inputVariable={inputVariables[indx]}
-          onClickEdit={onClickOpen}
-          onClickDelete={onDeleteVariable}
-        ></InputVariableBox>
-      )}
-
       <Dialog open={open} onClose={onClickClose}>
         <DialogTitle sx={{ paddingBottom: "10px" }}>Define Input Variable</DialogTitle>
         <DialogContent>
@@ -162,6 +95,7 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
           >
             {/* Field for the input variable name */}
             <TextInputField
+              value={name}
               valueSetter={setName}
               isError={nameError}
               setIsError={setNameError}
@@ -199,6 +133,7 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
             <InputVariableConstraintsForm
               constraintType={type}
               inputVariable={inputVariables[indx]}
+              constraints={constraints}
               setConstraints={setConstraints}
             ></InputVariableConstraintsForm>
           </Box>

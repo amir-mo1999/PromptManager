@@ -3,6 +3,7 @@ import { SxProps, Theme } from "@mui/system"
 import TextField from "@mui/material/TextField"
 import { InputBaseComponentProps } from "@mui/material"
 interface TextInputFieldProps {
+  value: string
   valueSetter: Dispatch<SetStateAction<string>>
   isError: boolean
   setIsError: Dispatch<SetStateAction<boolean>>
@@ -16,6 +17,7 @@ interface TextInputFieldProps {
 }
 
 const TextInputField: React.FC<TextInputFieldProps> = ({
+  value,
   valueSetter,
   isError,
   setIsError,
@@ -52,6 +54,7 @@ const TextInputField: React.FC<TextInputFieldProps> = ({
     <TextField
       sx={sx}
       id="outlined-basic"
+      value={value}
       label={label}
       variant="outlined"
       required={true}

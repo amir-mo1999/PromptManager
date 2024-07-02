@@ -7,7 +7,7 @@ import {
 } from "./inputOutputConstraints"
 
 // Define the schema using zod
-const inputVariable = z
+const inputVariableObj = z
   .object({
     name: z.string(),
     var_type: z.union([
@@ -35,7 +35,7 @@ const inputVariable = z
     }
   })
 
-type inputVariableType = z.infer<typeof inputVariable>
+type inputVariableType = z.infer<typeof inputVariableObj>
 
 export type { inputVariableType }
-export { inputVariable }
+export { inputVariableObj }

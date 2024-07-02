@@ -23,4 +23,4 @@ export {
   AudioFileOutputConstraintsObj,
 } from "./inputOutputConstraints"
 
-export { inputVariable } from "./inputVariable"
+export { inputVariableObj } from "./inputVariable"

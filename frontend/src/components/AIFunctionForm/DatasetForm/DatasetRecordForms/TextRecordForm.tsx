@@ -56,6 +56,7 @@ const TextRecordForm: React.FC<TextRecordFormProps> = ({
       <Typography>Variable: </Typography>
       <Typography fontWeight="bold">{inputVariable.name}</Typography>
       <TextInputField
+        value={value}
         valueSetter={setValue}
         isError={isError}
         setIsError={setIsError}

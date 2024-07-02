@@ -7,62 +7,26 @@ import {
   inputVariableType,
   InputConstraints,
 } from "@/types"
-import { inputOutputTypes } from "@/app/utils"
 import { NumberInput } from "@/components"
 import Box from "@mui/material/Box"
 import Checkbox from "@mui/material/Checkbox"
 import FormControlLabel from "@mui/material/FormControlLabel"
 
 interface inputVariableConstraintsFormProps {
+  constraints: InputConstraints
   constraintType: string
   inputVariable: inputVariableType
   setConstraints: Dispatch<SetStateAction<InputConstraints>>
 }
 
 const InputVariableConstraintsForm: React.FC<inputVariableConstraintsFormProps> = ({
+  constraints,
   constraintType,
   inputVariable,
   setConstraints,
 }) => {
-  let constraints: InputConstraints = StringInputConstraintsObj.parse({})
+  //let constraints: InputConstraints = StringInputConstraintsObj.parse({})
 
-  function initConstraints() {
-    if (inputVariable === undefined) {
-      constraints = StringInputConstraintsObj.parse({})
-    } else {
-      switch (constraintType) {
-        case inputTypes[0]:
-          constraints = StringInputConstraintsObj.parse(inputVariable.constraints)
-          setMaxCharLength(constraints.max_char_length)
-          setMinCharLength(constraints.min_char_length)
-          break
-        case inputTypes[1]:
-          constraints = NumericInputConstraintsObj.parse(inputVariable.constraints)
-          setAcceptFloat(constraints.accept_float)
-          setMaxNumValue(constraints.max_value)
-          setMinNumValue(constraints.min_value)
-          break
-        case inputTypes[2]:
-          constraints = ImageFileInputConstraintsObj.parse(inputVariable.constraints)
-          setMaxImageFileSize(constraints.max_file_size)
-          setMaxImageHeight(constraints.max_height)
-          setMaxImageWidth(constraints.max_width)
-          setMinImageHeight(constraints.min_height)
-          setMinImageWidth(constraints.min_width)
-          break
-        case inputTypes[3]:
-          constraints = AudioFileInputConstraintsObj.parse(inputVariable.constraints)
-          setMaxAudioFileSize(constraints.max_file_size)
-          setMaxAudioLength(constraints.max_length)
-          setMinAudioLength(constraints.min_length)
-          break
-        default:
-          throw new Error(`Constraint Type ${constraintType} is invalid`)
-      }
-    }
-  }
-
-  useEffect(initConstraints, [])
   // for string inputs
   const [maxCharLength, setMaxCharLength] = useState<number>(1000)
   const [minCharLength, setMinCharLength] = useState<number>(0)
@@ -71,10 +35,6 @@ const InputVariableConstraintsForm: React.FC<inputVariableConstraintsFormProps> 
   const [acceptFloat, setAcceptFloat] = useState<boolean>(false)
   const [maxNumValue, setMaxNumValue] = useState<number>(1000)
   const [minNumValue, setMinNumValue] = useState<number>(0)
-  useEffect(() => {
-    setMaxNumValue(Math.floor(maxNumValue))
-    setMinNumValue(Math.floor(minNumValue))
-  }, [acceptFloat])
 
   // for image file inputs
   const [maxImageFileSize, setMaxImageFileSize] = useState<number>(2)
@@ -88,28 +48,74 @@ const InputVariableConstraintsForm: React.FC<inputVariableConstraintsFormProps> 
   const [minAudioLength, setMinAudioLength] = useState<number>(0)
   const [maxAudioLength, setMaxAudioLength] = useState<number>(300)
 
-  // initialize constraints object with the default constraints object for the respective constraints type
-  const inputTypes = Object.keys(inputOutputTypes)
+  // initialize state variables with the values from the constraints prop
+  function initConstraints() {
+    {
+      let constraintsAux: InputConstraints = StringInputConstraintsObj.parse({})
+      switch (constraintType) {
+        case "string":
+          constraintsAux = StringInputConstraintsObj.parse(constraints)
+          setMaxCharLength(constraintsAux.max_char_length)
+          setMinCharLength(constraintsAux.min_char_length)
+          break
+        case "numeric":
+          constraintsAux = NumericInputConstraintsObj.parse(constraints)
+          setAcceptFloat(constraintsAux.accept_float)
+          setMaxNumValue(constraintsAux.max_value)
+          setMinNumValue(constraintsAux.min_value)
+          break
+        case "image_file":
+          constraintsAux = ImageFileInputConstraintsObj.parse(constraints)
+          setMaxImageFileSize(constraintsAux.max_file_size)
+          setMaxImageHeight(constraintsAux.max_height)
+          setMaxImageWidth(constraintsAux.max_width)
+          setMinImageHeight(constraintsAux.min_height)
+          setMinImageWidth(constraintsAux.min_width)
+          break
+        case "audio_file":
+          constraintsAux = AudioFileInputConstraintsObj.parse(constraints)
+          setMaxAudioFileSize(constraintsAux.max_file_size)
+          setMaxAudioLength(constraintsAux.max_length)
+          setMinAudioLength(constraintsAux.min_length)
+          break
+        default:
+          throw new Error(`Constraint Type ${constraintType} is invalid`)
+      }
+    }
 
+    setConstraints({ ...constraints })
+  }
+  useEffect(initConstraints, [])
+
+  useEffect(() => {
+    if (constraints.type === "numeric") {
+      const aux = NumericInputConstraintsObj.parse(constraints)
+      setMaxNumValue(Math.floor(aux.max_value))
+      setMinNumValue(Math.floor(aux.min_value))
+    }
+  }, [acceptFloat])
+
+  // update constraints when a field changes
   function updateConstraints() {
+    let constraintsAux: InputConstraints
     switch (constraintType) {
-      case inputTypes[0]:
-        constraints = StringInputConstraintsObj.parse({
+      case "string":
+        constraintsAux = StringInputConstraintsObj.parse({
           type: "string",
           max_char_length: maxCharLength,
           min_char_length: minCharLength,
         })
         break
-      case inputTypes[1]:
-        constraints = NumericInputConstraintsObj.parse({
+      case "numeric":
+        constraintsAux = NumericInputConstraintsObj.parse({
           type: "numeric",
           accept_float: acceptFloat,
           max_value: maxNumValue,
           min_value: minNumValue,
         })
         break
-      case inputTypes[2]:
-        constraints = ImageFileInputConstraintsObj.parse({
+      case "image_file":
+        constraintsAux = ImageFileInputConstraintsObj.parse({
           type: "image_file",
           max_file_size: maxImageFileSize,
           min_width: minImageWidth,
@@ -118,8 +124,8 @@ const InputVariableConstraintsForm: React.FC<inputVariableConstraintsFormProps> 
           max_height: maxImageHeight,
         })
         break
-      case inputTypes[3]:
-        constraints = AudioFileInputConstraintsObj.parse({
+      case "audio_file":
+        constraintsAux = AudioFileInputConstraintsObj.parse({
           type: "audio_file",
           max_file_size: maxAudioFileSize,
           min_length: minAudioLength,
@@ -130,10 +136,9 @@ const InputVariableConstraintsForm: React.FC<inputVariableConstraintsFormProps> 
         throw new Error(`Constraint Type ${constraintType} is invalid`)
     }
 
-    setConstraints({ ...constraints })
+    setConstraints({ ...constraintsAux })
   }
 
-  useEffect(updateConstraints, [])
   useEffect(updateConstraints, [
     constraintType,
     maxCharLength,
@@ -155,7 +160,7 @@ const InputVariableConstraintsForm: React.FC<inputVariableConstraintsFormProps> 
     <>
       {/* String */}
       <Box
-        display={constraintType !== inputTypes[0] ? "none" : "flex"}
+        display={constraintType !== "string" ? "none" : "flex"}
         sx={{ flexDirection: "column", gap: "10px" }}
       >
         <NumberInput
@@ -173,7 +178,7 @@ const InputVariableConstraintsForm: React.FC<inputVariableConstraintsFormProps> 
       </Box>
       {/* Number */}
       <Box
-        display={constraintType !== inputTypes[1] ? "none" : "flex"}
+        display={constraintType !== "numeric" ? "none" : "flex"}
         sx={{ flexDirection: "column", gap: "10px" }}
       >
         <FormControlLabel
@@ -199,7 +204,7 @@ const InputVariableConstraintsForm: React.FC<inputVariableConstraintsFormProps> 
       </Box>
       {/* Image File */}
       <Box
-        display={constraintType !== inputTypes[2] ? "none" : "flex"}
+        display={constraintType !== "image_file" ? "none" : "flex"}
         sx={{ flexDirection: "column", gap: "10px" }}
       >
         <NumberInput
@@ -247,7 +252,7 @@ const InputVariableConstraintsForm: React.FC<inputVariableConstraintsFormProps> 
 
       {/* Audio File */}
       <Box
-        display={constraintType !== inputTypes[3] ? "none" : "flex"}
+        display={constraintType !== "audio_file" ? "none" : "flex"}
         sx={{ flexDirection: "column", gap: "10px" }}
       >
         <NumberInput

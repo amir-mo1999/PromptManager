@@ -1,3 +1,11 @@
+import {
+  StringInputConstraintsObj,
+  NumericInputConstraintsObj,
+  ImageFileInputConstraintsObj,
+  AudioFileInputConstraintsObj,
+  InputConstraints,
+} from "@/types"
+
 export const inputOutputTypes = {
   string: "Text",
   numeric: "Number",
@@ -19,3 +27,27 @@ export const inputConstraintsAliases = {
   min_length: "min. length",
   max_length: "max. length",
 }
+
+function initInputConstraints(type: "string" | "numeric" | "image_file" | "audio_file") {
+  let constraints: InputConstraints = StringInputConstraintsObj.parse({})
+  switch (type) {
+    case "string":
+      constraints = StringInputConstraintsObj.parse({})
+      break
+    case "numeric":
+      constraints = NumericInputConstraintsObj.parse({})
+      break
+    case "image_file":
+      constraints = ImageFileInputConstraintsObj.parse({})
+      break
+    case "audio_file":
+      constraints = AudioFileInputConstraintsObj.parse({})
+      break
+    default:
+      throw new Error(`Constraint Type ${type} is invalid`)
+  }
+
+  return constraints
+}
+
+export { initInputConstraints }

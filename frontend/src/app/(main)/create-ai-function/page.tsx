@@ -143,6 +143,7 @@ export default function Home() {
         {/* AI function name*/}
         <Typography align="center">Give the Function a name</Typography>
         <TextInputField
+          value={functionName}
           valueSetter={setFunctionName}
           isError={functionNameError}
           setIsError={setFunctionNameError}
@@ -154,6 +155,7 @@ export default function Home() {
         {/* AI function description*/}
         <Typography>Describe what this Function does</Typography>
         <TextInputField
+          value={description}
           valueSetter={setDescription}
           isError={descriptionError}
           setIsError={setDescriptionError}

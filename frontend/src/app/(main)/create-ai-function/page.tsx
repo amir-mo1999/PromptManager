@@ -8,14 +8,12 @@ import {
   OutputConstraintsForm,
   DatasetForm,
 } from "@/components"
-import { AIFunctionInput, OutputConstraints } from "@/types"
+import { OutputConstraints } from "@/types"
 import { useState, useEffect } from "react"
 import Typography from "@mui/material/Typography"
 import TextField from "@mui/material/TextField"
 import MenuItem from "@mui/material/MenuItem"
 import Button from "@mui/material/Button"
-import { MuiFileInput } from "mui-file-input"
-import FormHelperText from "@mui/material/FormHelperText"
 import { inputVariableType } from "@/types"
 import Box from "@mui/material/Box"
 import { api } from "@/network"
@@ -28,7 +26,6 @@ const maxDatasetEntries = 10
 
 //TODO: add validation for the function name so there is no doubles
 //TODO: redirect user after submit
-//TODO: change form so that users can add constraints to output and to the input variables
 
 export default function Home() {
   // get current session
@@ -53,7 +50,7 @@ export default function Home() {
   const [inputVariables, setInputVariables] = useState<inputVariableType[]>([])
 
   // set dataset state
-  const [dataset, setDataset] = useState<Record<string, (string | number)[]>>({})
+  const [dataset, setDataset] = useState<Array<Record<string, string | number>>>([])
 
   // handles forward step
   function handleStep() {
@@ -110,21 +107,7 @@ export default function Home() {
       activeStep,
     ]
   )
-
-  // function for handling the file upload of the dataset
-  // const handleFileUploadChange = (file: File | null) => {
-  //   // set the dataset file
-  //   setDatasetFile(file)
-
-  //   // read the file and set the dataset
-  //   const reader = new FileReader()
-  //   file?.text().then((content) => {
-  //     setDataset(JSON.parse(content))
-  //   })
-  //   // set the dataset size
-  //   setDatasetSize(file?.size === undefined ? 0 : file?.size)
-  // }
-
+  useEffect(() => console.log("Dataset", dataset), [dataset])
   function handleSubmit() {
     // assemble the request body
     const body = {
@@ -243,7 +226,11 @@ export default function Home() {
         }}
       >
         <Typography align="center">Define the validation dataset</Typography>
-        <DatasetForm inputVariables={inputVariables} setDataset={setDataset}></DatasetForm>
+        <DatasetForm
+          inputVariables={inputVariables}
+          dataset={dataset}
+          setDataset={setDataset}
+        ></DatasetForm>
       </Box>
 
       {/* Bottom buttons*/}

@@ -5,14 +5,16 @@ import { TextRecordForm } from "./DatasetRecordForms"
 import { useState, Dispatch, SetStateAction } from "react"
 interface DatapointFieldFormProps {
   inputVariable: inputVariableType
+  record: Record<string, string | number>
   setDisableCreateButton: Dispatch<SetStateAction<boolean>>
-  setDataset: Dispatch<SetStateAction<Record<string, (string | number)[]>>>
+  setRecord: Dispatch<SetStateAction<Record<string, string | number>>>
 }
 
 const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
   inputVariable,
+  record,
   setDisableCreateButton,
-  setDataset,
+  setRecord,
 }) => {
   let content = <></>
   switch (inputVariable.var_type) {
@@ -21,7 +23,8 @@ const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
         <TextRecordForm
           setDisableCreateButton={setDisableCreateButton}
           inputVariable={inputVariable}
-          setDataset={setDataset}
+          record={record}
+          setRecord={setRecord}
         ></TextRecordForm>
       )
     // case "numeric":

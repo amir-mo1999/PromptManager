@@ -4,25 +4,33 @@ import { inputVariableType } from "@/types"
 import TextField from "@mui/material/TextField"
 import { useState, useEffect, Dispatch, SetStateAction } from "react"
 import { StringInputConstraintsObj } from "@/types"
+import { Typography } from "@mui/material"
 
 interface TextRecordFormProps {
   inputVariable: inputVariableType
-  setDataset: Dispatch<SetStateAction<Record<string, (string | number)[]>>>
+  record: Record<string, string | number>
+  setRecord: Dispatch<SetStateAction<Record<string, string | number>>>
   setDisableCreateButton: Dispatch<SetStateAction<boolean>>
 }
 
 const TextRecordForm: React.FC<TextRecordFormProps> = ({
   inputVariable,
-  setDataset,
+  record,
+  setRecord,
   setDisableCreateButton,
 }) => {
   const [value, setValue] = useState<string>("")
   const [isError, setIsError] = useState<boolean>(false)
   const [helperText, setHelperText] = useState<string>("")
   const constraints = StringInputConstraintsObj.parse(inputVariable.constraints)
+
   function onChange(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) {
     setValue(e.target.value)
     checkMinCharLength(e.target.value)
+
+    let auxRecord: { [key: string]: string } = {}
+    auxRecord[inputVariable.name] = value
+    setRecord({ ...record, ...auxRecord })
   }
 
   function checkMinCharLength(value: string) {
@@ -52,16 +60,28 @@ const TextRecordForm: React.FC<TextRecordFormProps> = ({
   useEffect(checkDisableCreateButton, [])
 
   return (
-    <TextField
-      id="outlined-basic"
-      variant="outlined"
-      required={true}
-      onChange={onChange}
-      helperText={helperText}
-      error={isError}
-      onBlur={onBlur}
-      inputProps={{ maxLength: constraints.max_char_length }}
-    />
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        gap: "10px",
+        justifyContent: "space-between",
+      }}
+    >
+      <Typography>Variable: </Typography>
+      <Typography fontWeight="bold">{inputVariable.name}</Typography>
+      <TextField
+        id="outlined-basic"
+        variant="outlined"
+        required={true}
+        onChange={onChange}
+        helperText={helperText}
+        error={isError}
+        onBlur={onBlur}
+        inputProps={{ maxLength: constraints.max_char_length }}
+      />
+    </Box>
   )
 }
 

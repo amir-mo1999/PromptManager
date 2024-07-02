@@ -5,7 +5,7 @@ import { TextInputField } from "@/components/Input"
 import { useState, Dispatch, SetStateAction } from "react"
 
 interface FileRecordFormProps {
-  setDataset: Dispatch<SetStateAction<Record<string, (string | number)[]>>>
+  setDataset: Dispatch<SetStateAction<Array<Record<string, string | number>>>>
 }
 
 const FileRecordForm: React.FC<FileRecordFormProps> = ({}) => {

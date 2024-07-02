@@ -19,6 +19,7 @@ const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
   let content = <></>
   switch (inputVariable.var_type) {
     case "string":
+      console.log("case string")
       content = (
         <TextRecordForm
           setDisableCreateButton={setDisableCreateButton}
@@ -27,15 +28,18 @@ const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
           setRecord={setRecord}
         ></TextRecordForm>
       )
+      break
     case "numeric":
+      console.log("case numeric")
       content = (
         <NumericRecordForm
-          setDisableCreateButton={setDisableCreateButton}
           inputVariable={inputVariable}
           record={record}
           setRecord={setRecord}
         ></NumericRecordForm>
       )
+      break
+
     // case "image_file":
     //   content = <FileInput setDataset={setDataset}></FileInput>
     // case "audio_file":

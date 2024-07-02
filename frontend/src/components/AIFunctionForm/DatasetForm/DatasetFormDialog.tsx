@@ -74,6 +74,7 @@ const DatasetFormDialog: React.FC<DatasetFormDialogProps> = ({
           <DialogContent>
             <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
               {inputVariables.map((inputVariable, indx) => {
+                console.log("Input Variables:", inputVariables)
                 return (
                   <DatapointFieldForm
                     key={indx}

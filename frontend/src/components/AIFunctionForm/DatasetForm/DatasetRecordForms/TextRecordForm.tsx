@@ -42,6 +42,7 @@ const TextRecordForm: React.FC<TextRecordFormProps> = ({
       setHelperText("")
     }
   }
+
   function onBlur(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) {
     checkMinCharLength(e.target.value)
   }

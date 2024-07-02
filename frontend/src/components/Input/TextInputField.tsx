@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react"
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react"
 import { SxProps, Theme } from "@mui/system"
 import TextField from "@mui/material/TextField"
 import { InputBaseComponentProps } from "@mui/material"
@@ -10,6 +10,7 @@ interface TextInputFieldProps {
   label: string
   inputProps?: InputBaseComponentProps
   multiline?: boolean
+  minChars?: number
   minRows?: number
   maxRows?: number
   sx?: SxProps<Theme>
@@ -22,11 +23,31 @@ const TextInputField: React.FC<TextInputFieldProps> = ({
   label,
   inputProps,
   multiline,
+  minChars = 0,
   minRows,
   maxRows,
   sx,
 }) => {
   const [helperText, setHelperText] = useState<string>("")
+
+  function checkMinCharLength(value: string) {
+    if (value.length < minChars && value.length !== 0) {
+      setIsError(true)
+      setHelperText(`Must contain at least ${minChars} characters`)
+    } else {
+      setIsError(false)
+      setHelperText("")
+    }
+  }
+
+  function onChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    valueSetter(e.target.value)
+    checkMinCharLength(e.target.value)
+  }
+
+  function onBlur(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) {
+    checkMinCharLength(e.target.value)
+  }
 
   return (
     <TextField

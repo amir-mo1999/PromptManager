@@ -1,7 +1,7 @@
 import * as React from "react"
 import Box from "@mui/material/Box"
 import { inputVariableType } from "@/types"
-import { TextRecordForm } from "./DatasetRecordForms"
+import { TextRecordForm, NumericRecordForm } from "./DatasetRecordForms"
 import { useState, Dispatch, SetStateAction } from "react"
 interface DatapointFieldFormProps {
   inputVariable: inputVariableType
@@ -27,8 +27,15 @@ const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
           setRecord={setRecord}
         ></TextRecordForm>
       )
-    // case "numeric":
-    //   content = <NumericInput setDataset={setDataset}></NumericInput>
+    case "numeric":
+      content = (
+        <NumericRecordForm
+          setDisableCreateButton={setDisableCreateButton}
+          inputVariable={inputVariable}
+          record={record}
+          setRecord={setRecord}
+        ></NumericRecordForm>
+      )
     // case "image_file":
     //   content = <FileInput setDataset={setDataset}></FileInput>
     // case "audio_file":

@@ -4,6 +4,8 @@ import { SxProps } from "@mui/material"
 import { TextFieldVariants } from "@mui/material/TextField"
 import InputAdornment from "@mui/material/InputAdornment"
 
+//TODO: add validation to check that number min is lower than number max
+
 interface NumberInputProps {
   value: number
   setValue: Dispatch<SetStateAction<number>>
@@ -19,7 +21,7 @@ interface NumberInputProps {
 const NumberInput: React.FC<NumberInputProps> = ({
   value,
   setValue,
-  minValue,
+  minValue = -10000,
   acceptFloat = false,
   maxValue = 10000,
   valueSuffix = "",
@@ -35,6 +37,8 @@ const NumberInput: React.FC<NumberInputProps> = ({
       let numValue = acceptFloat ? parseFloat(val) : parseInt(val, 10)
       if (numValue > maxValue) {
         numValue = maxValue
+      } else if (numValue < minValue) {
+        numValue = minValue
       }
       setValue(numValue)
     }

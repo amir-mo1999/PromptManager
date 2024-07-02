@@ -243,21 +243,6 @@ export default function Home() {
         }}
       >
         <Typography align="center">Define the validation dataset</Typography>
-        <Box sx={{ display: "flex", flexDirection: "row", width: "100%" }}>
-          {/* One Box for each input variable*/}
-          {inputVariables.map((inputVariable, indx) => (
-            <Box
-              key={indx}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: `${100 / inputVariables.length}%`,
-              }}
-            >
-              <Typography align="center">{inputVariable.name}</Typography>
-            </Box>
-          ))}
-        </Box>
         <Button variant="contained" sx={{ alignSelf: "center" }}>
           Add Data Point
         </Button>

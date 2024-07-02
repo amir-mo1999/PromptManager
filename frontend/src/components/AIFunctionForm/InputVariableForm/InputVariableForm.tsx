@@ -87,7 +87,7 @@ const InputVariableForm: React.FC<InputVariableFormProps> = ({
         return (
           <InputVariableBox
             key={indx}
-            inputVariable={inputVariables[indx]}
+            inputVariable={inputVariable}
             onClickEdit={onClickEditVariable(indx)}
             onClickDelete={onClickDeleteVariable(indx)}
           ></InputVariableBox>

@@ -16,85 +16,57 @@ import { DatapointFieldForm } from "./DatapointFieldForm"
 import { IndeterminateCheckBox } from "@mui/icons-material"
 
 interface DatasetFormDialogProps {
+  open: boolean
+  settingNewRecord: boolean
   inputVariables: Array<inputVariableType>
-  showButton: boolean
-  dataset: Array<Record<string, string | number>>
+  newRecord: Record<string, string | number>
+  setNewRecord: Dispatch<SetStateAction<Record<string, string | number>>>
+  onClickClose: (reason: string) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+  onClickCreate: () => void
   indx: number
-  setDataset: Dispatch<SetStateAction<Array<Record<string, string | number>>>>
 }
 
 const DatasetFormDialog: React.FC<DatasetFormDialogProps> = ({
+  open,
   inputVariables,
-  showButton,
-  dataset,
+  settingNewRecord,
+  newRecord,
+  setNewRecord,
+  onClickClose,
+  onClickCreate,
   indx,
-  setDataset,
 }) => {
-  const [open, setOpen] = useState<boolean>(false)
   const [disableCreateButton, setDisableCreateButton] = useState<boolean>(false)
-  const [record, setRecord] = useState<Record<string, string | number>>({})
 
-  // event handler when dialog is opened
-  function onClickOpen() {
-    setOpen(true)
-  }
-
-  // event handler for when dialog is closed
-  function onClickClose(reason: string) {
-    const f = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      if (reason !== "backdropClick") {
-        setOpen(false)
-      }
-    }
-    return f
-  }
-
-  function onClickCreate() {
-    let auxArray = dataset
-    if (indx >= dataset.length) {
-      auxArray.push(record)
-    } else {
-      auxArray[indx] = record
-    }
-    setDataset([...auxArray])
-    setOpen(false)
-  }
-
-  if (showButton) {
-    return (
-      <React.Fragment>
-        <Button variant="contained" sx={{ alignSelf: "center" }} onClick={onClickOpen}>
-          Add Record
-        </Button>
-        <Dialog open={open}>
-          <DialogTitle sx={{ paddingBottom: "10px" }}>Define a Dataset Record</DialogTitle>
-          <DialogContent>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              {inputVariables.map((inputVariable, indx) => {
-                return (
-                  <DatapointFieldForm
-                    key={indx}
-                    record={record}
-                    setRecord={setRecord}
-                    setDisableCreateButton={setDisableCreateButton}
-                    inputVariable={inputVariable}
-                  ></DatapointFieldForm>
-                )
-              })}
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={onClickClose("buttonClick")}>Cancel</Button>
-            <Button onClick={onClickCreate} disabled={disableCreateButton}>
-              Create
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </React.Fragment>
-    )
-  } else {
-    return ""
-  }
+  return (
+    <React.Fragment>
+      <Dialog open={open}>
+        <DialogTitle sx={{ paddingBottom: "10px" }}>Define a Dataset Record</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            {inputVariables.map((inputVariable, indx) => {
+              return (
+                <DatapointFieldForm
+                  key={indx}
+                  settingNewRecord={settingNewRecord}
+                  record={newRecord}
+                  setRecord={setNewRecord}
+                  setDisableCreateButton={setDisableCreateButton}
+                  inputVariable={inputVariable}
+                ></DatapointFieldForm>
+              )
+            })}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClickClose("buttonClick")}>Cancel</Button>
+          <Button onClick={onClickCreate} disabled={disableCreateButton}>
+            Create
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
+  )
 }
 
 export { DatasetFormDialog }

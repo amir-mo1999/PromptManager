@@ -10,14 +10,20 @@ interface NumericRecordFormProps {
   inputVariable: inputVariableType
   record: Record<string, string | number>
   setRecord: Dispatch<SetStateAction<Record<string, string | number>>>
+  startValue?: number
 }
 const NumericRecordForm: React.FC<NumericRecordFormProps> = ({
   inputVariable,
   record,
   setRecord,
+  startValue,
 }) => {
   const [value, setValue] = useState<number>(0)
   const constraints = NumericInputConstraintsObj.parse(inputVariable.constraints)
+
+  if (startValue === undefined) {
+    startValue = constraints.min_value
+  }
 
   function onChange() {
     let auxRecord: { [key: string]: string | number } = {}

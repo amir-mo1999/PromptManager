@@ -40,8 +40,8 @@ const InputVariableForm: React.FC<InputVariableFormProps> = ({
   // event handler for when input variable is deleted
   function onClickDeleteVariable(indx: number) {
     const f = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      const a = inputVariables.filter((item, i) => i !== indx)
-      setInputVariables([...a])
+      const aux = inputVariables.filter((item, i) => i !== indx)
+      setInputVariables([...aux])
     }
     return f
   }

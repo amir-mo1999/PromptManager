@@ -12,6 +12,7 @@ interface TextRecordFormProps {
   record: Record<string, string | number>
   setRecord: Dispatch<SetStateAction<Record<string, string | number>>>
   setDisableCreateButton: Dispatch<SetStateAction<boolean>>
+  startValue?: string
 }
 
 const TextRecordForm: React.FC<TextRecordFormProps> = ({
@@ -19,11 +20,11 @@ const TextRecordForm: React.FC<TextRecordFormProps> = ({
   record,
   setRecord,
   setDisableCreateButton,
+  startValue = "",
 }) => {
-  const [value, setValue] = useState<string>("")
+  const [value, setValue] = useState<string>(startValue)
   const [isError, setIsError] = useState<boolean>(false)
   const constraints = StringInputConstraintsObj.parse(inputVariable.constraints)
-
   function checkDisableCreateButton() {
     if (value === "") {
       setDisableCreateButton(true)

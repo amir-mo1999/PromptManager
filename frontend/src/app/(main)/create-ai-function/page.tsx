@@ -120,6 +120,9 @@ export default function Home() {
     api.postAIFunction(session?.user.access_token as string, body)
   }
 
+  // reset the dataset when the input variables change
+  useEffect(() => setDataset([]), [inputVariables])
+  useEffect(() => console.log("Dataset: ", dataset), [dataset])
   return (
     <MainContentWrapper>
       <ContentStepper

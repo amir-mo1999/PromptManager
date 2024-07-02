@@ -9,9 +9,14 @@ import MenuItem from "@mui/material/MenuItem"
 import Box from "@mui/material/Box"
 import DialogTitle from "@mui/material/DialogTitle"
 import { useState, useEffect, Dispatch, SetStateAction } from "react"
-import { inputVariableType, inputVariable } from "@/types"
+import {
+  inputVariableType,
+  inputVariable,
+  InputConstraints,
+  StringInputConstraintsObj,
+} from "@/types"
 import Typography from "@mui/material/Typography"
-import { inputOutputTypes } from "@/app/utils"
+import { inputOutputTypes, inputConstraintsAliases } from "@/app/utils"
 import { InputVariableConstraintsForm } from "./InputVariableConstraintsForm"
 import { InputVariableBox } from "./InputVariableBox"
 
@@ -35,26 +40,34 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
   )
   const [nameError, setNameError] = useState<boolean>(false)
   const [nameHelperText, setNameHelperText] = useState<string>("")
-  const [constraints, setConstraints] = useState({})
-  const [disableCreateButton, setDisableCreateButton] = useState<boolean>(false)
+  const [constraints, setConstraints] = useState<InputConstraints>(
+    StringInputConstraintsObj.parse({})
+  )
+  const [disableCreateButton, setDisableCreateButton] = useState<boolean>(true)
 
   // checks if the create button the dialog should be disabled or not
   function checkDisableCreateButton() {
-    const f = () => {
-      if (nameError === true || name === "") {
-        setDisableCreateButton(true)
-      } else {
-        setDisableCreateButton(false)
-      }
+    if (nameError === true || name === "") {
+      setDisableCreateButton(true)
+    } else {
+      setDisableCreateButton(false)
     }
-    return f
   }
 
   // disable or enable the create button based on the name and the nameError
+  useEffect(checkDisableCreateButton, [])
   useEffect(checkDisableCreateButton, [name, nameError])
 
   // event handler when dialog is opened
   function onClickOpen() {
+    setOpen(true)
+    checkDisableCreateButton()
+  }
+
+  function onClickAddVariable() {
+    setName("")
+    setType("string")
+    checkDisableCreateButton()
     setOpen(true)
   }
 
@@ -71,17 +84,14 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
     } else {
       auxArray[indx].name = name
       auxArray[indx].var_type = type
+      auxArray[indx].constraints = constraints
     }
     setInputVariables([...auxArray])
     setOpen(false)
-    setName("")
-    setType("string")
   }
 
   // resets the form by resetting the nameError and the helperText
   function resetForm() {
-    setName("")
-    setType("string")
     setNameError(false)
     setNameHelperText("")
   }
@@ -128,7 +138,7 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
   return (
     <React.Fragment>
       {showButton ? (
-        <Button variant="contained" sx={{ alignSelf: "center" }} onClick={onClickOpen}>
+        <Button variant="contained" sx={{ alignSelf: "center" }} onClick={onClickAddVariable}>
           Add Input Variable
         </Button>
       ) : (
@@ -191,6 +201,7 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
             {/* Field for the input variable constraints */}
             <InputVariableConstraintsForm
               constraintType={type}
+              inputVariable={inputVariables[indx]}
               setConstraints={setConstraints}
             ></InputVariableConstraintsForm>
           </Box>

@@ -6,6 +6,7 @@ import {
   TextInputField,
   InputVariableForm,
   OutputConstraintsForm,
+  DatasetForm,
 } from "@/components"
 import { AIFunctionInput, OutputConstraints } from "@/types"
 import { useState, useEffect } from "react"
@@ -52,8 +53,7 @@ export default function Home() {
   const [inputVariables, setInputVariables] = useState<inputVariableType[]>([])
 
   // set dataset state
-  const [dataset, setDataset] = useState<Record<string, (string | number)[]>>()
-  const [nOfDatapoints, setnOfDatapoints] = useState<number>(1)
+  const [dataset, setDataset] = useState<Record<string, (string | number)[]>>({})
 
   // handles forward step
   function handleStep() {
@@ -243,9 +243,7 @@ export default function Home() {
         }}
       >
         <Typography align="center">Define the validation dataset</Typography>
-        <Button variant="contained" sx={{ alignSelf: "center" }}>
-          Add Data Point
-        </Button>
+        <DatasetForm inputVariables={inputVariables} setDataset={setDataset}></DatasetForm>
       </Box>
 
       {/* Bottom buttons*/}

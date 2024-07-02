@@ -44,7 +44,7 @@ const InputVariableBox: React.FC<InputVariableBoxProps> = ({
         const keyAlias = inputConstraintsAliases[key]
         return (
           <Typography key={indx}>
-            {keyAlias}: {constraintValue}
+            {keyAlias}: {constraintValue as string}
           </Typography>
         )
       })}

@@ -1,32 +1,38 @@
 import * as React from "react"
-import Button from "@mui/material/Button"
-import TextField from "@mui/material/TextField"
-import Dialog from "@mui/material/Dialog"
-import DialogActions from "@mui/material/DialogActions"
-import DialogContent from "@mui/material/DialogContent"
-import Paper from "@mui/material/Paper"
-import MenuItem from "@mui/material/MenuItem"
 import Box from "@mui/material/Box"
-import DialogTitle from "@mui/material/DialogTitle"
-import { useState, useEffect, Dispatch, SetStateAction } from "react"
-import { inputVariableType, inputVariable } from "@/types"
-import Typography from "@mui/material/Typography"
-import { inputOutputTypes } from "@/app/utils"
-import { render } from "react-dom"
-
+import { inputVariableType } from "@/types"
+import { TextRecordForm } from "./DatasetRecordForms"
+import { useState, Dispatch, SetStateAction } from "react"
 interface DatapointFieldFormProps {
   inputVariable: inputVariableType
+  setDisableCreateButton: Dispatch<SetStateAction<boolean>>
+  setDataset: Dispatch<SetStateAction<Record<string, (string | number)[]>>>
 }
 
-const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({ inputVariable }) => {
-  const stringFieldForm = <Box sx={{ display: "flex", flexDirection: "column" }}></Box>
+const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
+  inputVariable,
+  setDisableCreateButton,
+  setDataset,
+}) => {
+  let content = <></>
+  switch (inputVariable.var_type) {
+    case "string":
+      content = (
+        <TextRecordForm
+          setDisableCreateButton={setDisableCreateButton}
+          inputVariable={inputVariable}
+          setDataset={setDataset}
+        ></TextRecordForm>
+      )
+    // case "numeric":
+    //   content = <NumericInput setDataset={setDataset}></NumericInput>
+    // case "image_file":
+    //   content = <FileInput setDataset={setDataset}></FileInput>
+    // case "audio_file":
+    //   content = <FileInput setDataset={setDataset}></FileInput>
+  }
 
-  const numericFieldForm = <Box sx={{ display: "flex", flexDirection: "column" }}></Box>
-
-  const imageFileFieldForm = <Box sx={{ display: "flex", flexDirection: "column" }}></Box>
-
-  const audioFileFieldForm = <Box sx={{ display: "flex", flexDirection: "column" }}></Box>
-  return ""
+  return content
 }
 
 export { DatapointFieldForm }

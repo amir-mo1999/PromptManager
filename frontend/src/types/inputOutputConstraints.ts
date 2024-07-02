@@ -58,6 +58,12 @@ export type NumericInputConstraints = z.infer<typeof NumericInputConstraintsObj>
 export type AudioFileInputConstraints = z.infer<typeof AudioFileInputConstraintsObj>
 export type ImageFileInputConstraints = z.infer<typeof ImageFileInputConstraintsObj>
 
+export type InputConstraints =
+  | StringInputConstraints
+  | NumericInputConstraints
+  | ImageFileInputConstraints
+  | AudioFileInputConstraints
+
 export type StringOutputConstraints = z.infer<typeof StringInputConstraintsObj>
 export type NumericOutputConstraints = z.infer<typeof NumericInputConstraintsObj>
 export type ImageFileOutputConstraints = z.infer<typeof ImageFileInputConstraintsObj>

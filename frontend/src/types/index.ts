@@ -8,6 +8,7 @@ export type {
   NumericInputConstraints,
   AudioFileInputConstraints,
   ImageFileInputConstraints,
+  InputConstraints,
   OutputConstraints,
 } from "./inputOutputConstraints"
 

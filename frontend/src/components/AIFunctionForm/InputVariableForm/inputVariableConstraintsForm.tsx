@@ -4,7 +4,6 @@ import {
   NumericInputConstraintsObj,
   ImageFileInputConstraintsObj,
   AudioFileInputConstraintsObj,
-  inputVariableType,
   InputConstraints,
 } from "@/types"
 import { NumberInput } from "@/components"

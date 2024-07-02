@@ -148,7 +148,8 @@ export default function Home() {
           isError={functionNameError}
           setIsError={setFunctionNameError}
           label="name"
-          inputProps={{ maxLength: 40 }}
+          minChars={5}
+          maxChars={40}
         ></TextInputField>
 
         {/* AI function description*/}
@@ -158,7 +159,8 @@ export default function Home() {
           isError={descriptionError}
           setIsError={setDescriptionError}
           label="description"
-          inputProps={{ maxLength: 1000 }}
+          minChars={5}
+          maxChars={1000}
           multiline={true}
           minRows={5}
           maxRows={10}

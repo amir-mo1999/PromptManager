@@ -34,7 +34,7 @@ const DatasetFormDialog: React.FC<DatasetFormDialogProps> = ({
   const [disableCreateButton, setDisableCreateButton] = useState<boolean>(false)
   const [record, setRecord] = useState<Record<string, string | number>>({})
 
-  useEffect(() => console.log(record), [record])
+  useEffect(() => console.log("Record: ", record), [record])
 
   // event handler when dialog is opened
   function onClickOpen() {
@@ -58,7 +58,6 @@ const DatasetFormDialog: React.FC<DatasetFormDialogProps> = ({
     } else {
       auxArray[indx] = record
     }
-    console.log(auxArray)
     setDataset([...auxArray])
     setOpen(false)
   }
@@ -74,7 +73,6 @@ const DatasetFormDialog: React.FC<DatasetFormDialogProps> = ({
           <DialogContent>
             <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
               {inputVariables.map((inputVariable, indx) => {
-                console.log("Input Variables:", inputVariables)
                 return (
                   <DatapointFieldForm
                     key={indx}

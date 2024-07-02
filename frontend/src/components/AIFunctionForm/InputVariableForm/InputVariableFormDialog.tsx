@@ -19,6 +19,7 @@ import Typography from "@mui/material/Typography"
 import { inputOutputTypes, inputConstraintsAliases } from "@/app/utils"
 import { InputVariableConstraintsForm } from "./InputVariableConstraintsForm"
 import { InputVariableBox } from "./InputVariableBox"
+import { TextInputField } from "@/components/Input"
 
 interface InputVariableFormDialogProps {
   setInputVariables: Dispatch<SetStateAction<Array<inputVariableType>>>
@@ -160,18 +161,14 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
             }}
           >
             {/* Field for the input variable name */}
-            <TextField
-              id="outlined-basic"
+            <TextInputField
+              valueSetter={setName}
+              isError={nameError}
+              setIsError={setNameError}
+              minChars={2}
               label="variable name"
-              variant="standard"
-              required={true}
-              value={name}
-              inputProps={{ maxLength: 40 }}
-              onChange={onNameChange}
-              error={nameError}
-              helperText={nameHelperText}
-              onBlur={onNameBlur}
-            />
+              maxChars={40}
+            ></TextInputField>
             {/* Field for the input variable type */}
             <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "20px" }}>
               <Typography>Input Type</Typography>

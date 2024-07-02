@@ -12,14 +12,21 @@ import { useState, useEffect, Dispatch, SetStateAction } from "react"
 import { inputVariableType, inputVariable } from "@/types"
 import Typography from "@mui/material/Typography"
 import { inputOutputTypes } from "@/app/utils"
+import { render } from "react-dom"
 
-interface AddDatapointDialogProps {
-  inputVariables: Array<inputVariableType>
-  setDataset: Dispatch<SetStateAction<{}>>
+interface DatapointFieldFormProps {
+  inputVariable: inputVariableType
 }
 
-const AddDatapointDialog: React.FC<AddDatapointDialogProps> = ({ inputVariables, setDataset }) => {
+const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({ inputVariable }) => {
+  const stringFieldForm = <Box sx={{ display: "flex", flexDirection: "column" }}></Box>
+
+  const numericFieldForm = <Box sx={{ display: "flex", flexDirection: "column" }}></Box>
+
+  const imageFileFieldForm = <Box sx={{ display: "flex", flexDirection: "column" }}></Box>
+
+  const audioFileFieldForm = <Box sx={{ display: "flex", flexDirection: "column" }}></Box>
   return ""
 }
 
-export { AddDatapointDialog }
+export { DatapointFieldForm }

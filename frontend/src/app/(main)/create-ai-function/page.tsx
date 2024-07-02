@@ -1,7 +1,13 @@
 "use client"
 import * as React from "react"
-import { ContentStepper, MainContentWrapper, TextInputField, InputVariableForm } from "@/components"
-import { AIFunctionInput } from "@/types"
+import {
+  ContentStepper,
+  MainContentWrapper,
+  TextInputField,
+  InputVariableForm,
+  OutputConstraintsForm,
+} from "@/components"
+import { AIFunctionInput, OutputConstraints } from "@/types"
 import { useState, useEffect } from "react"
 import Typography from "@mui/material/Typography"
 import TextField from "@mui/material/TextField"
@@ -40,6 +46,7 @@ export default function Home() {
 
   // state for output type
   const [outputType, setOutputType] = useState<string>("string")
+  const [outputConstraints, setOutputConstraints] = useState<OutputConstraints>()
 
   // state for input variables
   const [inputVariables, setInputVariables] = useState<inputVariableType[]>([])
@@ -202,6 +209,7 @@ export default function Home() {
         <Typography align="center">Define the output type</Typography>
         <TextField
           defaultValue={"string"}
+          sx={{ paddingBottom: "10px" }}
           select={true}
           required={true}
           onChange={(e) => setOutputType(e.target.value)}
@@ -219,6 +227,10 @@ export default function Home() {
             )
           })}
         </TextField>
+        <OutputConstraintsForm
+          constraintType={outputType}
+          setConstraints={setOutputConstraints}
+        ></OutputConstraintsForm>
       </Box>
       {/* Step Four content*/}
       <Box

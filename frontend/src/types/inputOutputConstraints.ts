@@ -33,9 +33,23 @@ const AudioFileInputConstraintsObj = z.object({
 // export the input objects
 export {
   StringInputConstraintsObj,
+  NumericInputConstraintsObj,
   ImageFileInputConstraintsObj,
   AudioFileInputConstraintsObj,
-  NumericInputConstraintsObj,
+}
+
+// define output objects
+const StringOutputConstraintsObj = StringInputConstraintsObj
+const NumericOutputConstraintsObj = NumericInputConstraintsObj
+const ImageFileOutputConstraintsObj = ImageFileInputConstraintsObj
+const AudioFileOutputConstraintsObj = AudioFileInputConstraintsObj
+
+// export the output objects
+export {
+  StringOutputConstraintsObj,
+  NumericOutputConstraintsObj,
+  ImageFileOutputConstraintsObj,
+  AudioFileOutputConstraintsObj,
 }
 
 // Export the types
@@ -46,5 +60,11 @@ export type ImageFileInputConstraints = z.infer<typeof ImageFileInputConstraints
 
 export type StringOutputConstraints = z.infer<typeof StringInputConstraintsObj>
 export type NumericOutputConstraints = z.infer<typeof NumericInputConstraintsObj>
-export type AudioFileOutputConstraints = z.infer<typeof AudioFileInputConstraintsObj>
 export type ImageFileOutputConstraints = z.infer<typeof ImageFileInputConstraintsObj>
+export type AudioFileOutputConstraints = z.infer<typeof AudioFileInputConstraintsObj>
+
+export type OutputConstraints =
+  | StringOutputConstraints
+  | NumericOutputConstraints
+  | ImageFileOutputConstraints
+  | AudioFileOutputConstraints

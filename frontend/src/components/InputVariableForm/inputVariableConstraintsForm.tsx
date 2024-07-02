@@ -88,7 +88,6 @@ const InputVariableConstraintsForm: React.FC<inputVariableConstraintsFormProps> 
     }
 
     setConstraints(constraints)
-    console.log(constraints)
   }
   useEffect(updateConstraints, [])
   useEffect(updateConstraints, [

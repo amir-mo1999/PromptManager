@@ -8,10 +8,7 @@ export type {
   NumericInputConstraints,
   AudioFileInputConstraints,
   ImageFileInputConstraints,
-  StringOutputConstraints,
-  NumericOutputConstraints,
-  AudioFileOutputConstraints,
-  ImageFileOutputConstraints,
+  OutputConstraints,
 } from "./inputOutputConstraints"
 
 export {
@@ -19,6 +16,10 @@ export {
   NumericInputConstraintsObj,
   ImageFileInputConstraintsObj,
   AudioFileInputConstraintsObj,
+  StringOutputConstraintsObj,
+  NumericOutputConstraintsObj,
+  ImageFileOutputConstraintsObj,
+  AudioFileOutputConstraintsObj,
 } from "./inputOutputConstraints"
 
 export { inputVariable } from "./inputVariable"

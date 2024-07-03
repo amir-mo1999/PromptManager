@@ -43,8 +43,16 @@ class AIFunctionRouteInput(BaseModel):
     input_variables: List[InputVariable] = Field(
         ...,
         example=[
-            {"name": "text", "var_type": "string"},
-            {"name": "number_of_sentences", "var_type": "numeric"},
+            {
+                "name": "text",
+                "var_type": "string",
+                "constraints": StringInputConstraints(type="string"),
+            },
+            {
+                "name": "number_of_sentences",
+                "var_type": "numeric",
+                "constraints": StringInputConstraints(type="string"),
+            },
         ],
         description="A list of input variables. Each input variable has a name and a type",
     )
@@ -60,28 +68,17 @@ class AIFunctionRouteInput(BaseModel):
         AudioFileOutputConstraints,
         ImageFileOutputConstraints,
     ] = Field(..., example=StringOutputConstraints(type="string", max_char_length=500))
+
     # the example dataset works differently depending on what type of input data is used
     # for file inputs such as audio files or image files the object id of this file is saved in the dataset not the content of the file itself
     # for numeric or string inputs the actual value of the input is saved
-    example_dataset: Dict[str, Union[List[Union[int, float]], List[str]]] = Field(
+    example_dataset: List[Dict[str, Union[Union[int, float], str]]] = Field(
         ...,
-        example={
-            "text": [
-                "This is an example text.",
-                "This is an another example text.",
-                "This is an yet another example text.",
-                "This is one more example text.",
-                "This is the last example text.",
-            ],
-            "number_of_sentences": [1, 1, 2, 2, 3],
-            "output": [
-                "This is the summarized text in one sentence.",
-                "This is the summarized text in one sentence.",
-                "This is the summarized text in two sentences.",
-                "This is the summarized text in two sentences.",
-                "This is the summarized text in three sentences.",
-            ],
-        },
+        example=[
+            {"text": "This is an example text.", "number_of_sentences": 1},
+            {"text": "This is another example text.", "number_of_sentences": 2},
+            {"text": "This is yet another example text.", "number_of_sentences": 3},
+        ],
     )
 
     @model_validator(mode="after")
@@ -92,30 +89,18 @@ class AIFunctionRouteInput(BaseModel):
             input_variable_names.append(input_variable.name)
 
         for input_variable_name in input_variable_names:
-            if input_variable_name not in self.example_dataset.keys():
+            for indx, record in enumerate(self.example_dataset):
+                if input_variable_name not in record.keys():
+                    raise AssertionError(
+                        f"The input variable {input_variable_name} is not present in record {indx} of the example dataset."
+                    )
+
+        ## assert that the example dataset does not contain additional keys other than the input variable names
+        key_len = len(input_variable_names)
+        for indx, record in enumerate(self.example_dataset):
+            if len(record.keys()) != key_len:
                 raise AssertionError(
-                    f"The input variable {input_variable_name} is not present in the example dataset."
-                )
-
-        ## assert that the output key is present in the example dataset
-        if "output" not in self.example_dataset.keys():
-            raise AssertionError(
-                f"The 'output' key is not provided in the example dataset."
-            )
-
-        ## assert that the example dataset does not contain additional keys other than 'output' or input variable names
-        if len(self.example_dataset.keys()) != (len(input_variable_names) + 1):
-            raise AssertionError(
-                f"The example dataset contains additional keys other than 'output' or input variable names."
-            )
-
-        ## assert that the example dataset value lists are all the same length
-        example_dataset_values = list(self.example_dataset.values())
-        l = len(example_dataset_values[0])
-        for value in example_dataset_values[1:]:
-            if len(value) != l:
-                raise AssertionError(
-                    f"The example dataset value lists are not all the same length."
+                    f"Record {indx} of the dataset contains additional keys other than the input variable names."
                 )
 
         ## assert that the output constraint match the output type
@@ -156,9 +141,9 @@ class AIFunctionRouteInput(BaseModel):
                 input_variable.var_type == "audio_file"
                 or input_variable.var_type == "image_file"
             ):
-                # loop over the values for this input variable in the dataset
-                for obj_id in self.example_dataset[input_variable.name]:
+                for indx, record in enumerate(self.example_dataset):
                     # assert that the object id is an actual object id
+                    obj_id = record[input_variable.name]
                     if not ObjectId.is_valid(obj_id):
                         raise AssertionError(f"{obj_id} is not a valid object id")
 

@@ -121,7 +121,7 @@ export default function Home() {
       output_constraints: outputConstraints,
       example_dataset: dataset,
     }
-    console.log(body)
+
     // send the request
     api
       .postAIFunction(session?.user.access_token as string, body)
@@ -129,10 +129,7 @@ export default function Home() {
         return response.json()
       })
       .then((data) => {
-        console.log(data)
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error)
+        console.log("Response from create ai function: ", data)
       })
   }
 

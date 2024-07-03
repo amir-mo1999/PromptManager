@@ -25,6 +25,8 @@ interface DatasetFormDialogProps {
   onClickClose: (reason: string) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
   onClickCreate: () => void
   datasetIndx: number
+  fileNameMapping: Record<string, Record<string, string | number>>
+  setFileNameMapping: Dispatch<SetStateAction<Record<string, Record<string, string | number>>>>
 }
 
 const DatasetFormDialog: React.FC<DatasetFormDialogProps> = ({
@@ -37,6 +39,8 @@ const DatasetFormDialog: React.FC<DatasetFormDialogProps> = ({
   onClickClose,
   onClickCreate,
   datasetIndx,
+  fileNameMapping,
+  setFileNameMapping,
 }) => {
   const [disableCreateButton, setDisableCreateButton] = useState<boolean>(false)
   const [errorList, setErrorList] = useState<Array<boolean>>([])
@@ -69,6 +73,8 @@ const DatasetFormDialog: React.FC<DatasetFormDialogProps> = ({
                   record={newRecord}
                   setRecord={setNewRecord}
                   inputVariable={inputVariable}
+                  fileNameMapping={fileNameMapping}
+                  setFileNameMapping={setFileNameMapping}
                 ></DatapointFieldForm>
               )
             })}

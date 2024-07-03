@@ -20,7 +20,6 @@ const createMethod =
     } else {
       url = baseUrlServer
     }
-    console.log("URL: ", url)
     // set the default content type to application/json
     if (contentType === undefined) {
       contentType = "application/json"
@@ -81,5 +80,9 @@ export const api = {
     const formData = new FormData()
     formData.append("file", file)
     return postRequest("/db/upload-file", formData, "form-data", accessToken)
+  },
+
+  getFileMetaData: (accessToken: string, objectID: string) => {
+    return getRequest(`/db/get-file-meta-data/${objectID}`, undefined, undefined, accessToken)
   },
 }

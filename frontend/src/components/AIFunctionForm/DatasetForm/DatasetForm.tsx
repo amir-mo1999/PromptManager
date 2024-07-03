@@ -21,6 +21,10 @@ const DatasetForm: React.FC<DatasetFormProps> = ({ inputVariables, dataset, setD
 
   const [settingNewRecord, setSettingNewRecord] = useState<boolean>(false)
 
+  const [fileNameMapping, setFileNameMapping] = useState<
+    Record<string, Record<string, string | number>>
+  >({})
+
   // set the variable for checking if we are adding a new record or editing an existing one
   useEffect(() => {
     if (recordIndx >= dataset.length) {
@@ -31,7 +35,7 @@ const DatasetForm: React.FC<DatasetFormProps> = ({ inputVariables, dataset, setD
   }, [recordIndx, dataset])
 
   // reset the new record when dataset changes
-  useEffect(() => setNewRecord({}), [dataset])
+  useEffect(() => setNewRecord({}), [inputVariables])
 
   function onClickAddRecord() {
     setRecordIndx(dataset.length + 1)
@@ -93,6 +97,8 @@ const DatasetForm: React.FC<DatasetFormProps> = ({ inputVariables, dataset, setD
         onClickClose={onClickClose}
         onClickCreate={onClickCreate}
         datasetIndx={recordIndx}
+        fileNameMapping={fileNameMapping}
+        setFileNameMapping={setFileNameMapping}
       ></DatasetFormDialog>
       {/* <DatasetTable dataset={dataset}></DatasetTable> */}
       {dataset.map((record, indx) => {

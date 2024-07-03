@@ -263,9 +263,10 @@ async def upload_file(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@db_router.get("/get-file-meta-data", tags=["Database Operations"])
+@db_router.get("/get-file-meta-data/{object_id}", tags=["Database Operations"])
 async def get_file_meta_data(
-    access_token: Annotated[str, Depends(oauth2_scheme)], object_id: str
+    access_token: Annotated[str, Depends(oauth2_scheme)],
+    object_id: str,
 ):
     # try decoding the token
     try:

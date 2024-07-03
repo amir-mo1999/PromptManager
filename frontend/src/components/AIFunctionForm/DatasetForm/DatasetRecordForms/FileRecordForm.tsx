@@ -7,6 +7,7 @@ import { MuiFileInput } from "mui-file-input"
 import { ImageFileInputConstraintsObj, AudioFileInputConstraintsObj } from "@/types"
 import { useSession } from "next-auth/react"
 import { api } from "@/network"
+import { start } from "repl"
 
 interface FileRecordFormProps {
   mode: "image_file" | "audio_file"
@@ -16,6 +17,9 @@ interface FileRecordFormProps {
   setErrorList: Dispatch<SetStateAction<Array<boolean>>>
   record: Record<string, string | number>
   setRecord: Dispatch<SetStateAction<Record<string, string | number>>>
+  startValue?: string
+  fileNameMapping: Record<string, Record<string, string | number>>
+  setFileNameMapping: Dispatch<SetStateAction<Record<string, Record<string, string | number>>>>
 }
 
 const FileRecordForm: React.FC<FileRecordFormProps> = ({
@@ -26,8 +30,11 @@ const FileRecordForm: React.FC<FileRecordFormProps> = ({
   errorList,
   setErrorList,
   setRecord,
+  startValue,
+  fileNameMapping,
+  setFileNameMapping,
 }) => {
-  // parse constraints based in mode
+  // parse constraints based on mode
   const constraints =
     mode === "image_file"
       ? ImageFileInputConstraintsObj.parse(inputVariable.constraints)
@@ -35,13 +42,25 @@ const FileRecordForm: React.FC<FileRecordFormProps> = ({
 
   // get current session
   const { data: session } = useSession()
+  const accessToken = session?.user.access_token as string
 
-  // define state variables
-  const [file, setFile] = useState<File | null>(null)
+  // define state variables for file input
+  const emptyFile = new File([""], "filename.txt", { type: "text/plain" })
+  const [file, setFile] = useState<File | null>(emptyFile)
+  const [fileName, setFileName] = useState<string>("")
   const [fileSize, setFileSize] = useState<number>(0)
   const [helperText, setHelperText] = useState<string>("")
   const [isError, setIsError] = useState<boolean>(false)
   const [maxFileSize, _] = useState<number>(constraints.max_file_size)
+
+  // retrieve the file name and file size for the file, if we are editing an existing record
+  function initFileNameAndSize() {
+    if (startValue !== undefined) {
+      setFileName(fileNameMapping[startValue]["fileName"] as string)
+      setFileSize((fileNameMapping[startValue]["fileSize"] as number) / 1000000)
+    }
+  }
+  useEffect(initFileNameAndSize, [])
 
   // check if the file size exceeds the maximum whenever the maximum file size or the file size change
   function checkFileSize() {
@@ -64,11 +83,8 @@ const FileRecordForm: React.FC<FileRecordFormProps> = ({
     setErrorList([...aux])
   }
   useEffect(updateErrorList, [isError, file, fileSize])
-
   useEffect(checkFileSize, [fileSize, maxFileSize])
 
-  // TODO: right now the file name is just passed to the data set as a placeholder
-  // TODO: instead send the file to the backend and add the object id of the file to the dataset
   // on change event handler
   function onChange(value: File | null) {
     // return if value is null
@@ -76,24 +92,48 @@ const FileRecordForm: React.FC<FileRecordFormProps> = ({
       return
     }
 
-    // set the file and the file size based on the value
+    // set the file variables
     setFile(value)
     setFileSize(value === null ? 0 : value.size / 1000000)
+    setFileName(value.name)
 
-    // create the new record
+    // push the file to the backend and save the object id in the new record and set the record
     let auxRecord: { [key: string]: string | number } = {}
 
-    // TODO: handle the deletion of files that were not actually used to create an ai function
-    // post the file to the backend and its object id to the record
     if (!isError) {
       api
-        .postFile(session?.user.access_token as string, value)
+        .postFile(accessToken, value)
         .then((res) => res.json())
         .then((d) => {
           auxRecord[inputVariable.name] = d.object_id
           setRecord({ ...record, ...auxRecord })
+
+          // update the filename mapping
+          const auxMapping = fileNameMapping
+          auxMapping[d.object_id] = {}
+          auxMapping[d.object_id]["fileName"] = value.name
+          auxMapping[d.object_id]["fileSize"] = value.size
+          setFileNameMapping({ ...auxMapping })
         })
     }
+  }
+
+  // returns text to be displayed in the file input
+  function getInputText(_: File | null) {
+    return fileName
+  }
+
+  // returns file size text to be displayed in the file input
+  function getSizeText(_: File | null) {
+    let r: string = ""
+
+    if (fileSize === 0) r = ""
+
+    if (fileSize < 1) r = (fileSize * 1000).toString() + "kb"
+
+    if (fileSize >= 1) r = fileSize.toString() + "mb"
+
+    return r
   }
 
   // set what files the input should accept based on the mode
@@ -117,6 +157,8 @@ const FileRecordForm: React.FC<FileRecordFormProps> = ({
         error={isError}
         inputProps={{ accept: accept }}
         onChange={onChange}
+        getSizeText={getSizeText}
+        getInputText={getInputText}
       ></MuiFileInput>
     </Box>
   )

@@ -13,6 +13,8 @@ interface DatapointFieldFormProps {
   setRecord: Dispatch<SetStateAction<Record<string, string | number>>>
   dataset: Array<Record<string, string | number>>
   datasetIndx: number
+  fileNameMapping: Record<string, Record<string, string | number>>
+  setFileNameMapping: Dispatch<SetStateAction<Record<string, Record<string, string | number>>>>
 }
 
 const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
@@ -25,6 +27,8 @@ const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
   setRecord,
   dataset,
   datasetIndx,
+  fileNameMapping,
+  setFileNameMapping,
 }) => {
   let content = <></>
   if (record)
@@ -47,10 +51,12 @@ const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
       case "numeric":
         content = (
           <NumericRecordForm
-            startValue={settingNewRecord ? undefined : (record[inputVariable.name] as number)}
             inputVariable={inputVariable}
             record={record}
             setRecord={setRecord}
+            startValue={
+              settingNewRecord ? undefined : (dataset[datasetIndx][inputVariable.name] as number)
+            }
           ></NumericRecordForm>
         )
         break
@@ -65,6 +71,11 @@ const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
             inputVariable={inputVariable}
             record={record}
             setRecord={setRecord}
+            startValue={
+              settingNewRecord ? undefined : (dataset[datasetIndx][inputVariable.name] as string)
+            }
+            fileNameMapping={fileNameMapping}
+            setFileNameMapping={setFileNameMapping}
           ></FileRecordForm>
         )
         break
@@ -78,6 +89,11 @@ const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
             inputVariable={inputVariable}
             record={record}
             setRecord={setRecord}
+            startValue={
+              settingNewRecord ? undefined : (dataset[datasetIndx][inputVariable.name] as string)
+            }
+            fileNameMapping={fileNameMapping}
+            setFileNameMapping={setFileNameMapping}
           ></FileRecordForm>
         )
         break

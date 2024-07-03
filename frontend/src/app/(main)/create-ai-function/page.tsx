@@ -118,10 +118,22 @@ export default function Home() {
       description: description,
       input_variables: inputVariables,
       output_type: outputType,
-      //example_dataset: dataset,
+      output_constraints: outputConstraints,
+      example_dataset: dataset,
     }
+    console.log(body)
     // send the request
-    api.postAIFunction(session?.user.access_token as string, body)
+    api
+      .postAIFunction(session?.user.access_token as string, body)
+      .then((response) => {
+        return response.json()
+      })
+      .then((data) => {
+        console.log(data)
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error)
+      })
   }
 
   // reset the dataset when the input variables change

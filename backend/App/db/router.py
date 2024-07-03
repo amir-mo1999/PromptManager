@@ -55,7 +55,7 @@ async def post_user(user: UserRouteInput):
     else:
         user_collection.insert_one(dict(user))
 
-    return PlainTextResponse(content="User created", status_code=200)
+        return JSONResponse(content={"message": "User created"}, status_code=200)
 
 
 @db_router.get("/user/{email}", response_model=User, tags=["Database Operations"])
@@ -124,7 +124,7 @@ async def post_project(
     # insert it to the collection
     project_collection.insert_one(dict(project))
 
-    return PlainTextResponse(content="Project created", status_code=200)
+    return JSONResponse(content={"message": "Project created"}, status_code=200)
 
 
 @db_router.get("/get-all-projects", tags=["Database Operations"])
@@ -207,7 +207,7 @@ async def post_ai_function(
     # insert it to the collection
     ai_function_collection.insert_one(ai_function.model_dump())
 
-    return PlainTextResponse(content="AI function created", status_code=200)
+    return JSONResponse(content={"message": "AI function created"}, status_code=200)
 
 
 ## endpoint for uploading a file

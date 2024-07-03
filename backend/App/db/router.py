@@ -211,12 +211,17 @@ async def post_ai_function(
 
 ## endpoint for uploading a file
 @db_router.post("/upload-file", tags=["Database Operations"])
-async def upload_file(file: UploadFile = File(...)):
+async def upload_file(
+    access_token: Annotated[str, Depends(oauth2_scheme)], file: UploadFile = File(...)
+):
+    # try decoding the token
+    try:
+        decoded_token = decode_token(access_token)
+    except JWTError:
+        raise HTTPException(status_code=400, detail="invalid access token")
+
     # get the collection for saving the files
     collection = db["example-data-files"]
-
-    # get the file extension
-    file_extension = file.filename.split(".")[-1]
 
     try:
         # Read the file content
@@ -225,6 +230,7 @@ async def upload_file(file: UploadFile = File(...)):
         # Create a document with the file content and metadata
         document = {
             "filename": file.filename,
+            "username": decoded_token.sub,
             "content_type": file.content_type,
             "content": file_content,
         }

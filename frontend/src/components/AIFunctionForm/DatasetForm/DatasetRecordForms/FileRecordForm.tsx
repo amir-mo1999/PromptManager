@@ -4,9 +4,10 @@ import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import { useState, useEffect, Dispatch, SetStateAction } from "react"
 import { MuiFileInput } from "mui-file-input"
-import { ImageFileInputConstraintsObj } from "@/types"
+import { ImageFileInputConstraintsObj, AudioFileInputConstraintsObj } from "@/types"
 
 interface FileRecordFormProps {
+  mode: "image_file" | "audio_file"
   inputVariable: inputVariableType
   record: Record<string, string | number>
   setRecord: Dispatch<SetStateAction<Record<string, string | number>>>
@@ -14,13 +15,17 @@ interface FileRecordFormProps {
 }
 
 const FileRecordForm: React.FC<FileRecordFormProps> = ({
+  mode,
   inputVariable,
   record,
   setRecord,
   setDisableCreateButton,
 }) => {
-  // parse constraints
-  const constraints = ImageFileInputConstraintsObj.parse(inputVariable.constraints)
+  // parse constraints based in mode
+  const constraints =
+    mode === "image_file"
+      ? ImageFileInputConstraintsObj.parse(inputVariable.constraints)
+      : AudioFileInputConstraintsObj.parse(inputVariable.constraints)
 
   // define state variables
   const [file, setFile] = useState<File | null>(null)
@@ -49,11 +54,15 @@ const FileRecordForm: React.FC<FileRecordFormProps> = ({
   function onChange(value: File | null) {
     setFile(value)
     setFileSize(value === null ? 0 : value.size / 1000000)
-
+    console.log(value)
     let auxRecord: { [key: string]: string | number } = {}
     auxRecord[inputVariable.name] = value === null ? "null file" : value.name
     setRecord({ ...record, ...auxRecord })
   }
+
+  // set what files the input should accept based on the mode
+  const accept = mode === "image_file" ? ".png, .jpeg, .jpg" : ".mp3"
+
   return (
     <Box
       sx={{
@@ -70,7 +79,7 @@ const FileRecordForm: React.FC<FileRecordFormProps> = ({
         value={file}
         helperText={helperText}
         error={isError}
-        inputProps={{ accept: ".png, .jpeg, .jpg" }}
+        inputProps={{ accept: accept }}
         onChange={onChange}
       ></MuiFileInput>
     </Box>

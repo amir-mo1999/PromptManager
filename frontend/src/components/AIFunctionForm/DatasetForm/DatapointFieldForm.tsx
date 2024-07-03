@@ -46,14 +46,23 @@ const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
       case "image_file":
         content = (
           <FileRecordForm
+            mode="image_file"
             inputVariable={inputVariable}
             record={record}
             setRecord={setRecord}
             setDisableCreateButton={setDisableCreateButton}
           ></FileRecordForm>
         )
-      // case "audio_file":
-      //   content = <FileInput setDataset={setDataset}></FileInput>
+      case "audio_file":
+        content = (
+          <FileRecordForm
+            mode="audio_file"
+            inputVariable={inputVariable}
+            record={record}
+            setRecord={setRecord}
+            setDisableCreateButton={setDisableCreateButton}
+          ></FileRecordForm>
+        )
     }
 
   return content

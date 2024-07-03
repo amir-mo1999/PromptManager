@@ -113,7 +113,7 @@ const OutputConstraintsForm: React.FC<OutputConstraintsFormProps> = ({
     <>
       {/* String */}
       <Box
-        display={constraintType !== inputTypes[0] ? "none" : "flex"}
+        display={constraintType !== "string" ? "none" : "flex"}
         sx={{ flexDirection: "column", gap: "10px" }}
       >
         <NumberInput
@@ -125,13 +125,14 @@ const OutputConstraintsForm: React.FC<OutputConstraintsFormProps> = ({
         <NumberInput
           value={minCharLength}
           setValue={setMinCharLength}
+          maxValue={maxCharLength}
           minValue={0}
           label="min. character length"
         ></NumberInput>
       </Box>
       {/* Number */}
       <Box
-        display={constraintType !== inputTypes[1] ? "none" : "flex"}
+        display={constraintType !== "numeric" ? "none" : "flex"}
         sx={{ flexDirection: "column", gap: "10px" }}
       >
         <FormControlLabel
@@ -148,7 +149,7 @@ const OutputConstraintsForm: React.FC<OutputConstraintsFormProps> = ({
         ></NumberInput>
         <NumberInput
           acceptFloat={acceptFloat}
-          maxValue={10000000000000000000000000}
+          maxValue={maxNumValue}
           minValue={-10000000000000000000000000}
           value={minNumValue}
           setValue={setMinNumValue}
@@ -157,7 +158,7 @@ const OutputConstraintsForm: React.FC<OutputConstraintsFormProps> = ({
       </Box>
       {/* Image File */}
       <Box
-        display={constraintType !== inputTypes[2] ? "none" : "flex"}
+        display={constraintType !== "image_file" ? "none" : "flex"}
         sx={{ flexDirection: "column", gap: "10px" }}
       >
         <NumberInput
@@ -170,11 +171,19 @@ const OutputConstraintsForm: React.FC<OutputConstraintsFormProps> = ({
           valueSuffix="mb"
         ></NumberInput>
         <NumberInput
-          value={minImageWidth}
-          setValue={setMinImageWidth}
-          label="min. image width in pixels"
+          value={maxImageHeight}
+          setValue={setMaxImageHeight}
           maxValue={4000}
+          minValue={1}
+          label="max. image height in pixels"
+          valueSuffix="px"
+        ></NumberInput>
+        <NumberInput
+          value={minImageHeight}
+          setValue={setMinImageHeight}
+          maxValue={maxImageHeight}
           minValue={0}
+          label="min. image height in pixels"
           valueSuffix="px"
         ></NumberInput>
         <NumberInput
@@ -186,26 +195,18 @@ const OutputConstraintsForm: React.FC<OutputConstraintsFormProps> = ({
           valueSuffix="px"
         ></NumberInput>
         <NumberInput
-          value={minImageHeight}
-          setValue={setMinImageHeight}
-          maxValue={4000}
+          value={minImageWidth}
+          setValue={setMinImageWidth}
+          label="min. image width in pixels"
+          maxValue={maxImageWidth}
           minValue={0}
-          label="min. image height in pixels"
-          valueSuffix="px"
-        ></NumberInput>
-        <NumberInput
-          value={maxImageHeight}
-          setValue={setMaxImageHeight}
-          maxValue={4000}
-          minValue={1}
-          label="max. image height in pixels"
           valueSuffix="px"
         ></NumberInput>
       </Box>
 
       {/* Audio File */}
       <Box
-        display={constraintType !== inputTypes[3] ? "none" : "flex"}
+        display={constraintType !== "audio_file" ? "none" : "flex"}
         sx={{ flexDirection: "column", gap: "10px" }}
       >
         <NumberInput
@@ -228,7 +229,7 @@ const OutputConstraintsForm: React.FC<OutputConstraintsFormProps> = ({
         <NumberInput
           value={minAudioLength}
           setValue={setMinAudioLength}
-          maxValue={1000}
+          maxValue={maxAudioLength}
           minValue={0}
           label="min. audio length in seconds"
           valueSuffix="s"

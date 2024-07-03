@@ -1,5 +1,5 @@
 import TextField from "@mui/material/TextField"
-import { Dispatch, SetStateAction } from "react"
+import { Dispatch, SetStateAction, useEffect } from "react"
 import { SxProps } from "@mui/material"
 import { TextFieldVariants } from "@mui/material/TextField"
 import InputAdornment from "@mui/material/InputAdornment"
@@ -29,6 +29,18 @@ const NumberInput: React.FC<NumberInputProps> = ({
   label,
   sx,
 }) => {
+  // make sure the value is within the boundaries whenever they change
+  function checkBoundaries() {
+    if (value > maxValue) {
+      value = maxValue
+      setValue(maxValue)
+    } else if (value < minValue) {
+      setValue(minValue)
+    }
+  }
+
+  useEffect(checkBoundaries, [minValue, maxValue])
+
   function onChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const val = e.target.value //.slice(0, 0)
     if (val === "") {

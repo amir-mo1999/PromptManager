@@ -21,6 +21,7 @@ const DatasetForm: React.FC<DatasetFormProps> = ({ inputVariables, dataset, setD
 
   const [settingNewRecord, setSettingNewRecord] = useState<boolean>(false)
 
+  // set the variable for checking if we are adding a new record or editing an existing one
   useEffect(() => {
     if (recordIndx >= dataset.length) {
       setSettingNewRecord(true)
@@ -28,6 +29,9 @@ const DatasetForm: React.FC<DatasetFormProps> = ({ inputVariables, dataset, setD
       setSettingNewRecord(false)
     }
   }, [recordIndx, dataset])
+
+  // reset the new record when dataset changes
+  useEffect(() => setNewRecord({}), [dataset])
 
   function onClickAddRecord() {
     setRecordIndx(dataset.length + 1)

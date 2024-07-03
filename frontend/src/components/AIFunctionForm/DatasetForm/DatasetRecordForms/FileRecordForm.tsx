@@ -7,6 +7,7 @@ import { MuiFileInput } from "mui-file-input"
 import { ImageFileInputConstraintsObj, AudioFileInputConstraintsObj } from "@/types"
 import { useSession } from "next-auth/react"
 import { api } from "@/network"
+
 interface FileRecordFormProps {
   mode: "image_file" | "audio_file"
   inputVariable: inputVariableType

@@ -228,9 +228,11 @@ async def upload_file(
         # Read the file content
         file_content = await file.read()
 
+        # Calculate the hash of the file content
         file_hash = calculate_file_hash(file_content)
 
-        # check if file with this content exists
+        # check if the file already exists in the collection
+        # if so just return its object id without creating a new document
         document = collection.find_one({"hash": file_hash})
         if document:
             return JSONResponse(

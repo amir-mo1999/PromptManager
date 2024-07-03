@@ -42,9 +42,10 @@ const NumberInput: React.FC<NumberInputProps> = ({
   useEffect(checkBoundaries, [minValue, maxValue])
 
   function onChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    const val = e.target.value //.slice(0, 0)
+    const val = e.target.value
     if (val === "") {
-      setValue(minValue === undefined ? 0 : minValue)
+      const aux = minValue > 0 ? minValue : 0
+      setValue(aux)
     } else {
       let numValue = acceptFloat ? parseFloat(val) : parseInt(val, 10)
       if (numValue > maxValue) {

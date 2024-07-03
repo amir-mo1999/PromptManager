@@ -42,12 +42,12 @@ export default function Home() {
   const [description, setDescription] = useState<string>("")
   const [descriptionError, setDescriptionError] = useState<boolean>(false)
 
+  // state for input variables
+  const [inputVariables, setInputVariables] = useState<inputVariableType[]>([])
+
   // state for output type
   const [outputType, setOutputType] = useState<string>("string")
   const [outputConstraints, setOutputConstraints] = useState<OutputConstraints>()
-
-  // state for input variables
-  const [inputVariables, setInputVariables] = useState<inputVariableType[]>([])
 
   // set dataset state
   const [dataset, setDataset] = useState<Array<Record<string, string | number>>>([])

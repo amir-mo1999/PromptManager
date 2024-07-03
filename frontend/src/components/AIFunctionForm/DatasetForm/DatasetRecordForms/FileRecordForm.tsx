@@ -11,17 +11,21 @@ import { api } from "@/network"
 interface FileRecordFormProps {
   mode: "image_file" | "audio_file"
   inputVariable: inputVariableType
+  errorIndx: number
+  errorList: Array<boolean>
+  setErrorList: Dispatch<SetStateAction<Array<boolean>>>
   record: Record<string, string | number>
   setRecord: Dispatch<SetStateAction<Record<string, string | number>>>
-  setDisableCreateButton: Dispatch<SetStateAction<boolean>>
 }
 
 const FileRecordForm: React.FC<FileRecordFormProps> = ({
   mode,
   inputVariable,
   record,
+  errorIndx,
+  errorList,
+  setErrorList,
   setRecord,
-  setDisableCreateButton,
 }) => {
   // parse constraints based in mode
   const constraints =
@@ -44,13 +48,23 @@ const FileRecordForm: React.FC<FileRecordFormProps> = ({
     if (fileSize > maxFileSize) {
       setIsError(true)
       setHelperText(`File must be smaller than ${maxFileSize}mb`)
-      setDisableCreateButton(true)
     } else {
       setIsError(false)
       setHelperText("")
-      setDisableCreateButton(false)
     }
   }
+
+  function updateErrorList() {
+    const aux = errorList
+    if (isError || file === null) {
+      aux[errorIndx] = true
+    } else {
+      aux[errorIndx] = false
+    }
+    setErrorList([...aux])
+  }
+  useEffect(updateErrorList, [isError, file, fileSize])
+
   useEffect(checkFileSize, [fileSize, maxFileSize])
 
   // TODO: right now the file name is just passed to the data set as a placeholder

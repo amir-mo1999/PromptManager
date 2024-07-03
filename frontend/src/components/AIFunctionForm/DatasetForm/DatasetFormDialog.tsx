@@ -37,7 +37,17 @@ const DatasetFormDialog: React.FC<DatasetFormDialogProps> = ({
   indx,
 }) => {
   const [disableCreateButton, setDisableCreateButton] = useState<boolean>(false)
+  const [errorList, setErrorList] = useState<Array<boolean>>([])
 
+  function checkDisableCreateButton() {
+    const hasTrue = errorList.some((value) => value === true)
+    if (hasTrue) {
+      setDisableCreateButton(true)
+    } else {
+      setDisableCreateButton(false)
+    }
+  }
+  useEffect(checkDisableCreateButton, [errorList])
   return (
     <React.Fragment>
       <Dialog open={open}>
@@ -47,11 +57,13 @@ const DatasetFormDialog: React.FC<DatasetFormDialogProps> = ({
             {inputVariables.map((inputVariable, indx) => {
               return (
                 <DatapointFieldForm
+                  errorList={errorList}
+                  setErrorList={setErrorList}
+                  errorIndx={indx}
                   key={indx}
                   settingNewRecord={settingNewRecord}
                   record={newRecord}
                   setRecord={setNewRecord}
-                  setDisableCreateButton={setDisableCreateButton}
                   inputVariable={inputVariable}
                 ></DatapointFieldForm>
               )

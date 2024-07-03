@@ -5,17 +5,21 @@ import { TextRecordForm, NumericRecordForm, FileRecordForm } from "./DatasetReco
 import { useState, Dispatch, SetStateAction } from "react"
 interface DatapointFieldFormProps {
   inputVariable: inputVariableType
+  errorIndx: number
+  errorList: Array<boolean>
+  setErrorList: Dispatch<SetStateAction<Array<boolean>>>
   record: Record<string, string | number>
   settingNewRecord: boolean
-  setDisableCreateButton: Dispatch<SetStateAction<boolean>>
   setRecord: Dispatch<SetStateAction<Record<string, string | number>>>
 }
 
 const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
   inputVariable,
+  errorIndx,
+  errorList,
+  setErrorList,
   settingNewRecord,
   record,
-  setDisableCreateButton,
   setRecord,
 }) => {
   let content = <></>
@@ -24,8 +28,10 @@ const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
       case "string":
         content = (
           <TextRecordForm
+            errorList={errorList}
+            setErrorList={setErrorList}
+            errorIndx={errorIndx}
             startValue={settingNewRecord ? "" : (record[inputVariable.name] as string)}
-            setDisableCreateButton={setDisableCreateButton}
             inputVariable={inputVariable}
             record={record}
             setRecord={setRecord}
@@ -46,22 +52,26 @@ const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
       case "image_file":
         content = (
           <FileRecordForm
+            errorList={errorList}
+            setErrorList={setErrorList}
+            errorIndx={errorIndx}
             mode="image_file"
             inputVariable={inputVariable}
             record={record}
             setRecord={setRecord}
-            setDisableCreateButton={setDisableCreateButton}
           ></FileRecordForm>
         )
         break
       case "audio_file":
         content = (
           <FileRecordForm
+            errorList={errorList}
+            setErrorList={setErrorList}
+            errorIndx={errorIndx}
             mode="audio_file"
             inputVariable={inputVariable}
             record={record}
             setRecord={setRecord}
-            setDisableCreateButton={setDisableCreateButton}
           ></FileRecordForm>
         )
         break

@@ -9,9 +9,11 @@ import { TextInputField } from "@/components/Input"
 
 interface TextRecordFormProps {
   inputVariable: inputVariableType
+  errorIndx: number
+  errorList: Array<boolean>
+  setErrorList: Dispatch<SetStateAction<Array<boolean>>>
   record: Record<string, string | number>
   setRecord: Dispatch<SetStateAction<Record<string, string | number>>>
-  setDisableCreateButton: Dispatch<SetStateAction<boolean>>
   startValue?: string
 }
 
@@ -19,21 +21,14 @@ const TextRecordForm: React.FC<TextRecordFormProps> = ({
   inputVariable,
   record,
   setRecord,
-  setDisableCreateButton,
+  errorIndx,
+  errorList,
+  setErrorList,
   startValue = "",
 }) => {
   const [value, setValue] = useState<string>(startValue)
   const [isError, setIsError] = useState<boolean>(false)
   const constraints = StringInputConstraintsObj.parse(inputVariable.constraints)
-  function checkDisableCreateButton() {
-    if (value === "") {
-      setDisableCreateButton(true)
-    } else if (isError) {
-      setDisableCreateButton(true)
-    } else {
-      setDisableCreateButton(false)
-    }
-  }
 
   function onChange() {
     let auxRecord: { [key: string]: string | number } = {}
@@ -41,9 +36,19 @@ const TextRecordForm: React.FC<TextRecordFormProps> = ({
     setRecord({ ...record, ...auxRecord })
   }
 
-  useEffect(checkDisableCreateButton, [value, isError, setIsError])
-  useEffect(checkDisableCreateButton, [])
   useEffect(onChange, [value])
+
+  function updateErrorList() {
+    const aux = errorList
+    if (isError || value === "") {
+      aux[errorIndx] = true
+    } else {
+      aux[errorIndx] = false
+    }
+    setErrorList([...aux])
+  }
+  useEffect(updateErrorList, [isError, value])
+
   return (
     <Box
       sx={{

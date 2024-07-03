@@ -83,12 +83,16 @@ export default function Home() {
         return false
       }
       return true
-      // for step 3: if dataset is not uploaded or invalid
+      // for step 3: output step
     } else if (activeStep === 2) {
       return true
+      // for step 4: dataset step
     } else if (activeStep === 3) {
-      //TODO: update this after setting the output constraints and stuff
-      return true
+      if (dataset.length === 0) {
+        return false
+      } else {
+        return true
+      }
     }
     return false
   }
@@ -102,9 +106,9 @@ export default function Home() {
       functionNameError,
       descriptionError,
       inputVariables,
-      // inputVariablesError,
       outputType,
       activeStep,
+      dataset,
     ]
   )
   function handleSubmit() {

@@ -233,7 +233,9 @@ async def upload_file(
 
         # check if the file already exists in the collection
         # if so just return its object id without creating a new document
-        document = collection.find_one({"hash": file_hash})
+        document = collection.find_one(
+            {"hash": file_hash, "username": decoded_token.sub}
+        )
         if document:
             return JSONResponse(
                 content={"object_id": str(document["_id"])}, status_code=200

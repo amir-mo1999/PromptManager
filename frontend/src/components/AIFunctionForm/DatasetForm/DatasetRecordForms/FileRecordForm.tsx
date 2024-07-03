@@ -67,15 +67,17 @@ const FileRecordForm: React.FC<FileRecordFormProps> = ({
 
     // create the new record
     let auxRecord: { [key: string]: string | number } = {}
-    auxRecord[inputVariable.name] = value === null ? "null file" : value.name
-    setRecord({ ...record, ...auxRecord })
 
-    // post the file to the backend
+    // TODO: handle the deletion of files that were not actually used to create an ai function
+    // post the file to the backend and its object id to the record
     if (!isError) {
       api
         .postFile(session?.user.access_token as string, value)
         .then((res) => res.json())
-        .then((d) => console.log(d))
+        .then((d) => {
+          auxRecord[inputVariable.name] = d.object_id
+          setRecord({ ...record, ...auxRecord })
+        })
     }
   }
 

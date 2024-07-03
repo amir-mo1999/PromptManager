@@ -26,6 +26,7 @@ from ..models import (
     AIFunctionRouteInput,
 )
 from ..utils import get_user
+from ..utils.db_utils import calculate_file_hash
 from ..auth import oauth2_scheme
 from ..utils.auth_utils import decode_token
 
@@ -227,12 +228,22 @@ async def upload_file(
         # Read the file content
         file_content = await file.read()
 
-        # Create a document with the file content and metadata
+        file_hash = calculate_file_hash(file_content)
+
+        # check if file with this content exists
+        document = collection.find_one({"hash": file_hash})
+        if document:
+            return JSONResponse(
+                content={"object_id": str(document["_id"])}, status_code=200
+            )
+
+        # Create a document with the file content, hash, and metadata
         document = {
             "filename": file.filename,
             "username": decoded_token.sub,
             "content_type": file.content_type,
             "content": file_content,
+            "hash": file_hash,
         }
 
         # Insert the document into the collection
@@ -240,7 +251,7 @@ async def upload_file(
 
         # Return the object ID of the inserted document
         return JSONResponse(
-            content={"object_id": str(result.inserted_id)}, status_code=201
+            content={"object_id": str(result.inserted_id)}, status_code=200
         )
 
     except Exception as e:

@@ -5,7 +5,8 @@ import Typography from "@mui/material/Typography"
 import { useState, useEffect, Dispatch, SetStateAction } from "react"
 import { MuiFileInput } from "mui-file-input"
 import { ImageFileInputConstraintsObj, AudioFileInputConstraintsObj } from "@/types"
-
+import { useSession } from "next-auth/react"
+import { api } from "@/network"
 interface FileRecordFormProps {
   mode: "image_file" | "audio_file"
   inputVariable: inputVariableType
@@ -26,6 +27,9 @@ const FileRecordForm: React.FC<FileRecordFormProps> = ({
     mode === "image_file"
       ? ImageFileInputConstraintsObj.parse(inputVariable.constraints)
       : AudioFileInputConstraintsObj.parse(inputVariable.constraints)
+
+  // get current session
+  const { data: session } = useSession()
 
   // define state variables
   const [file, setFile] = useState<File | null>(null)
@@ -52,12 +56,27 @@ const FileRecordForm: React.FC<FileRecordFormProps> = ({
   // TODO: instead send the file to the backend and add the object id of the file to the dataset
   // on change event handler
   function onChange(value: File | null) {
+    // return if value is null
+    if (value === null) {
+      return
+    }
+
+    // set the file and the file size based on the value
     setFile(value)
     setFileSize(value === null ? 0 : value.size / 1000000)
-    console.log(value)
+
+    // create the new record
     let auxRecord: { [key: string]: string | number } = {}
     auxRecord[inputVariable.name] = value === null ? "null file" : value.name
     setRecord({ ...record, ...auxRecord })
+
+    // post the file to the backend
+    if (!isError) {
+      api
+        .postFile(session?.user.access_token as string, value)
+        .then((res) => res.json())
+        .then((d) => console.log(d))
+    }
   }
 
   // set what files the input should accept based on the mode

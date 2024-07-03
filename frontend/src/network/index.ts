@@ -9,22 +9,28 @@ const createMethod =
   async <T, B = any>(
     route: string,
     body?: FormData | URLSearchParams | any,
-    contentType?: string,
+    contentType?: "form-data" | "application/json" | "application/x-www-form-urlencoded",
     accessToken?: string
   ) => {
     // set url based on if we are on the server or client
     let url = ""
+
     if (process.env.IS_SERVER_FLAG === undefined) {
       url = baseUrlClient
     } else {
       url = baseUrlServer
     }
+    console.log("URL: ", url)
+    // set the default content type to application/json
+    if (contentType === undefined) {
+      contentType = "application/json"
+    }
 
-    // set default content type to json
-    contentType = contentType || "application/json"
-
-    // create headers
-    const headers = new Headers({ "Content-Type": contentType })
+    // if the content-type is form data do not set the contentType header as browser will handle this automatically
+    const headers = new Headers()
+    if (contentType !== "form-data") {
+      headers.append("Content-Type", contentType)
+    }
 
     // add token to headers
     if (accessToken) {
@@ -69,5 +75,11 @@ export const api = {
 
   postAIFunction: (accessToken: string, body: Object) => {
     return postRequest("/db/ai-function", body, "application/json", accessToken)
+  },
+
+  postFile: (accessToken: string, file: File) => {
+    const formData = new FormData()
+    formData.append("file", file)
+    return postRequest("/db/upload-file", formData, "form-data", accessToken)
   },
 }

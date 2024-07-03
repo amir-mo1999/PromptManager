@@ -53,6 +53,7 @@ const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
             setDisableCreateButton={setDisableCreateButton}
           ></FileRecordForm>
         )
+        break
       case "audio_file":
         content = (
           <FileRecordForm
@@ -63,6 +64,7 @@ const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
             setDisableCreateButton={setDisableCreateButton}
           ></FileRecordForm>
         )
+        break
     }
 
   return content

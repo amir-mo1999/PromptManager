@@ -2,6 +2,7 @@ from ..models import User
 from pymongo.mongo_client import MongoClient
 import os
 from bson import ObjectId
+import hashlib
 
 # set up mongo client
 uri = os.environ.get("MONGO_CON_STRING")
@@ -29,3 +30,9 @@ def get_user(email: str) -> User | bool:
         return user
     else:
         return False
+
+
+def calculate_file_hash(file_content):
+    hash_obj = hashlib.sha256()
+    hash_obj.update(file_content)
+    return hash_obj.hexdigest()

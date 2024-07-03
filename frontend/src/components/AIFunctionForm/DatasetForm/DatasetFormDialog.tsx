@@ -17,24 +17,26 @@ import { IndeterminateCheckBox } from "@mui/icons-material"
 
 interface DatasetFormDialogProps {
   open: boolean
+  dataset: Array<Record<string, string | number>>
   settingNewRecord: boolean
   inputVariables: Array<inputVariableType>
   newRecord: Record<string, string | number>
   setNewRecord: Dispatch<SetStateAction<Record<string, string | number>>>
   onClickClose: (reason: string) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
   onClickCreate: () => void
-  indx: number
+  datasetIndx: number
 }
 
 const DatasetFormDialog: React.FC<DatasetFormDialogProps> = ({
   open,
   inputVariables,
+  dataset,
   settingNewRecord,
   newRecord,
   setNewRecord,
   onClickClose,
   onClickCreate,
-  indx,
+  datasetIndx,
 }) => {
   const [disableCreateButton, setDisableCreateButton] = useState<boolean>(false)
   const [errorList, setErrorList] = useState<Array<boolean>>([])
@@ -57,6 +59,8 @@ const DatasetFormDialog: React.FC<DatasetFormDialogProps> = ({
             {inputVariables.map((inputVariable, indx) => {
               return (
                 <DatapointFieldForm
+                  dataset={dataset}
+                  datasetIndx={datasetIndx}
                   errorList={errorList}
                   setErrorList={setErrorList}
                   errorIndx={indx}

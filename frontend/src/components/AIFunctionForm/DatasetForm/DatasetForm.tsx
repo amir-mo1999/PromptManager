@@ -84,6 +84,7 @@ const DatasetForm: React.FC<DatasetFormProps> = ({ inputVariables, dataset, setD
   return (
     <>
       <DatasetFormDialog
+        dataset={dataset}
         newRecord={newRecord}
         open={openDialog}
         inputVariables={inputVariables}
@@ -91,7 +92,7 @@ const DatasetForm: React.FC<DatasetFormProps> = ({ inputVariables, dataset, setD
         setNewRecord={setNewRecord}
         onClickClose={onClickClose}
         onClickCreate={onClickCreate}
-        indx={recordIndx}
+        datasetIndx={recordIndx}
       ></DatasetFormDialog>
       {/* <DatasetTable dataset={dataset}></DatasetTable> */}
       {dataset.map((record, indx) => {

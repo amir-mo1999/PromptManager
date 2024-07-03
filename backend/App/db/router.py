@@ -247,6 +247,7 @@ async def upload_file(
             "username": decoded_token.sub,
             "content_type": file.content_type,
             "content": file_content,
+            "file_size": len(file_content),
             "hash": file_hash,
         }
 
@@ -260,3 +261,37 @@ async def upload_file(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@db_router.get("/get-file-meta-data", tags=["Database Operations"])
+async def get_file_meta_data(
+    access_token: Annotated[str, Depends(oauth2_scheme)], object_id: str
+):
+    # try decoding the token
+    try:
+        decoded_token = decode_token(access_token)
+    except JWTError:
+        raise HTTPException(status_code=400, detail="invalid access token")
+
+    # check if object id is valid
+    if not ObjectId.is_valid(object_id):
+        raise HTTPException(status_code=400, detail="invalid object id")
+
+    # get the collection for saving the files
+    collection = db["example-data-files"]
+
+    # get the file document
+    document = collection.find_one(
+        {"_id": ObjectId(object_id)},
+        {
+            "_id": 0,
+            "username": 0,
+            "content_type": 0,
+            "content": 0,
+            "hash": 0,
+        },
+    )
+    if not document:
+        raise HTTPException(status_code=404, detail="file not found")
+
+    return JSONResponse(content=document, status_code=200)

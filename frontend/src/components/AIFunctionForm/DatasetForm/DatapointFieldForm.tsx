@@ -11,6 +11,8 @@ interface DatapointFieldFormProps {
   record: Record<string, string | number>
   settingNewRecord: boolean
   setRecord: Dispatch<SetStateAction<Record<string, string | number>>>
+  dataset: Array<Record<string, string | number>>
+  datasetIndx: number
 }
 
 const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
@@ -21,6 +23,8 @@ const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
   settingNewRecord,
   record,
   setRecord,
+  dataset,
+  datasetIndx,
 }) => {
   let content = <></>
   if (record)
@@ -28,10 +32,12 @@ const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
       case "string":
         content = (
           <TextRecordForm
+            startValue={
+              settingNewRecord ? undefined : (dataset[datasetIndx][inputVariable.name] as string)
+            }
             errorList={errorList}
             setErrorList={setErrorList}
             errorIndx={errorIndx}
-            startValue={settingNewRecord ? "" : (record[inputVariable.name] as string)}
             inputVariable={inputVariable}
             record={record}
             setRecord={setRecord}

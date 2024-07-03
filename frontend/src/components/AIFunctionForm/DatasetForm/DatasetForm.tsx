@@ -3,6 +3,7 @@ import { DatasetFormDialog } from "./DatasetFormDialog"
 import { inputVariableType } from "@/types"
 import Button from "@mui/material/Button"
 import { RecordBox } from "./RecordBox"
+import { DatasetTable } from "./DatasetTable"
 
 interface DatasetFormProps {
   inputVariables: Array<inputVariableType>
@@ -88,7 +89,7 @@ const DatasetForm: React.FC<DatasetFormProps> = ({ inputVariables, dataset, setD
         onClickCreate={onClickCreate}
         indx={recordIndx}
       ></DatasetFormDialog>
-
+      {/* <DatasetTable dataset={dataset}></DatasetTable> */}
       {dataset.map((record, indx) => {
         return (
           <RecordBox

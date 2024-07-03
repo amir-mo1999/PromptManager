@@ -7,7 +7,6 @@ import { MuiFileInput } from "mui-file-input"
 import { ImageFileInputConstraintsObj, AudioFileInputConstraintsObj } from "@/types"
 import { useSession } from "next-auth/react"
 import { api } from "@/network"
-import { start } from "repl"
 
 interface FileRecordFormProps {
   mode: "image_file" | "audio_file"
@@ -40,7 +39,7 @@ const FileRecordForm: React.FC<FileRecordFormProps> = ({
       ? ImageFileInputConstraintsObj.parse(inputVariable.constraints)
       : AudioFileInputConstraintsObj.parse(inputVariable.constraints)
 
-  // get current session
+  // get current session and access token
   const { data: session } = useSession()
   const accessToken = session?.user.access_token as string
 
@@ -62,7 +61,7 @@ const FileRecordForm: React.FC<FileRecordFormProps> = ({
   }
   useEffect(initFileNameAndSize, [])
 
-  // check if the file size exceeds the maximum whenever the maximum file size or the file size change
+  // check if the file size exceeds the maximum file size whenever the maximum file size or the file size change
   function checkFileSize() {
     if (fileSize > maxFileSize) {
       setIsError(true)
@@ -72,10 +71,12 @@ const FileRecordForm: React.FC<FileRecordFormProps> = ({
       setHelperText("")
     }
   }
+  useEffect(checkFileSize, [fileSize, maxFileSize])
 
+  // update the respective entry in the dialog error list based on the isError variable or if the fileSize is zero
   function updateErrorList() {
     const aux = errorList
-    if (isError || file === null) {
+    if (isError || fileSize === 0) {
       aux[errorIndx] = true
     } else {
       aux[errorIndx] = false
@@ -83,7 +84,6 @@ const FileRecordForm: React.FC<FileRecordFormProps> = ({
     setErrorList([...aux])
   }
   useEffect(updateErrorList, [isError, file, fileSize])
-  useEffect(checkFileSize, [fileSize, maxFileSize])
 
   // on change event handler
   function onChange(value: File | null) {
@@ -99,7 +99,7 @@ const FileRecordForm: React.FC<FileRecordFormProps> = ({
 
     // push the file to the backend and save the object id in the new record and set the record
     let auxRecord: { [key: string]: string | number } = {}
-
+    // only push the file to the backend if there is no error
     if (!isError) {
       api
         .postFile(accessToken, value)

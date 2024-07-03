@@ -18,7 +18,10 @@ const NumericRecordForm: React.FC<NumericRecordFormProps> = ({
   setRecord,
   startValue,
 }) => {
+  // value of the form field
   const [value, setValue] = useState<number>(0)
+
+  // parsing the constraints object
   const constraints = NumericInputConstraintsObj.parse(inputVariable.constraints)
 
   // initialize the value based on the start value
@@ -31,13 +34,13 @@ const NumericRecordForm: React.FC<NumericRecordFormProps> = ({
   }
   useEffect(initValue, [])
 
+  // custom function to run when value changes that sets the value in the current record
   function onChange() {
     let auxRecord: { [key: string]: string | number } = {}
     auxRecord[inputVariable.name] = value
     setRecord({ ...record, ...auxRecord })
     console.log(record)
   }
-
   useEffect(onChange, [value])
 
   return (

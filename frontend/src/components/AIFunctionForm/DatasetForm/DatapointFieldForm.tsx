@@ -1,8 +1,7 @@
 import * as React from "react"
-import Box from "@mui/material/Box"
 import { inputVariableType } from "@/types"
 import { TextRecordForm, NumericRecordForm, FileRecordForm } from "./DatasetRecordForms"
-import { useState, Dispatch, SetStateAction } from "react"
+import { Dispatch, SetStateAction } from "react"
 interface DatapointFieldFormProps {
   inputVariable: inputVariableType
   errorIndx: number
@@ -30,7 +29,10 @@ const DatapointFieldForm: React.FC<DatapointFieldFormProps> = ({
   fileNameMapping,
   setFileNameMapping,
 }) => {
+  // the content to return
   let content = <></>
+
+  // return a form field for depending on the variable type of the respective input variable
   if (record)
     switch (inputVariable.var_type) {
       case "string":

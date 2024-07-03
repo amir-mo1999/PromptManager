@@ -3,7 +3,6 @@ import { DatasetFormDialog } from "./DatasetFormDialog"
 import { inputVariableType } from "@/types"
 import Button from "@mui/material/Button"
 import { RecordBox } from "./RecordBox"
-import { DatasetTable } from "./DatasetTable"
 
 interface DatasetFormProps {
   inputVariables: Array<inputVariableType>
@@ -15,12 +14,16 @@ const DatasetForm: React.FC<DatasetFormProps> = ({ inputVariables, dataset, setD
   // variable for opening the dialog
   const [openDialog, setOpenDialog] = useState<boolean>(false)
 
+  // the current record
+  const [record, setRecord] = useState<Record<string, string | number>>({})
+
+  // the index in the dataset of the current record
   const [recordIndx, setRecordIndx] = useState<number>(0)
 
-  const [newRecord, setNewRecord] = useState<Record<string, string | number>>({})
-
+  // if we are setting a new record or updating an existing one
   const [settingNewRecord, setSettingNewRecord] = useState<boolean>(false)
 
+  // this object maps object id's of files stored in the database to actual file names and sizes
   const [fileNameMapping, setFileNameMapping] = useState<
     Record<string, Record<string, string | number>>
   >({})
@@ -34,14 +37,16 @@ const DatasetForm: React.FC<DatasetFormProps> = ({ inputVariables, dataset, setD
     }
   }, [recordIndx, dataset])
 
-  // reset the new record when dataset changes
-  useEffect(() => setNewRecord({}), [inputVariables])
+  // reset the current record when input variables change
+  useEffect(() => setRecord({}), [inputVariables])
 
+  // event handler when clicking add new record
   function onClickAddRecord() {
     setRecordIndx(dataset.length + 1)
     setOpenDialog(true)
   }
 
+  // event handler when editing a record
   function onClickEditRecord(indx: number) {
     const f = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       setRecordIndx(indx)
@@ -50,6 +55,7 @@ const DatasetForm: React.FC<DatasetFormProps> = ({ inputVariables, dataset, setD
     return f
   }
 
+  // event handler when deleting a record
   function onClickDeleteRecord(indx: number) {
     const f = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       const aux = dataset.filter((item, i) => i !== indx)
@@ -68,39 +74,38 @@ const DatasetForm: React.FC<DatasetFormProps> = ({ inputVariables, dataset, setD
     return f
   }
 
+  // event handler when creating a new record in the dataset
   function onClickCreate() {
     const auxArray = dataset
 
-    if (newRecord === undefined || Object.keys(newRecord).length === 0) {
+    if (record === undefined || Object.keys(record).length === 0) {
       return
     } else {
       if (recordIndx >= dataset.length) {
-        auxArray.push(newRecord)
+        auxArray.push(record)
       } else {
-        auxArray[recordIndx] = newRecord
+        auxArray[recordIndx] = record
       }
       setDataset([...auxArray])
     }
     setOpenDialog(false)
   }
 
-  useEffect(() => console.log("Record: ", newRecord), [newRecord])
   return (
     <>
       <DatasetFormDialog
         dataset={dataset}
-        newRecord={newRecord}
+        record={record}
         open={openDialog}
         inputVariables={inputVariables}
         settingNewRecord={settingNewRecord}
-        setNewRecord={setNewRecord}
+        setRecord={setRecord}
         onClickClose={onClickClose}
         onClickCreate={onClickCreate}
         datasetIndx={recordIndx}
         fileNameMapping={fileNameMapping}
         setFileNameMapping={setFileNameMapping}
       ></DatasetFormDialog>
-      {/* <DatasetTable dataset={dataset}></DatasetTable> */}
       {dataset.map((record, indx) => {
         return (
           <RecordBox

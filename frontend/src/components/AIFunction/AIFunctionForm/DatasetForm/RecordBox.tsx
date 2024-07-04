@@ -15,7 +15,13 @@ interface RecordBoxProps {
 const RecordBox: React.FC<RecordBoxProps> = ({ record, onClickEdit, onClickDelete }) => {
   return (
     <Paper>
-      <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
         <Button variant="contained" onClick={onClickEdit}>
           Edit
         </Button>

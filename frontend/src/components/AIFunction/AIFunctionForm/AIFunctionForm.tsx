@@ -236,7 +236,7 @@ const AIFunctionForm: React.FC<AIFunctionFormProps> = () => {
       <Box
         sx={{
           flexDirection: "column",
-          width: "80%",
+          width: "30%",
           display: activeStep === 3 ? "flex" : "none",
           height: "80%",
         }}

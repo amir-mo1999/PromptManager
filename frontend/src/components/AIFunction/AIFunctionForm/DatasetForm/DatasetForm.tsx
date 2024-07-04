@@ -3,7 +3,7 @@ import { DatasetFormDialog } from "./DatasetFormDialog"
 import { inputVariableType } from "@/types"
 import Button from "@mui/material/Button"
 import { RecordBox } from "./RecordBox"
-
+import Box from "@mui/material/Box"
 interface DatasetFormProps {
   inputVariables: Array<inputVariableType>
   dataset: Array<Record<string, string | number>>
@@ -106,16 +106,19 @@ const DatasetForm: React.FC<DatasetFormProps> = ({ inputVariables, dataset, setD
         fileNameMapping={fileNameMapping}
         setFileNameMapping={setFileNameMapping}
       ></DatasetFormDialog>
-      {dataset.map((record, indx) => {
-        return (
-          <RecordBox
-            key={indx}
-            record={record}
-            onClickEdit={onClickEditRecord(indx)}
-            onClickDelete={onClickDeleteRecord(indx)}
-          ></RecordBox>
-        )
-      })}
+
+      <Box sx={{ display: "flex", flexDirection: "column", gap: "10px", overflow: "auto" }}>
+        {dataset.map((record, indx) => {
+          return (
+            <RecordBox
+              key={indx}
+              record={record}
+              onClickEdit={onClickEditRecord(indx)}
+              onClickDelete={onClickDeleteRecord(indx)}
+            ></RecordBox>
+          )
+        })}
+      </Box>
 
       <Button variant="contained" sx={{ alignSelf: "center" }} onClick={onClickAddRecord}>
         Add Record

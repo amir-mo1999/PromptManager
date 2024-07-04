@@ -89,6 +89,7 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
           <Box
             sx={{
               display: "flex",
+              margin: "10px",
               flexDirection: "column",
               gap: "10px",
             }}

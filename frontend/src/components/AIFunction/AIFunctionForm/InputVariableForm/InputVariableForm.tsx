@@ -2,7 +2,7 @@ import { InputVariableFormDialog } from "./InputVariableFormDialog"
 import { inputVariableType } from "@/types"
 import { useState, Dispatch, SetStateAction } from "react"
 import { InputVariableBox } from "./InputVariableBox"
-
+import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 interface InputVariableFormProps {
   inputVariables: Array<inputVariableType>
@@ -82,17 +82,18 @@ const InputVariableForm: React.FC<InputVariableFormProps> = ({
         onClickClose={onClickClose}
         indx={inputVariableIndx}
       ></InputVariableFormDialog>
-
-      {inputVariables.map((inputVariable, indx) => {
-        return (
-          <InputVariableBox
-            key={indx}
-            inputVariable={inputVariable}
-            onClickEdit={onClickEditVariable(indx)}
-            onClickDelete={onClickDeleteVariable(indx)}
-          ></InputVariableBox>
-        )
-      })}
+      <Box sx={{ display: "flex", flexDirection: "column", gap: "10px", overflow: "auto" }}>
+        {inputVariables.map((inputVariable, indx) => {
+          return (
+            <InputVariableBox
+              key={indx}
+              inputVariable={inputVariable}
+              onClickEdit={onClickEditVariable(indx)}
+              onClickDelete={onClickDeleteVariable(indx)}
+            ></InputVariableBox>
+          )
+        })}
+      </Box>
 
       <Button variant="contained" sx={{ alignSelf: "center" }} onClick={onClickAddVariable}>
         Add Input Variable

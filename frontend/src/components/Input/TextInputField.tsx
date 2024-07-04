@@ -31,23 +31,30 @@ const TextInputField: React.FC<TextInputFieldProps> = ({
 }) => {
   const [helperText, setHelperText] = useState<string>("")
 
-  function checkMinCharLength(value: string) {
+  const [showError, setShowError] = useState<boolean>(false)
+
+  function isUnderMinCharLength(value: string) {
     if (value.length < minChars) {
       setIsError(true)
-      setHelperText(`Must contain at least ${minChars} characters`)
+      return true
     } else {
       setIsError(false)
+      setShowError(false)
       setHelperText("")
+      return false
     }
   }
 
   function onChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     valueSetter(e.target.value)
-    checkMinCharLength(e.target.value)
+    isUnderMinCharLength(e.target.value)
   }
 
   function onBlur(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) {
-    checkMinCharLength(e.target.value)
+    if (isUnderMinCharLength(e.target.value)) {
+      setShowError(true)
+      setHelperText(`Must contain at least ${minChars} characters`)
+    }
   }
 
   return (
@@ -64,7 +71,7 @@ const TextInputField: React.FC<TextInputFieldProps> = ({
       multiline={multiline ? multiline : false}
       minRows={minRows ? minRows : undefined}
       maxRows={maxRows ? maxRows : undefined}
-      error={isError}
+      error={showError}
       onBlur={onBlur}
     />
   )

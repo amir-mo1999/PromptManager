@@ -39,7 +39,6 @@ const NumericRecordForm: React.FC<NumericRecordFormProps> = ({
     let auxRecord: { [key: string]: string | number } = {}
     auxRecord[inputVariable.name] = value
     setRecord({ ...record, ...auxRecord })
-    console.log(record)
   }
   useEffect(onChange, [value])
 

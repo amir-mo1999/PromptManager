@@ -1,6 +1,6 @@
 import { z } from "zod"
-import { AIFunctionRouteInput } from "@/models"
+import { AIFunctionRouteInput, AIFunction } from "@/models"
 
 type AIFunctionRouteInputT = z.infer<typeof AIFunctionRouteInput>
-
-export type { AIFunctionRouteInputT }
+type AIFunctionT = z.infer<typeof AIFunctionRouteInput>
+export type { AIFunctionRouteInputT, AIFunctionT }

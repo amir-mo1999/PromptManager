@@ -14,7 +14,7 @@ import Checkbox from "@mui/material/Checkbox"
 import FormControlLabel from "@mui/material/FormControlLabel"
 interface OutputConstraintsFormProps {
   constraintType: string
-  setConstraints: Dispatch<SetStateAction<OutputConstraintsT | undefined>>
+  setConstraints: Dispatch<SetStateAction<OutputConstraintsT>>
 }
 
 //TODO: add validation to check that number min is lower than number max

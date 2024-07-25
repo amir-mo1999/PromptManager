@@ -17,6 +17,8 @@ import { api } from "@/network"
 import { useSession } from "next-auth/react"
 import { inputOutputTypes } from "@/app/utils"
 import { AIFunctionRouteInput } from "@/models"
+import { AIFunctionOutputTypeT } from "@/types"
+import { StringInputConstraints } from "@/models"
 
 //TODO: add validation for the function name so there is no doubles
 
@@ -44,8 +46,10 @@ const AIFunctionForm: React.FC<AIFunctionFormProps> = () => {
   const [inputVariables, setInputVariables] = useState<InputVariableT[]>([])
 
   // state for output type
-  const [outputType, setOutputType] = useState<string>("string")
-  const [outputConstraints, setOutputConstraints] = useState<OutputConstraintsT>()
+  const [outputType, setOutputType] = useState<AIFunctionOutputTypeT>("string")
+  const [outputConstraints, setOutputConstraints] = useState<OutputConstraintsT>(
+    StringInputConstraints.parse({})
+  )
 
   // set dataset state
   const [dataset, setDataset] = useState<Array<Record<string, string | number>>>([])
@@ -111,7 +115,7 @@ const AIFunctionForm: React.FC<AIFunctionFormProps> = () => {
   )
   function handleSubmit() {
     // assemble the request body
-    const body = {
+    let body = {
       name: functionName,
       description: description,
       input_variables: inputVariables,
@@ -119,9 +123,6 @@ const AIFunctionForm: React.FC<AIFunctionFormProps> = () => {
       output_constraints: outputConstraints,
       example_dataset: dataset,
     }
-
-    // validate the model
-    AIFunctionRouteInput.parse(body)
 
     // send the request
     api
@@ -215,7 +216,7 @@ const AIFunctionForm: React.FC<AIFunctionFormProps> = () => {
           defaultValue={"string"}
           select={true}
           required={true}
-          onChange={(e) => setOutputType(e.target.value)}
+          onChange={(e) => setOutputType(e.target.value as AIFunctionOutputTypeT)}
         >
           {Object.keys(inputOutputTypes).map((key, indx) => {
             // @ts-ignore

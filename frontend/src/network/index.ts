@@ -1,5 +1,5 @@
-import { userCredentialsType } from "@/types"
-import { AIFunctionInput } from "@/types"
+import { UserCredentialsT } from "@/types"
+import { AIFunctionRouteInputT } from "@/types"
 
 const baseUrlClient = process.env.NEXT_PUBLIC_BASE_API_URL_CLIENT || ""
 const baseUrlServer = process.env.NEXT_PUBLIC_BASE_API_URL_SERVER || ""
@@ -52,7 +52,7 @@ const getRequest = createMethod("GET")
 const patchRequest = createMethod("PATCH")
 
 export const api = {
-  login: (body: userCredentialsType) => {
+  login: (body: userCredentialsT) => {
     // url encode the body
     const bodyUrlEncoded = new URLSearchParams()
     Object.entries(body).forEach((entry) => bodyUrlEncoded.append(...entry))
@@ -72,7 +72,7 @@ export const api = {
     return getRequest("/db/get-all-projects", undefined, undefined, accessToken)
   },
 
-  postAIFunction: (accessToken: string, body: Object) => {
+  postAIFunction: (accessToken: string, body: AIFunctionRouteInputT) => {
     return postRequest("/db/ai-function", body, "application/json", accessToken)
   },
 

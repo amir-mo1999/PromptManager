@@ -21,4 +21,6 @@ export { Project } from "./Project"
 
 export { InputVariable } from "./InputVariable"
 
-export { AIFunctionRouteInput } from "./AIFunction"
+export { AIFunctionRouteInput, AIFunction } from "./AIFunction"
+
+export { AIFunctionOutputType } from "./AIFunctionOutputType"

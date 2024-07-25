@@ -24,6 +24,7 @@ from ..models import (
     ProjectList,
     AIFunction,
     AIFunctionRouteInput,
+    AIFunctionList,
 )
 from ..utils import get_user
 from ..utils.db_utils import calculate_file_hash
@@ -208,6 +209,32 @@ async def post_ai_function(
     ai_function_collection.insert_one(ai_function.model_dump())
 
     return JSONResponse(content={"message": "AI function created"}, status_code=200)
+
+
+@db_router.get(
+    "/ai-function", tags=["Database Operations"], response_model=AIFunctionList
+)
+async def get_ai_functions(
+    access_token: Annotated[str, Depends(oauth2_scheme)],
+):
+    # try decoding the token
+    try:
+        decoded_token = decode_token(access_token)
+    except JWTError:
+        raise HTTPException(status_code=400, detail="invalid access token")
+
+    # get the username from the token
+    username = decoded_token.sub
+
+    # get ai function collection
+    ai_function_collection = db["ai-functions"]
+
+    # get all ai functions for user
+    ai_functions = ai_function_collection.find({"username": username})
+    ai_functions = list(ai_functions)
+    ai_functions = AIFunctionList(ai_function_list=ai_functions)
+
+    return ai_functions
 
 
 ## endpoint for uploading a file

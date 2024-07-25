@@ -25,6 +25,7 @@ const AIFunctionPaper: React.FC<AIFunctionPaperProps> = ({ AIFunction }) => {
       sx={{
         width: "100%",
         elevation: 15,
+        padding: 0.5,
       }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}

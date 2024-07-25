@@ -1,11 +1,11 @@
 "use client"
 import React from "react"
-import { project } from "@/types"
+import { ProjectT } from "@/types"
 import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 
 interface ProjectBoxProps {
-  project: project
+  project: ProjectT
 }
 
 function formatDate(datetime: string): string {

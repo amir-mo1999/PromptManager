@@ -1,12 +1,12 @@
 import { InputVariableFormDialog } from "./InputVariableFormDialog"
-import { inputVariableType } from "@/types"
+import { InputVariableT } from "@/types"
 import { useState, Dispatch, SetStateAction } from "react"
 import { InputVariableBox } from "./InputVariableBox"
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 interface InputVariableFormProps {
-  inputVariables: Array<inputVariableType>
-  setInputVariables: Dispatch<SetStateAction<Array<inputVariableType>>>
+  inputVariables: Array<InputVariableT>
+  setInputVariables: Dispatch<SetStateAction<Array<InputVariableT>>>
 }
 
 const InputVariableForm: React.FC<InputVariableFormProps> = ({
@@ -20,7 +20,7 @@ const InputVariableForm: React.FC<InputVariableFormProps> = ({
   const [inputVariableIndx, setInputVariableIndx] = useState<number>(0)
 
   // variable holds a new input variable that is added once the create button is pressed
-  const [newInputVariable, setNewInputVariable] = useState<inputVariableType>()
+  const [newInputVariable, setNewInputVariable] = useState<InputVariableT>()
 
   // event handler for when add input variable button is clicked
   function onClickAddVariable() {

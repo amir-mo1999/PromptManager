@@ -2,7 +2,7 @@ import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import jwt from "jsonwebtoken"
 import { api } from "@/network"
-import { decodedToken } from "@/types/decodedToken"
+import { DecodedTokenT } from "@/types"
 
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
@@ -70,10 +70,10 @@ const handler = NextAuth({
     async session({ session, token }) {
       //TODO: add logic to refresh jwt
       // decode the token coming from the backend
-      const decodedToken: decodedToken = jwt.verify(
+      const decodedToken: DecodedTokenT = jwt.verify(
         token.access_token as string,
         process.env.NEXTAUTH_SECRET as string
-      ) as decodedToken
+      ) as DecodedTokenT
 
       // create session object and return it
       session = { ...session, user: token.user, decodedToken: decodedToken }

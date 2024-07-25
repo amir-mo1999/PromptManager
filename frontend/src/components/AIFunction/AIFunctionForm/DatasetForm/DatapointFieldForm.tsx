@@ -1,9 +1,9 @@
 import * as React from "react"
-import { inputVariableType } from "@/types"
+import { InputVariableT } from "@/types"
 import { TextRecordForm, NumericRecordForm, FileRecordForm } from "./DatasetRecordForms"
 import { Dispatch, SetStateAction } from "react"
 interface DatapointFieldFormProps {
-  inputVariable: inputVariableType
+  inputVariable: InputVariableT
   errorIndx: number
   errorList: Array<boolean>
   setErrorList: Dispatch<SetStateAction<Array<boolean>>>

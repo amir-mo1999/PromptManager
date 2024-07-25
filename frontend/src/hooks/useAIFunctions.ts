@@ -19,7 +19,7 @@ const useAIFunctions = () => {
       .then((data) => setAIFunctions(data["ai_function_list"]))
   }, [])
 
-  return { AIFunctions }
+  return AIFunctions
 }
 
 export { useAIFunctions }

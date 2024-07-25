@@ -4,6 +4,8 @@ import { MainContentWrapper } from "@/components"
 import Button from "@mui/material/Button"
 import { useRouter } from "next/navigation"
 import { useAIFunctions } from "@/hooks"
+import { AIFunctionList } from "@/components"
+import Box from "@mui/material/Box"
 
 export default function Home() {
   const router = useRouter()
@@ -15,10 +17,12 @@ export default function Home() {
 
   return (
     <MainContentWrapper>
-      <Button variant="contained" onClick={onClickCreateAIFunction}>
-        Create AI Function
-      </Button>
-      <Button onClick={() => console.log(AIFunctions)}>Console log AI Functions</Button>
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <AIFunctionList AIFunctions={AIFunctions}></AIFunctionList>
+        <Button variant="contained" onClick={onClickCreateAIFunction}>
+          Create AI Function
+        </Button>
+      </Box>
     </MainContentWrapper>
   )
 }

@@ -17,7 +17,7 @@ const HelpDialog: React.FC<HelpDialogProps> = ({ open, setOpen }) => {
   }
 
   return (
-    <Dialog fullWidth open={open} onClose={() => setOpen(false)}>
+    <Dialog fullWidth maxWidth="lg" open={open} onClose={() => setOpen(false)}>
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <Typography variant="h4" align="center" sx={{ paddingBottom: "4rem", paddingTop: "5rem" }}>
           Welcome to App-Name!

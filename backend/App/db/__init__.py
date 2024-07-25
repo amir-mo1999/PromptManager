@@ -1,1 +1,1 @@
-from .router import db_router
+from .routes import db_router

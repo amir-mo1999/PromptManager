@@ -22,25 +22,35 @@ const AIFunctionPaper: React.FC<AIFunctionPaperProps> = ({ AIFunction }) => {
     setIsHover(false)
   }
 
-  function onClick() {}
+  // event handler when editing a record
+  function onClick() {
+    setOpenDialog(true)
+  }
 
   return (
-    <Paper
-      elevation={isHover ? 15 : 2}
-      sx={{
-        width: "100%",
-        elevation: 15,
-        padding: 0.5,
-      }}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <Typography variant="h6">{AIFunction.name}</Typography>
-        <Typography variant="body1">{AIFunction.description}</Typography>
-      </Box>
-      <AIFunctionDialog></AIFunctionDialog>
-    </Paper>
+    <>
+      <Paper
+        elevation={isHover ? 15 : 2}
+        sx={{
+          width: "100%",
+          elevation: 15,
+          padding: 0.5,
+        }}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onClick={onClick}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Typography variant="h6">{AIFunction.name}</Typography>
+          <Typography variant="body1">{AIFunction.description}</Typography>
+        </Box>
+      </Paper>
+      <AIFunctionDialog
+        AIFunction={AIFunction}
+        open={openDialog}
+        setOpen={setOpenDialog}
+      ></AIFunctionDialog>
+    </>
   )
 }
 

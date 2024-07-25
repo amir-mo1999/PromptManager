@@ -13,13 +13,9 @@ from .input_variable import InputVariable
 from .input_and_output_constraints import (
     StringInputConstraints,
     StringOutputConstraints,
-    NumericInputConstraints,
     NumericOutputConstraints,
-    AudioFileInputConstraints,
     AudioFileOutputConstraints,
-    ImageFileInputConstraints,
     ImageFileOutputConstraints,
-    InputConstraints,
     OutputConstraints,
 )
 

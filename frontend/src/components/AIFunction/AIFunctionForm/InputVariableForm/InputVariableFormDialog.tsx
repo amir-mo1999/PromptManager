@@ -8,7 +8,7 @@ import MenuItem from "@mui/material/MenuItem"
 import Box from "@mui/material/Box"
 import DialogTitle from "@mui/material/DialogTitle"
 import { useState, useEffect, Dispatch, SetStateAction } from "react"
-import { inputVariableType, InputConstraints } from "@/types"
+import { InputVariableT, InputConstraintsT } from "@/types"
 import Typography from "@mui/material/Typography"
 import { inputOutputTypes, initInputConstraints } from "@/app/utils"
 import { InputVariableConstraintsForm } from "./InputVariableConstraintsForm"
@@ -16,8 +16,8 @@ import { TextInputField } from "@/components/Input"
 
 interface InputVariableFormDialogProps {
   open: boolean
-  inputVariables: Array<inputVariableType>
-  setNewInputVariable: Dispatch<SetStateAction<inputVariableType | undefined>>
+  inputVariables: Array<InputVariableT>
+  setNewInputVariable: Dispatch<SetStateAction<InputVariableT | undefined>>
   onClickClose: (reason: string) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
   onClickCreate: () => void
   indx: number
@@ -35,10 +35,10 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
   const addingNewVariable = indx >= inputVariables.length
   // variables for name, type and constraints of new input variable
   const [name, setName] = useState<string>(addingNewVariable ? "" : inputVariables[indx].name)
-  const [type, setType] = useState<inputVariableType["var_type"]>(
+  const [type, setType] = useState<InputVariableT["var_type"]>(
     addingNewVariable ? "string" : inputVariables[indx].var_type
   )
-  const [constraints, setConstraints] = useState<InputConstraints>(initInputConstraints(type))
+  const [constraints, setConstraints] = useState<InputConstraintsT>(initInputConstraints(type))
 
   // reset the form when the dialog is opened and we are adding a new variable
   function resetForm() {
@@ -78,7 +78,7 @@ const InputVariableFormDialog: React.FC<InputVariableFormDialogProps> = ({
 
   // event handler the input for the input variable type changes
   function onTypeChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    setType(e.target.value as inputVariableType["var_type"])
+    setType(e.target.value as InputVariableT["var_type"])
   }
 
   return (

@@ -1,6 +1,6 @@
 import NextAuth from "next-auth"
 import { JWT } from "next-auth/jwt"
-import DecodedToken from "./decodedToken"
+import DecodedToken from "./DecodedTokenT"
 
 declare module "next-auth" {
   interface User {

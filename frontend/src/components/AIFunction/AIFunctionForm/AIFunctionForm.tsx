@@ -4,14 +4,14 @@ import { ContentStepper, MainContentWrapper, TextInputField } from "@/components
 import { DatasetForm } from "./DatasetForm"
 import { InputVariableForm } from "./InputVariableForm"
 import { OutputConstraintsForm } from "./OutputConstraintsForm"
-import { OutputConstraints } from "@/types"
+import { OutputConstraintsT } from "@/types"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Typography from "@mui/material/Typography"
 import TextField from "@mui/material/TextField"
 import MenuItem from "@mui/material/MenuItem"
 import Button from "@mui/material/Button"
-import { inputVariableType } from "@/types"
+import { InputVariableT } from "@/types"
 import Box from "@mui/material/Box"
 import { api } from "@/network"
 import { useSession } from "next-auth/react"
@@ -40,11 +40,11 @@ const AIFunctionForm: React.FC<AIFunctionFormProps> = () => {
   const [descriptionError, setDescriptionError] = useState<boolean>(false)
 
   // state for input variables
-  const [inputVariables, setInputVariables] = useState<inputVariableType[]>([])
+  const [inputVariables, setInputVariables] = useState<InputVariableT[]>([])
 
   // state for output type
   const [outputType, setOutputType] = useState<string>("string")
-  const [outputConstraints, setOutputConstraints] = useState<OutputConstraints>()
+  const [outputConstraints, setOutputConstraints] = useState<OutputConstraintsT>()
 
   // set dataset state
   const [dataset, setDataset] = useState<Array<Record<string, string | number>>>([])

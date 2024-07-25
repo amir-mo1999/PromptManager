@@ -1,14 +1,14 @@
 import * as React from "react"
 import Box from "@mui/material/Box"
-import { inputVariableType } from "@/types"
+import { InputVariableT } from "@/types"
 import TextField from "@mui/material/TextField"
 import { useState, useEffect, Dispatch, SetStateAction } from "react"
-import { StringInputConstraintsObj } from "@/types"
+import { StringInputConstraints } from "@/models"
 import { Typography } from "@mui/material"
 import { TextInputField } from "@/components/Input"
 
 interface TextRecordFormProps {
-  inputVariable: inputVariableType
+  inputVariable: InputVariableT
   errorIndx: number
   errorList: Array<boolean>
   setErrorList: Dispatch<SetStateAction<Array<boolean>>>
@@ -28,7 +28,7 @@ const TextRecordForm: React.FC<TextRecordFormProps> = ({
 }) => {
   const [value, setValue] = useState<string>(startValue)
   const [isError, setIsError] = useState<boolean>(false)
-  const constraints = StringInputConstraintsObj.parse(inputVariable.constraints)
+  const constraints = StringInputConstraints.parse(inputVariable.constraints)
 
   function onChange() {
     let auxRecord: { [key: string]: string | number } = {}

@@ -6,14 +6,14 @@ import DialogContent from "@mui/material/DialogContent"
 import Box from "@mui/material/Box"
 import DialogTitle from "@mui/material/DialogTitle"
 import { useState, useEffect, Dispatch, SetStateAction } from "react"
-import { inputVariableType } from "@/types"
+import { InputVariableT } from "@/types"
 import { DatapointFieldForm } from "./DatapointFieldForm"
 
 interface DatasetFormDialogProps {
   open: boolean
   dataset: Array<Record<string, string | number>>
   settingNewRecord: boolean
-  inputVariables: Array<inputVariableType>
+  inputVariables: Array<InputVariableT>
   record: Record<string, string | number>
   setRecord: Dispatch<SetStateAction<Record<string, string | number>>>
   onClickClose: (reason: string) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void

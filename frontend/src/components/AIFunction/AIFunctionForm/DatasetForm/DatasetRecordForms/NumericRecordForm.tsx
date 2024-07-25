@@ -1,13 +1,13 @@
 import * as React from "react"
 import Box from "@mui/material/Box"
-import { inputVariableType } from "@/types"
+import { InputVariableT } from "@/types"
 import Typography from "@mui/material/Typography"
-import { NumericInputConstraintsObj } from "@/types"
+import { NumericInputConstraints } from "@/models"
 import { NumberInput } from "@/components/Input"
 import { useState, useEffect, Dispatch, SetStateAction } from "react"
 
 interface NumericRecordFormProps {
-  inputVariable: inputVariableType
+  inputVariable: InputVariableT
   record: Record<string, string | number>
   setRecord: Dispatch<SetStateAction<Record<string, string | number>>>
   startValue?: number
@@ -22,7 +22,7 @@ const NumericRecordForm: React.FC<NumericRecordFormProps> = ({
   const [value, setValue] = useState<number>(0)
 
   // parsing the constraints object
-  const constraints = NumericInputConstraintsObj.parse(inputVariable.constraints)
+  const constraints = NumericInputConstraints.parse(inputVariable.constraints)
 
   // initialize the value based on the start value
   function initValue() {

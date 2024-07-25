@@ -52,7 +52,7 @@ const getRequest = createMethod("GET")
 const patchRequest = createMethod("PATCH")
 
 export const api = {
-  login: (body: userCredentialsT) => {
+  login: (body: UserCredentialsT) => {
     // url encode the body
     const bodyUrlEncoded = new URLSearchParams()
     Object.entries(body).forEach((entry) => bodyUrlEncoded.append(...entry))
@@ -74,6 +74,10 @@ export const api = {
 
   postAIFunction: (accessToken: string, body: AIFunctionRouteInputT) => {
     return postRequest("/db/ai-function", body, "application/json", accessToken)
+  },
+
+  getAIFunction: (accessToken: string) => {
+    return getRequest("/db/ai-function", undefined, undefined, accessToken)
   },
 
   postFile: (accessToken: string, file: File) => {

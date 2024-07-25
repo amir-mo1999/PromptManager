@@ -10,7 +10,7 @@ const InputVariable = z
       z.literal("audio_file"),
       z.literal("image_file"),
     ]),
-    constraints: InputConstraints.default({}),
+    constraints: InputConstraints.default({ type: "string" }),
   })
   .superRefine((data, ctx) => {
     // assert that the var type and the type of the input constraints match

@@ -19,4 +19,5 @@ from .input_and_output_constraints import (
     AudioFileOutputConstraints,
     ImageFileInputConstraints,
     ImageFileOutputConstraints,
+    OutputConstraints,
 )

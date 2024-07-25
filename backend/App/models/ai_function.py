@@ -19,6 +19,8 @@ from .input_and_output_constraints import (
     AudioFileOutputConstraints,
     ImageFileInputConstraints,
     ImageFileOutputConstraints,
+    InputConstraints,
+    OutputConstraints,
 )
 
 # import mongo client
@@ -62,12 +64,9 @@ class AIFunctionRouteInput(BaseModel):
         ..., example="string"
     )
 
-    output_constraints: Union[
-        NumericOutputConstraints,
-        StringOutputConstraints,
-        AudioFileOutputConstraints,
-        ImageFileOutputConstraints,
-    ] = Field(..., example=StringOutputConstraints(type="string", max_char_length=500))
+    output_constraints: OutputConstraints = Field(
+        ..., example=StringOutputConstraints(type="string", max_char_length=500)
+    )
 
     # the example dataset works differently depending on what type of input data is used
     # for file inputs such as audio files or image files the object id of this file is saved in the dataset not the content of the file itself
@@ -110,8 +109,6 @@ class AIFunctionRouteInput(BaseModel):
                     f"The output constraints are not of type NumericOutputConstraints."
                 )
         elif self.output_type == "string":
-            print(type(self.output_constraints))
-            print(self.output_constraints)
             if not isinstance(self.output_constraints, StringOutputConstraints):
                 raise AssertionError(
                     f"The output constraints are not of type StringOutputConstraints."

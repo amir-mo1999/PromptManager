@@ -16,6 +16,7 @@ import Box from "@mui/material/Box"
 import { api } from "@/network"
 import { useSession } from "next-auth/react"
 import { inputOutputTypes } from "@/app/utils"
+import { AIFunctionRouteInput } from "@/models"
 
 //TODO: add validation for the function name so there is no doubles
 
@@ -118,6 +119,9 @@ const AIFunctionForm: React.FC<AIFunctionFormProps> = () => {
       output_constraints: outputConstraints,
       example_dataset: dataset,
     }
+
+    // validate the model
+    AIFunctionRouteInput.parse(body)
 
     // send the request
     api

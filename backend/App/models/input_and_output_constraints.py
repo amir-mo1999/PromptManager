@@ -31,6 +31,15 @@ class AudioFileInputConstraints(BaseModel):
     max_length: float = 300
 
 
+InputConstraints = Union[
+    StringInputConstraints,
+    NumericInputConstraints,
+    ImageFileInputConstraints,
+    AudioFileInputConstraints,
+    AudioFileInputConstraints,
+]
+
+
 class StringOutputConstraints(StringInputConstraints):
     type: Literal["string"]
 
@@ -45,3 +54,12 @@ class ImageFileOutputConstraints(ImageFileInputConstraints):
 
 class AudioFileOutputConstraints(AudioFileInputConstraints):
     type: Literal["audio_file"]
+
+
+OutputConstraints = Union[
+    StringOutputConstraints,
+    NumericOutputConstraints,
+    ImageFileOutputConstraints,
+    AudioFileOutputConstraints,
+    AudioFileOutputConstraints,
+]

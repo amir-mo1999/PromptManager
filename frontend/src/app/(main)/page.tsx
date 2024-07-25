@@ -1,8 +1,21 @@
 "use client"
 
 import { MainContentWrapper } from "@/components"
+import Button from "@mui/material/Button"
+import { useRouter } from "next/navigation"
 
-// when accessing the base route redirect the user based on their role
 export default function Home() {
-  return <MainContentWrapper></MainContentWrapper>
+  const router = useRouter()
+
+  function onClickCreateAIFunction() {
+    router.push("/create-ai-function")
+  }
+
+  return (
+    <MainContentWrapper>
+      <Button variant="contained" onClick={onClickCreateAIFunction}>
+        Create AI Function
+      </Button>
+    </MainContentWrapper>
+  )
 }

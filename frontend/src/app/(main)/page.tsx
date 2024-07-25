@@ -17,8 +17,16 @@ export default function Home() {
 
   return (
     <MainContentWrapper>
-      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <AIFunctionList AIFunctions={AIFunctions}></AIFunctionList>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          width: "100%",
+          gap: "5px",
+        }}
+      >
+        <AIFunctionList sx={{ width: "30%" }} AIFunctions={AIFunctions}></AIFunctionList>
         <Button variant="contained" onClick={onClickCreateAIFunction}>
           Create AI Function
         </Button>

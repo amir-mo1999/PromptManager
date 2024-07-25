@@ -1,16 +1,16 @@
 import * as React from "react"
-import { inputVariableType } from "@/types"
+import { InputVariableT } from "@/types"
 import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import { useState, useEffect, Dispatch, SetStateAction } from "react"
 import { MuiFileInput } from "mui-file-input"
-import { ImageFileInputConstraintsObj, AudioFileInputConstraintsObj } from "@/types"
+import { ImageFileInputConstraints, AudioFileInputConstraints } from "@/models"
 import { useSession } from "next-auth/react"
 import { api } from "@/network"
 
 interface FileRecordFormProps {
   mode: "image_file" | "audio_file"
-  inputVariable: inputVariableType
+  inputVariable: InputVariableT
   errorIndx: number
   errorList: Array<boolean>
   setErrorList: Dispatch<SetStateAction<Array<boolean>>>
@@ -36,8 +36,8 @@ const FileRecordForm: React.FC<FileRecordFormProps> = ({
   // parse constraints based on mode
   const constraints =
     mode === "image_file"
-      ? ImageFileInputConstraintsObj.parse(inputVariable.constraints)
-      : AudioFileInputConstraintsObj.parse(inputVariable.constraints)
+      ? ImageFileInputConstraints.parse(inputVariable.constraints)
+      : AudioFileInputConstraints.parse(inputVariable.constraints)
 
   // get current session and access token
   const { data: session } = useSession()

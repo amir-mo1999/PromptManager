@@ -1,4 +1,4 @@
-import { inputVariableType } from "@/types"
+import { InputVariableT } from "@/types"
 import { inputOutputTypes, inputConstraintsAliases } from "@/app/utils"
 import Typography from "@mui/material/Typography"
 import Paper from "@mui/material/Paper"
@@ -7,7 +7,7 @@ import Button from "@mui/material/Button"
 import { MouseEventHandler } from "react"
 
 interface InputVariableBoxProps {
-  inputVariable: inputVariableType
+  inputVariable: InputVariableT
   onClickEdit: MouseEventHandler<HTMLButtonElement>
   onClickDelete: MouseEventHandler<HTMLButtonElement>
 }

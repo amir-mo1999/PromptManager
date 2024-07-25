@@ -4,8 +4,6 @@ import { SxProps } from "@mui/material"
 import { TextFieldVariants } from "@mui/material/TextField"
 import InputAdornment from "@mui/material/InputAdornment"
 
-//TODO: add validation to check that number min is lower than number max
-
 interface NumberInputProps {
   value: number
   setValue: Dispatch<SetStateAction<number>>

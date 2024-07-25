@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react"
 import { SxProps, Theme } from "@mui/system"
 import TextField from "@mui/material/TextField"
-import { InputBaseComponentProps } from "@mui/material"
+
 interface TextInputFieldProps {
   value: string
   valueSetter: Dispatch<SetStateAction<string>>

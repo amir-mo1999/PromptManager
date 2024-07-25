@@ -1,11 +1,11 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react"
 import { DatasetFormDialog } from "./DatasetFormDialog"
-import { inputVariableType } from "@/types"
+import { InputVariableT } from "@/types"
 import Button from "@mui/material/Button"
 import { RecordBox } from "./RecordBox"
 import Box from "@mui/material/Box"
 interface DatasetFormProps {
-  inputVariables: Array<inputVariableType>
+  inputVariables: Array<InputVariableT>
   dataset: Array<Record<string, string | number>>
   setDataset: Dispatch<SetStateAction<Array<Record<string, string | number>>>>
 }

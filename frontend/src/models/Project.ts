@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 // Define the schema using zod
-const project = z.object({
+const Project = z.object({
   title: z.string(),
   description: z.string(),
   username: z.string().email(),
@@ -12,6 +12,4 @@ const project = z.object({
   _id: z.string(),
 })
 
-type project = z.infer<typeof project>
-
-export type { project }
+export { Project }

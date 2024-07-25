@@ -1,11 +1,12 @@
 import React, { useState, useEffect, Dispatch, SetStateAction } from "react"
 import {
-  StringOutputConstraintsObj,
-  NumericOutputConstraintsObj,
-  ImageFileOutputConstraintsObj,
-  AudioFileOutputConstraintsObj,
-  OutputConstraints,
-} from "@/types"
+  StringOutputConstraints,
+  NumericOutputConstraints,
+  ImageFileOutputConstraints,
+  AudioFileOutputConstraints,
+} from "@/models"
+import { OutputConstraintsT } from "@/types"
+
 import { inputOutputTypes } from "@/app/utils"
 import { NumberInput } from "@/components"
 import Box from "@mui/material/Box"
@@ -13,7 +14,7 @@ import Checkbox from "@mui/material/Checkbox"
 import FormControlLabel from "@mui/material/FormControlLabel"
 interface OutputConstraintsFormProps {
   constraintType: string
-  setConstraints: Dispatch<SetStateAction<OutputConstraints | undefined>>
+  setConstraints: Dispatch<SetStateAction<OutputConstraintsT | undefined>>
 }
 
 //TODO: add validation to check that number min is lower than number max
@@ -54,14 +55,14 @@ const OutputConstraintsForm: React.FC<OutputConstraintsFormProps> = ({
   function updateConstraints() {
     switch (constraintType) {
       case inputTypes[0]:
-        constraints = StringOutputConstraintsObj.parse({
+        constraints = StringOutputConstraints.parse({
           type: "string",
           max_char_length: maxCharLength,
           min_char_length: minCharLength,
         })
         break
       case inputTypes[1]:
-        constraints = NumericOutputConstraintsObj.parse({
+        constraints = NumericOutputConstraints.parse({
           type: "numeric",
           accept_float: acceptFloat,
           max_value: maxNumValue,
@@ -69,7 +70,7 @@ const OutputConstraintsForm: React.FC<OutputConstraintsFormProps> = ({
         })
         break
       case inputTypes[2]:
-        constraints = ImageFileOutputConstraintsObj.parse({
+        constraints = ImageFileOutputConstraints.parse({
           type: "image_file",
           max_file_size: maxImageFileSize,
           min_width: minImageWidth,
@@ -79,7 +80,7 @@ const OutputConstraintsForm: React.FC<OutputConstraintsFormProps> = ({
         })
         break
       case inputTypes[3]:
-        constraints = AudioFileOutputConstraintsObj.parse({
+        constraints = AudioFileOutputConstraints.parse({
           type: "audio_file",
           max_file_size: maxAudioFileSize,
           min_length: minAudioLength,

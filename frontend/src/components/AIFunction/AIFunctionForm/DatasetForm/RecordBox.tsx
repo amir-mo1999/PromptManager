@@ -1,5 +1,3 @@
-import { inputVariableType } from "@/types"
-import { inputOutputTypes, inputConstraintsAliases } from "@/app/utils"
 import Typography from "@mui/material/Typography"
 import Paper from "@mui/material/Paper"
 import Box from "@mui/material/Box"

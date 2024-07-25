@@ -2,14 +2,17 @@ import { AIFunctionT } from "@/types"
 import Paper from "@mui/material/Paper"
 import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
-import { alpha } from "@mui/material/styles"
 import { useState } from "react"
+import { AIFunctionDialog } from "./AIFunctionDialog"
+
 interface AIFunctionPaperProps {
   AIFunction: AIFunctionT
 }
 
 const AIFunctionPaper: React.FC<AIFunctionPaperProps> = ({ AIFunction }) => {
   const [isHover, setIsHover] = useState<boolean>(false)
+
+  const [openDialog, setOpenDialog] = useState<boolean>(false)
 
   function onMouseEnter() {
     setIsHover(true)
@@ -18,6 +21,8 @@ const AIFunctionPaper: React.FC<AIFunctionPaperProps> = ({ AIFunction }) => {
   function onMouseLeave() {
     setIsHover(false)
   }
+
+  function onClick() {}
 
   return (
     <Paper
@@ -34,6 +39,7 @@ const AIFunctionPaper: React.FC<AIFunctionPaperProps> = ({ AIFunction }) => {
         <Typography variant="h6">{AIFunction.name}</Typography>
         <Typography variant="body1">{AIFunction.description}</Typography>
       </Box>
+      <AIFunctionDialog></AIFunctionDialog>
     </Paper>
   )
 }

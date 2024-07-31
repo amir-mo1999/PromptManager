@@ -1,41 +1,31 @@
 "use client"
 
 import { MainContentWrapper } from "@/components"
-import Button from "@mui/material/Button"
-import { useRouter } from "next/navigation"
-import { useAIFunctions } from "@/hooks"
 import { AIFunctionList } from "@/components"
 import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 
 export default function Home() {
-  const router = useRouter()
-  const AIFunctions = useAIFunctions()
-
-  function onClickCreateAIFunction() {
-    router.push("/create-ai-function")
-  }
-
   return (
     <MainContentWrapper>
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
-          alignItems: "stretch",
           width: "100%",
-          height: "100%",
           gap: "5px",
-          justifyContent: "space-between",
         }}
       >
-        <Typography variant="h5">AI Functions</Typography>
-        <Typography variant="h5">Prompts</Typography>
-        <Typography variant="h5">Projects</Typography>
-        {/* <AIFunctionList sx={{ width: "30%" }} AIFunctions={AIFunctions}></AIFunctionList>
-        <Button variant="contained" onClick={onClickCreateAIFunction}>
-          Create AI Function
-        </Button> */}
+        <Box sx={{ display: "flex", flexDirection: "column", width: "full" }}>
+          <Typography variant="h5">AI Functions</Typography>
+          <AIFunctionList></AIFunctionList>
+        </Box>
+        <Box sx={{ display: "flex", flexDirection: "column", width: "full" }}>
+          <Typography variant="h5">Prompts</Typography>
+        </Box>
+        <Box sx={{ display: "flex", flexDirection: "column", width: "full" }}>
+          <Typography variant="h5">Projects</Typography>
+        </Box>
       </Box>
     </MainContentWrapper>
   )

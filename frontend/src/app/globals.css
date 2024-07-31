@@ -30,8 +30,3 @@ main {
     text-wrap: balance;
   }
 }
-.MuiContainer-root {
-  width: 100vw;
-  padding-left: 0;
-  padding-right: 0;
-}

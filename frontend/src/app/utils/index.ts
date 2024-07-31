@@ -29,7 +29,7 @@ export const inputConstraintsAliases = {
   max_length: "max. length",
 }
 
-function initInputConstraints(type: "string" | "numeric" | "image_file" | "audio_file") {
+export function initInputConstraints(type: "string" | "numeric" | "image_file" | "audio_file") {
   let constraints: InputConstraintsT = StringInputConstraints.parse({})
   switch (type) {
     case "string":
@@ -51,4 +51,10 @@ function initInputConstraints(type: "string" | "numeric" | "image_file" | "audio
   return constraints
 }
 
-export { initInputConstraints }
+export function splitArrayIntoChunks(array: Array<any>, chunkSize: number) {
+  const result: Array<Array<any>> = []
+  for (let i = 0; i < array.length; i += chunkSize) {
+    result.push(array.slice(i, i + chunkSize))
+  }
+  return result
+}

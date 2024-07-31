@@ -26,8 +26,8 @@ const AIFunctionDialog: React.FC<AIFunctionDialogProps> = ({ AIFunction, open, s
         <Typography variant="body1">{AIFunction.description}</Typography>
         <Typography variant="subtitle1">Input Variables</Typography>
 
-        {AIFunction.input_variables.map((inputVariable) => (
-          <Typography>{inputVariable.name}</Typography>
+        {AIFunction.input_variables.map((inputVariable, indx) => (
+          <Typography key={indx}>{inputVariable.name}</Typography>
         ))}
       </Box>
       <DialogActions>

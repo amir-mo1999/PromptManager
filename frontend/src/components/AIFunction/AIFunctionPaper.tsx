@@ -4,12 +4,13 @@ import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import { useState } from "react"
 import { AIFunctionDialog } from "./AIFunctionDialog"
-
+import { SxProps } from "@mui/material"
 interface AIFunctionPaperProps {
   AIFunction: AIFunctionT
+  sx?: SxProps
 }
 
-const AIFunctionPaper: React.FC<AIFunctionPaperProps> = ({ AIFunction }) => {
+const AIFunctionPaper: React.FC<AIFunctionPaperProps> = ({ AIFunction, sx }) => {
   const [isHover, setIsHover] = useState<boolean>(false)
 
   const [openDialog, setOpenDialog] = useState<boolean>(false)
@@ -32,9 +33,9 @@ const AIFunctionPaper: React.FC<AIFunctionPaperProps> = ({ AIFunction }) => {
       <Paper
         elevation={isHover ? 15 : 2}
         sx={{
-          width: "100%",
           elevation: 15,
           padding: 0.5,
+          ...sx,
         }}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}

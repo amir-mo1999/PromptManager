@@ -22,16 +22,20 @@ export default function Home() {
         sx={{
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
+          alignItems: "stretch",
           width: "100%",
+          height: "100%",
           gap: "5px",
+          justifyContent: "space-between",
         }}
       >
         <Typography variant="h5">AI Functions</Typography>
-        <AIFunctionList sx={{ width: "30%" }} AIFunctions={AIFunctions}></AIFunctionList>
+        <Typography variant="h5">Prompts</Typography>
+        <Typography variant="h5">Projects</Typography>
+        {/* <AIFunctionList sx={{ width: "30%" }} AIFunctions={AIFunctions}></AIFunctionList>
         <Button variant="contained" onClick={onClickCreateAIFunction}>
           Create AI Function
-        </Button>
+        </Button> */}
       </Box>
     </MainContentWrapper>
   )

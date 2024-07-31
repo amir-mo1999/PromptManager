@@ -16,9 +16,8 @@ const MainContentWrapper: React.FC<ProjectBoxProps> = ({ children }) => {
         backgroundColor: "#F3F2F7",
         paddingX: "4rem",
         paddingY: "1rem",
-        height: "100vh",
-        width: "100vw",
-        position: "fixed",
+        height: "100%",
+        width: "100%",
         overflowY: "auto",
       }}
     >

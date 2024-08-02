@@ -1,9 +1,14 @@
 import { InputVariableFormDialog } from "./InputVariableFormDialog"
 import { InputVariableT } from "@/types"
 import { useState, Dispatch, SetStateAction } from "react"
-import { InputVariableBox } from "./InputVariableBox"
-import Box from "@mui/material/Box"
-import Button from "@mui/material/Button"
+import AddIcon from "@mui/icons-material/Add"
+import List from "@mui/material/List"
+import ListItem from "@mui/material/ListItem"
+import ListItemText from "@mui/material/ListItemText"
+import IconButton from "@mui/material/IconButton"
+import EditIcon from "@mui/icons-material/Edit"
+import RemoveIcon from "@mui/icons-material/Remove"
+
 interface InputVariableFormProps {
   inputVariables: Array<InputVariableT>
   setInputVariables: Dispatch<SetStateAction<Array<InputVariableT>>>
@@ -28,8 +33,7 @@ const InputVariableForm: React.FC<InputVariableFormProps> = ({
     setOpenDialog(true)
   }
 
-  // event handler for when input variable is edited
-  function onClickEditVariable(indx: number) {
+  const onEdit = (indx: number) => {
     const f = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       setInputVariableIndx(indx)
       setOpenDialog(true)
@@ -37,8 +41,7 @@ const InputVariableForm: React.FC<InputVariableFormProps> = ({
     return f
   }
 
-  // event handler for when input variable is deleted
-  function onClickDeleteVariable(indx: number) {
+  const onDelete = (indx: number) => {
     const f = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       const aux = inputVariables.filter((item, i) => i !== indx)
       setInputVariables([...aux])
@@ -47,7 +50,7 @@ const InputVariableForm: React.FC<InputVariableFormProps> = ({
   }
 
   // event handler for when dialog is closed
-  function onClickClose(reason: string) {
+  function onClose(reason: string) {
     const f = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       if (reason !== "backdropClick") {
         setOpenDialog(false)
@@ -57,7 +60,7 @@ const InputVariableForm: React.FC<InputVariableFormProps> = ({
   }
 
   // event handler create button is clicked in dialog
-  function onClickCreate() {
+  function onCreate() {
     if (newInputVariable === undefined) {
       return
     }
@@ -78,26 +81,37 @@ const InputVariableForm: React.FC<InputVariableFormProps> = ({
         open={openDialog}
         inputVariables={inputVariables}
         setNewInputVariable={setNewInputVariable}
-        onClickCreate={onClickCreate}
-        onClickClose={onClickClose}
+        onClickCreate={onCreate}
+        onClickClose={onClose}
         indx={inputVariableIndx}
       ></InputVariableFormDialog>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: "10px", overflow: "auto" }}>
+
+      <IconButton color="primary" onClick={onClickAddVariable} sx={{ maxWidth: "2px" }}>
+        <AddIcon />
+      </IconButton>
+
+      <List sx={{ width: "100%", maxHeight: "20%", overflow: "auto" }}>
         {inputVariables.map((inputVariable, indx) => {
+          const labelId = `checkbox-list-label-${indx}`
           return (
-            <InputVariableBox
+            <ListItem
               key={indx}
-              inputVariable={inputVariable}
-              onClickEdit={onClickEditVariable(indx)}
-              onClickDelete={onClickDeleteVariable(indx)}
-            ></InputVariableBox>
+              secondaryAction={
+                <>
+                  <IconButton color="primary" onClick={onEdit(indx)}>
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton color="primary" onClick={onDelete(indx)}>
+                    <RemoveIcon />
+                  </IconButton>
+                </>
+              }
+            >
+              <ListItemText id={labelId} primary={inputVariable.name} />
+            </ListItem>
           )
         })}
-      </Box>
-
-      <Button variant="contained" sx={{ alignSelf: "center" }} onClick={onClickAddVariable}>
-        Add Input Variable
-      </Button>
+      </List>
     </>
   )
 }

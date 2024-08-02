@@ -111,7 +111,7 @@ const OutputConstraintsForm: React.FC<OutputConstraintsFormProps> = ({
   ])
 
   return (
-    <>
+    <Box>
       {/* String */}
       <Box
         display={constraintType !== "string" ? "none" : "flex"}
@@ -204,7 +204,6 @@ const OutputConstraintsForm: React.FC<OutputConstraintsFormProps> = ({
           valueSuffix="px"
         ></NumberInput>
       </Box>
-
       {/* Audio File */}
       <Box
         display={constraintType !== "audio_file" ? "none" : "flex"}
@@ -236,7 +235,7 @@ const OutputConstraintsForm: React.FC<OutputConstraintsFormProps> = ({
           valueSuffix="s"
         ></NumberInput>
       </Box>
-    </>
+    </Box>
   )
 }
 

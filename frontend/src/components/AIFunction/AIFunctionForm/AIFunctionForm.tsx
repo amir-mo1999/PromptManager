@@ -16,7 +16,6 @@ import Box from "@mui/material/Box"
 import { api } from "@/network"
 import { useSession } from "next-auth/react"
 import { inputOutputTypes } from "@/app/utils"
-import { AIFunctionRouteInput } from "@/models"
 import { AIFunctionOutputTypeT } from "@/types"
 import { StringInputConstraints } from "@/models"
 

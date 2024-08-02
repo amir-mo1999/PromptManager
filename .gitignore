@@ -4,7 +4,8 @@
 /data
 /datasets
 **/.env
-
+.env*
+.env
 ### NextJS ###
 # dependencies
 /node_modules

@@ -4,29 +4,41 @@ import { MainContentWrapper } from "@/components"
 import { AIFunctionList } from "@/components"
 import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
+import Button from "@mui/material/Button"
+import promptfoo from "promptfoo"
+
+async function evaluate() {
+  console.log("clicked")
+  const results = await promptfoo.evaluate(
+    {
+      prompts: ["Rephrase this in French: {{body}}", "Rephrase this like a pirate: {{body}}"],
+      providers: ["openai:gpt-4o-mini"],
+      tests: [
+        {
+          vars: {
+            body: "Hello world",
+          },
+        },
+        {
+          vars: {
+            body: "I'm hungry",
+          },
+        },
+      ],
+      writeLatestResults: true, // write results to disk so they can be viewed in web viewer
+    },
+    {
+      maxConcurrency: 2,
+    }
+  )
+
+  console.log(results)
+}
 
 export default function Home() {
   return (
     <MainContentWrapper>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          gap: "5px",
-        }}
-      >
-        <Box sx={{ display: "flex", flexDirection: "column", width: "full" }}>
-          <Typography variant="h5">AI Functions</Typography>
-          <AIFunctionList></AIFunctionList>
-        </Box>
-        <Box sx={{ display: "flex", flexDirection: "column", width: "full" }}>
-          <Typography variant="h5">Prompts</Typography>
-        </Box>
-        <Box sx={{ display: "flex", flexDirection: "column", width: "full" }}>
-          <Typography variant="h5">Projects</Typography>
-        </Box>
-      </Box>
+      <Button onClick={evaluate}>Test</Button>
     </MainContentWrapper>
   )
 }
